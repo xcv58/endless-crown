@@ -22,6 +22,8 @@ The static site includes the homepage, privacy page, custom 404 page, theme pref
 
 Before publishing changes, check both themes, mobile layout, Watch installation FAQs, and video playback. After deployment, verify the homepage and `/privacy/`, App Store link, HTTPS, and the video asset at the production domain.
 
+Before the initial launch, all six interaction checks passed, and Chromium browser checks covered desktop and mobile themes, theme persistence to the privacy page, the installation FAQ, and unmuted video playback. Decorative effect marks were contained to prevent horizontal overflow on narrow screens. These checks do not constitute physical iPhone or Apple Watch testing.
+
 ## Earlier design preview
 
 The private Sites preview at https://endless-crown.chenyihonglove.chatgpt.site/ was used for design iteration. It is not the production host. Do not apply its previously proposed CNAME or verification TXT records to `crown.jenny.media`; the domain is served by Vercel.

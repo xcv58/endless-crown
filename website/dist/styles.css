@@ -116,7 +116,7 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; color: va
 .effect-row:first-child { padding-top: 0; }
 .effect-number { align-self: start; color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; line-height: 1.8; }
 .effect-row p { color: var(--muted); margin-top: .55rem; font-size: .9375rem; }
-.rhythm { color: var(--accent); text-align: right; white-space: nowrap; font-size: 1.15rem; }
+.rhythm { color: var(--accent); text-align: right; white-space: nowrap; font-size: 1.15rem; overflow: hidden; }
 .screens-section { background: var(--surface); padding-block: 70px; }
 .screens-heading { display: flex; gap: 45px; align-items: end; justify-content: space-between; }
 .screens-heading > p { color: var(--muted); font-size: .9375rem; flex-shrink: 0; }
