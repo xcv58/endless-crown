@@ -44,3 +44,5 @@ Thumbs.db
 .clawdbot/logs/
 .clawdbot/worktrees/
 .clawdbot/active-tasks.json
+.vercel/
+.env.local
