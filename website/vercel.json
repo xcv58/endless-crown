@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "node --test tests/interaction.test.mjs",
+  "outputDirectory": "dist",
+  "trailingSlash": true
+}

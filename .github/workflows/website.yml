@@ -1,0 +1,23 @@
+name: Website
+
+on:
+  push:
+    branches: [master]
+    paths: ['website/**', '.github/workflows/website.yml']
+  pull_request:
+    branches: [master]
+    paths: ['website/**', '.github/workflows/website.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  website:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check website interactions
+        run: node --test website/tests/interaction.test.mjs
