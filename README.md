@@ -6,7 +6,7 @@ A discrete Apple Watch fidget app that provides satisfying haptic feedback when 
 
 - **Digital Crown Haptics**: Infinite rotation with customizable haptic feedback
 - **15 Haptic Effects**: From subtle clicks to complex rhythms
-- **Discrete Design**: Nearly invisible dark UI for use in meetings
+- **Display Modes**: Choose Standard, Ambient, or a black Haptics Only display
 - **Quick Launch**: Complication support for one-tap access
 - **Eyes-Free Operation**: Switch effects with simple taps
 
@@ -42,10 +42,12 @@ A discrete Apple Watch fidget app that provides satisfying haptic feedback when 
 ## Usage
 
 1. Rotate the Digital Crown to feel haptic feedback
-2. Tap the effect chip to cycle effects
-3. Long-press the effect chip to open the Effects picker
-4. Double-tap the selected number to view statistics
-5. Long-press the selected number to reset to zero
+2. Tap a number or the effect chip to cycle effects
+3. Long-press a number or the effect chip to open the Effects picker
+4. Double-tap a number or the effect chip to open the menu, which includes Statistics and Reset Counter
+5. Choose **Mode** in the menu to select Standard, Ambient, or Haptics Only
+
+Haptics Only hides the app's numbers and controls while preserving scrolling and haptic feedback. Tap the black view to reveal dim controls; the next scroll returns to black. The selected mode is saved, and existing Ambient or Standard (formerly High Contrast) preferences carry over. watchOS may still display its system clock. Battery savings have not been measured.
 
 ## Requirements
 
@@ -67,6 +69,7 @@ CrownSpin/
 ├── CrownSpin Watch App/
 │   ├── CrownSpinApp.swift      # App entry point
 │   ├── ContentView.swift       # Main fidget view
+│   ├── DisplayMode.swift       # Display modes and preference migration
 │   ├── HapticPattern.swift     # Pattern definitions
 │   ├── HapticStats.swift       # Local usage statistics
 │   ├── CrownSpinComplication.swift # Complication widget

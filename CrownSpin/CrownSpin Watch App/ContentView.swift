@@ -8,7 +8,6 @@ struct ContentView: View {
     // MARK: - Constants
     private enum Constants {
         static let patternKey = "selectedHapticPattern"
-        static let ambientModeKey = "ambientModeEnabled"
         static let baseOffsetKey = "baseOffset"
         static let guideSeenKey = "hasSeenInteractionGuide"
         static let menuButtonHiddenKey = "menuButtonHidden"
@@ -47,12 +46,19 @@ struct ContentView: View {
     @State private var showMenuButton: Bool = true
     @State private var isMenuButtonHidden: Bool = false
     @State private var menuButtonTimer: Timer?
-    @State private var isAmbientMode: Bool = true
+    @State private var displayModeState = DisplayModeState()
     @State private var numberSystem: NumberSystem = .decimal
     @Environment(\.scenePhase) private var scenePhase
 
     // Stats
     @StateObject private var stats = HapticStats.shared
+
+    private var isAmbientMode: Bool { displayModeState.mode.usesDimmedAppearance }
+    private var isBlackDisplay: Bool { displayModeState.showsBlackDisplay }
+
+    private var modeSelection: Binding<DisplayMode> {
+        Binding(get: { displayModeState.mode }, set: { selectDisplayMode($0) })
+    }
 
     // MARK: - Body
     var body: some View {
@@ -64,27 +70,32 @@ struct ContentView: View {
                 ScrollView {
                     LazyVStack(spacing: 2) {
                         ForEach(0..<Constants.windowSize, id: \.self) { index in
-                            ItemRow(
-                                isSelected: scrollPosition == index,
-                                displayText: formatItemNumber(index - Constants.windowCenter + baseOffset, system: numberSystem),
-                                isAmbientMode: isAmbientMode,
-                                isScrolling: isScrolling
-                            )
-                            .id(index)
-                            .contentShape(Rectangle())
-                            .onTapGesture(count: 2) {
-                                openMenu()
-                            }
-                            .onTapGesture(count: 1) {
-                                revealMenuButton()
-                                nextPattern()
-                            }
-                            .simultaneousGesture(
-                                LongPressGesture(minimumDuration: 0.5)
-                                    .onEnded { _ in
-                                        openEffectsPicker()
+                            Group {
+                                if isBlackDisplay {
+                                    // Keep row geometry and scroll targets without constructing hidden artwork.
+                                    Color.clear.accessibilityHidden(true)
+                                } else {
+                                    ItemRow(
+                                        isSelected: scrollPosition == index,
+                                        displayText: formatItemNumber(index - Constants.windowCenter + baseOffset, system: numberSystem),
+                                        isAmbientMode: isAmbientMode,
+                                        isScrolling: isScrolling
+                                    )
+                                    .contentShape(Rectangle())
+                                    .onTapGesture(count: 2) { openMenu() }
+                                    .onTapGesture(count: 1) {
+                                        revealMenuButton()
+                                        nextPattern()
                                     }
-                            )
+                                    .simultaneousGesture(
+                                        LongPressGesture(minimumDuration: 0.5)
+                                            .onEnded { _ in openEffectsPicker() }
+                                    )
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 40)
+                            .id(index)
                         }
                     }
                     .scrollTargetLayout()
@@ -92,6 +103,18 @@ struct ContentView: View {
                     .padding(.bottom, 60)
                 }
                 .scrollPosition(id: $scrollPosition, anchor: .center)
+                .scrollIndicators(isBlackDisplay ? .hidden : .automatic)
+                .contentShape(Rectangle())
+                .simultaneousGesture(
+                    TapGesture().onEnded { revealHapticsOnlyControls() },
+                    including: isBlackDisplay ? .all : .subviews
+                )
+                .accessibilityLabel(isBlackDisplay ? "Haptics Only" : "Numbers")
+                .accessibilityActions {
+                    if isBlackDisplay {
+                        Button("Show controls") { revealHapticsOnlyControls() }
+                    }
+                }
                 .scrollTargetBehavior(.viewAligned)
                 .onChange(of: scrollPosition) { oldValue, newValue in
                     handleScrollChange(from: oldValue, to: newValue)
@@ -103,28 +126,31 @@ struct ContentView: View {
                 }
             }
 
-            VStack {
-                HStack {
-                    if showMenuButton && !isMenuButtonHidden {
-                        menuButton
-                            .transition(.opacity)
+            if !isBlackDisplay {
+                VStack {
+                    HStack {
+                        if showMenuButton && !isMenuButtonHidden {
+                            menuButton
+                                .transition(.opacity)
+                        }
+                        Spacer()
                     }
                     Spacer()
                 }
-                Spacer()
-            }
-            .animation(.easeInOut(duration: 0.25), value: showMenuButton)
+                .animation(.easeInOut(duration: 0.25), value: showMenuButton)
 
-            // Bottom controls
-            VStack(spacing: 6) {
-                Spacer()
-                if showGestureHint && !isAmbientMode {
-                    interactionHint
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                // Bottom controls
+                VStack(spacing: 6) {
+                    Spacer()
+                    if showGestureHint && !isAmbientMode {
+                        interactionHint
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    }
+                    controlLabel
                 }
-                controlLabel
             }
         }
+        .persistentSystemOverlays(isBlackDisplay ? .hidden : .automatic)
         .sheet(isPresented: $showPatternPicker) {
             PatternPicker(selectedPattern: $currentPattern)
                 .onChange(of: currentPattern) { _, newPattern in
@@ -192,12 +218,27 @@ struct ContentView: View {
                 } label: {
                     Label("Reset Counter", systemImage: "arrow.counterclockwise")
                 }
-                Button {
-                    showMenu = false
-                    toggleAmbientMode()
+                Picker(selection: modeSelection) {
+                    ForEach(DisplayMode.allCases) { mode in
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack(spacing: 6) {
+                                Image(systemName: mode.icon)
+                                    .frame(width: 20)
+                                    .accessibilityHidden(true)
+                                Text(mode.displayName)
+                                    .lineLimit(1)
+                            }
+                            Text(mode.detail)
+                                .lineLimit(1)
+                                .foregroundStyle(.secondary)
+                        }
+                        .font(.body)
+                        .tag(mode)
+                    }
                 } label: {
-                    Label(isAmbientMode ? "High Contrast Mode" : "Ambient Mode", systemImage: isAmbientMode ? "sun.max" : "moon")
+                    Text("Mode")
                 }
+                .accessibilityIdentifier("displayModePicker")
             }
         }
         .onChange(of: showMenu) { _, isPresented in
@@ -341,6 +382,9 @@ struct ContentView: View {
         lastPosition = newPos
 
         if hasInitialized {
+            if displayModeState.mode == .hapticsOnly && !isBlackDisplay {
+                displayModeState.didScroll()
+            }
             revealMenuButton()
             triggerHaptic()
             startScrolling()
@@ -420,10 +464,18 @@ struct ContentView: View {
         }
     }
 
-    private func toggleAmbientMode() {
-        isAmbientMode.toggle()
+    private func selectDisplayMode(_ mode: DisplayMode) {
+        guard mode != displayModeState.mode else { return }
+        displayModeState.select(mode)
+        mode.save()
         WKInterfaceDevice.current().play(.click)
-        UserDefaults.standard.set(isAmbientMode, forKey: Constants.ambientModeKey)
+        showMenu = false
+        revealMenuButton()
+    }
+
+    private func revealHapticsOnlyControls() {
+        guard isBlackDisplay else { return }
+        displayModeState.revealControls()
         revealMenuButton()
     }
 
@@ -489,6 +541,10 @@ struct ContentView: View {
     }
 
     private func revealMenuButton() {
+        guard !isBlackDisplay else {
+            menuButtonTimer?.invalidate()
+            return
+        }
         guard !isMenuButtonHidden else {
             menuButtonTimer?.invalidate()
             withAnimation(.easeInOut(duration: 0.2)) {
@@ -526,12 +582,7 @@ struct ContentView: View {
            let pattern = HapticPattern(rawValue: saved) {
             currentPattern = pattern
         }
-        if UserDefaults.standard.object(forKey: Constants.ambientModeKey) == nil {
-            isAmbientMode = true
-            UserDefaults.standard.set(true, forKey: Constants.ambientModeKey)
-        } else {
-            isAmbientMode = UserDefaults.standard.bool(forKey: Constants.ambientModeKey)
-        }
+        displayModeState = DisplayModeState(mode: DisplayMode.load())
         isMenuButtonHidden = UserDefaults.standard.bool(forKey: Constants.menuButtonHiddenKey)
         if isMenuButtonHidden {
             showMenuButton = false
@@ -593,7 +644,7 @@ private struct InteractionGuideView: View {
             GuideRow(
                 icon: "ellipsis.circle",
                 title: "Menu",
-                detail: "Effects, numbers, stats, reset, ambient, and icon visibility."
+                detail: "Effects, numbers, stats, reset, display mode, and icon visibility."
             )
         }
         .navigationTitle("Guide")
