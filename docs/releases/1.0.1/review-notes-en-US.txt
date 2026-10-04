@@ -1,0 +1,13 @@
+Endless Crown is a watch-only Digital Crown haptic fidget app. It has no login, backend, ads, analytics, purchases, or special permissions.
+
+Version 1.0.1 reduces repeated timer creation and preference writes during scrolling. The existing haptic effects and per-scroll request logic are preserved.
+
+How to test on a physical Apple Watch:
+1. Open Endless Crown and rotate the Digital Crown to scroll and feel haptic feedback.
+2. Tap the number line or effect chip to cycle effects, or long-press it to open the Effects picker.
+3. Double-tap the number line or effect chip to open the menu.
+4. Try Numbers, Statistics, Guide, Reset, Ambient Mode, and Hide Menu Icon.
+5. Scroll, stop, leave the app, and reopen it to check that local statistics are retained.
+6. Add the Endless Crown complication to a watch face to view the current item and haptic count.
+
+Physical haptic feedback requires an Apple Watch; a simulator can verify the UI and model behavior.

@@ -49,6 +49,7 @@ struct ContentView: View {
     @State private var menuButtonTimer: Timer?
     @State private var isAmbientMode: Bool = true
     @State private var numberSystem: NumberSystem = .decimal
+    @Environment(\.scenePhase) private var scenePhase
 
     // Stats
     @StateObject private var stats = HapticStats.shared
@@ -233,6 +234,11 @@ struct ContentView: View {
             menuButtonTimer?.invalidate()
             stats.endSession()
         }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active {
+                stats.flushPendingPersistence()
+            }
+        }
     }
 
     // MARK: - Subviews
@@ -340,16 +346,21 @@ struct ContentView: View {
             startScrolling()
             checkAndRebalance(newPos)
             let displayNumber = (scrollPosition ?? Constants.windowCenter) - Constants.windowCenter + baseOffset
-            Self.sharedDefaults?.set(displayNumber, forKey: "currentItemNumber")
+            stats.recordItemNumber(displayNumber)
         }
     }
 
     private func startScrolling() {
         isScrolling = true
-        scrollTimer?.invalidate()
+        if let timer = scrollTimer, timer.isValid {
+            // Keep one timer throughout a scrolling burst, with the same idle deadline.
+            timer.fireDate = Date(timeIntervalSinceNow: Constants.idleDelay)
+            return
+        }
         scrollTimer = Timer.scheduledTimer(withTimeInterval: Constants.idleDelay, repeats: false) { _ in
             DispatchQueue.main.async {
                 isScrolling = false
+                stats.flushPendingPersistence()
                 #if canImport(WidgetKit)
                 WidgetCenter.shared.reloadAllTimelines()
                 #endif
@@ -460,6 +471,9 @@ struct ContentView: View {
         UserDefaults.standard.set(0, forKey: Constants.baseOffsetKey)
         lastPosition = Constants.windowCenter
         scrollPosition = Constants.windowCenter
+        // Replace any staged pre-reset number before the next batch is saved.
+        stats.recordItemNumber(0)
+        stats.flushPendingPersistence()
         revealMenuButton()
     }
 
@@ -467,6 +481,7 @@ struct ContentView: View {
         WKInterfaceDevice.current().play(.click)
         UserDefaults.standard.set(system.rawValue, forKey: Constants.numberSystemKey)
         Self.sharedDefaults?.set(system.rawValue, forKey: Constants.numberSystemKey)
+        stats.flushPendingPersistence()
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()
         #endif
@@ -474,8 +489,8 @@ struct ContentView: View {
     }
 
     private func revealMenuButton() {
-        menuButtonTimer?.invalidate()
         guard !isMenuButtonHidden else {
+            menuButtonTimer?.invalidate()
             withAnimation(.easeInOut(duration: 0.2)) {
                 showMenuButton = false
             }
@@ -486,7 +501,14 @@ struct ContentView: View {
             showMenuButton = true
         }
 
-        guard !showMenu else { return }
+        guard !showMenu else {
+            menuButtonTimer?.invalidate()
+            return
+        }
+        if let timer = menuButtonTimer, timer.isValid {
+            timer.fireDate = Date(timeIntervalSinceNow: Constants.menuAutoHideDelay)
+            return
+        }
         menuButtonTimer = Timer.scheduledTimer(withTimeInterval: Constants.menuAutoHideDelay, repeats: false) { _ in
             DispatchQueue.main.async {
                 guard !showMenu else { return }

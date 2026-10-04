@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 #if canImport(WidgetKit)
 import WidgetKit
 #endif
@@ -6,7 +7,9 @@ import WidgetKit
 /// Tracks haptic usage statistics
 class HapticStats: ObservableObject {
     static let shared = HapticStats()
-    private static let sharedDefaults = UserDefaults(suiteName: appGroupSuiteName)
+    private let defaults: UserDefaults
+    private let sharedDefaults: UserDefaults?
+    private let persistenceInterval: TimeInterval
 
     private enum Keys {
         static let totalHaptics = "stats.totalHaptics"
@@ -21,8 +24,8 @@ class HapticStats: ObservableObject {
 
     @Published private(set) var totalHaptics: Int {
         didSet {
-            UserDefaults.standard.set(totalHaptics, forKey: Keys.totalHaptics)
-            Self.sharedDefaults?.set(totalHaptics, forKey: Keys.totalHaptics)
+            totalHapticsNeedsSave = true
+            schedulePersistence()
         }
     }
 
@@ -30,33 +33,34 @@ class HapticStats: ObservableObject {
 
     @Published private(set) var longestSession: Int {
         didSet {
-            UserDefaults.standard.set(longestSession, forKey: Keys.longestSession)
-            Self.sharedDefaults?.set(longestSession, forKey: Keys.longestSession)
+            defaults.set(longestSession, forKey: Keys.longestSession)
+            sharedDefaults?.set(longestSession, forKey: Keys.longestSession)
         }
     }
 
     @Published private(set) var totalSessions: Int {
         didSet {
-            UserDefaults.standard.set(totalSessions, forKey: Keys.totalSessions)
-            Self.sharedDefaults?.set(totalSessions, forKey: Keys.totalSessions)
+            defaults.set(totalSessions, forKey: Keys.totalSessions)
+            sharedDefaults?.set(totalSessions, forKey: Keys.totalSessions)
         }
     }
 
     @Published private(set) var peakSpeed: Double {
         didSet {
-            UserDefaults.standard.set(peakSpeed, forKey: Keys.peakSpeed)
+            peakSpeedNeedsSave = true
+            schedulePersistence()
         }
     }
 
     @Published private(set) var currentStreak: Int {
         didSet {
-            UserDefaults.standard.set(currentStreak, forKey: Keys.currentStreak)
+            defaults.set(currentStreak, forKey: Keys.currentStreak)
         }
     }
 
     @Published private(set) var totalSpinTime: TimeInterval {
         didSet {
-            UserDefaults.standard.set(totalSpinTime, forKey: Keys.totalSpinTime)
+            defaults.set(totalSpinTime, forKey: Keys.totalSpinTime)
         }
     }
 
@@ -67,17 +71,67 @@ class HapticStats: ObservableObject {
     // Spin time tracking
     private var spinStartTime: TimeInterval?
 
-    private init() {
-        self.totalHaptics = UserDefaults.standard.integer(forKey: Keys.totalHaptics)
-        self.longestSession = UserDefaults.standard.integer(forKey: Keys.longestSession)
-        self.totalSessions = UserDefaults.standard.integer(forKey: Keys.totalSessions)
-        self.peakSpeed = UserDefaults.standard.double(forKey: Keys.peakSpeed)
-        self.currentStreak = UserDefaults.standard.integer(forKey: Keys.currentStreak)
-        self.totalSpinTime = UserDefaults.standard.double(forKey: Keys.totalSpinTime)
+    // Main-run-loop batching; these fields never publish changes to the scrolling view.
+    private var persistenceTimer: Timer?
+    private var totalHapticsNeedsSave = false
+    private var peakSpeedNeedsSave = false
+    private var pendingItemNumber: Int?
+
+    init(defaults: UserDefaults = .standard,
+         sharedDefaults: UserDefaults? = UserDefaults(suiteName: appGroupSuiteName),
+         persistenceInterval: TimeInterval = 2) {
+        self.defaults = defaults
+        self.sharedDefaults = sharedDefaults
+        self.persistenceInterval = persistenceInterval
+        self.totalHaptics = defaults.integer(forKey: Keys.totalHaptics)
+        self.longestSession = defaults.integer(forKey: Keys.longestSession)
+        self.totalSessions = defaults.integer(forKey: Keys.totalSessions)
+        self.peakSpeed = defaults.double(forKey: Keys.peakSpeed)
+        self.currentStreak = defaults.integer(forKey: Keys.currentStreak)
+        self.totalSpinTime = defaults.double(forKey: Keys.totalSpinTime)
         // Sync existing stats to shared defaults for the complication
-        Self.sharedDefaults?.set(totalHaptics, forKey: Keys.totalHaptics)
-        Self.sharedDefaults?.set(longestSession, forKey: Keys.longestSession)
-        Self.sharedDefaults?.set(totalSessions, forKey: Keys.totalSessions)
+        sharedDefaults?.set(totalHaptics, forKey: Keys.totalHaptics)
+        sharedDefaults?.set(longestSession, forKey: Keys.longestSession)
+        sharedDefaults?.set(totalSessions, forKey: Keys.totalSessions)
+    }
+
+    deinit {
+        persistenceTimer?.invalidate()
+    }
+
+    func recordItemNumber(_ number: Int) {
+        pendingItemNumber = number
+        schedulePersistence()
+    }
+
+    /// Submit the latest batch to UserDefaults before idle, suspension, or a widget refresh.
+    /// UserDefaults itself writes asynchronously; this is not a synchronous disk flush.
+    func flushPendingPersistence() {
+        persistenceTimer?.invalidate()
+        persistenceTimer = nil
+        if totalHapticsNeedsSave {
+            defaults.set(totalHaptics, forKey: Keys.totalHaptics)
+            sharedDefaults?.set(totalHaptics, forKey: Keys.totalHaptics)
+            totalHapticsNeedsSave = false
+        }
+        if peakSpeedNeedsSave {
+            defaults.set(peakSpeed, forKey: Keys.peakSpeed)
+            peakSpeedNeedsSave = false
+        }
+        if let number = pendingItemNumber {
+            sharedDefaults?.set(number, forKey: "currentItemNumber")
+            pendingItemNumber = nil
+        }
+    }
+
+    private func schedulePersistence() {
+        // Do not postpone an existing batch as more scroll events arrive.
+        guard persistenceTimer == nil else { return }
+        let timer = Timer(timeInterval: persistenceInterval, repeats: false) { [weak self] _ in
+            self?.flushPendingPersistence()
+        }
+        persistenceTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     func recordHaptic() {
@@ -108,7 +162,7 @@ class HapticStats: ObservableObject {
         // Streak tracking
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
-        if let lastDateInterval = UserDefaults.standard.object(forKey: Keys.lastSessionDate) as? TimeInterval {
+        if let lastDateInterval = defaults.object(forKey: Keys.lastSessionDate) as? TimeInterval {
             let lastDate = calendar.startOfDay(for: Date(timeIntervalSince1970: lastDateInterval))
             let daysBetween = calendar.dateComponents([.day], from: lastDate, to: today).day ?? 0
             if daysBetween == 1 {
@@ -121,7 +175,8 @@ class HapticStats: ObservableObject {
             // First ever session
             currentStreak = 1
         }
-        UserDefaults.standard.set(today.timeIntervalSince1970, forKey: Keys.lastSessionDate)
+        defaults.set(today.timeIntervalSince1970, forKey: Keys.lastSessionDate)
+        flushPendingPersistence()
     }
 
     func endSession() {
@@ -129,6 +184,7 @@ class HapticStats: ObservableObject {
             longestSession = sessionHaptics
         }
         stopSpinning()
+        flushPendingPersistence()
         // Refresh complications when session ends
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()
@@ -158,7 +214,8 @@ class HapticStats: ObservableObject {
         totalSpinTime = 0
         recentHapticTimes.removeAll()
         spinStartTime = nil
-        UserDefaults.standard.removeObject(forKey: Keys.lastSessionDate)
+        defaults.removeObject(forKey: Keys.lastSessionDate)
+        flushPendingPersistence()
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()
         #endif

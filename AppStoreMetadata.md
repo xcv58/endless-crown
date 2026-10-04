@@ -19,6 +19,11 @@ Digital Crown Haptics
 
 ## Version Information
 
+### What's New (Version 1.0.1)
+Internal efficiency improvements during Crown scrolling, with the same familiar haptic feedback.
+
+Preparation and review notes: [1.0.1 release materials](docs/releases/1.0.1/README.md).
+
 ### What's New (Version 1.0)
 Initial release of Endless Crown, a watch-only haptic fidget experience for Apple Watch.
 
