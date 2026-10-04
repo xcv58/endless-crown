@@ -1,34 +1,26 @@
 import XCTest
+import Combine
 
 final class HapticStatsTests: XCTestCase {
 
     private var stats: HapticStats!
-
-    private let allKeys = [
-        "stats.totalHaptics",
-        "stats.sessionHaptics",
-        "stats.longestSession",
-        "stats.totalSessions",
-        "stats.lastSessionDate",
-        "stats.peakSpeed",
-        "stats.currentStreak",
-        "stats.totalSpinTime"
-    ]
+    private var defaults: UserDefaults!
+    private var sharedDefaults: UserDefaults!
+    private var suiteName: String!
 
     override func setUp() {
         super.setUp()
-        stats = HapticStats.shared
-        stats.resetStats()
-        for key in allKeys {
-            UserDefaults.standard.removeObject(forKey: key)
-        }
+        suiteName = "CrownSpinStatsTests." + UUID().uuidString
+        defaults = UserDefaults(suiteName: suiteName)!
+        sharedDefaults = UserDefaults(suiteName: suiteName + ".shared")!
+        stats = HapticStats(defaults: defaults, sharedDefaults: sharedDefaults)
     }
 
     override func tearDown() {
         stats.resetStats()
-        for key in allKeys {
-            UserDefaults.standard.removeObject(forKey: key)
-        }
+        defaults.removePersistentDomain(forName: suiteName)
+        sharedDefaults.removePersistentDomain(forName: suiteName + ".shared")
+        stats = nil
         super.tearDown()
     }
 
@@ -224,22 +216,122 @@ final class HapticStatsTests: XCTestCase {
 
     // MARK: - UserDefaults Persistence
 
+    func testContinuousInputUpdatesLiveCountersWithoutPerEventPersistence() {
+        var publishedCounts: [Int] = []
+        let subscription = stats.$totalHaptics.sink { publishedCounts.append($0) }
+        for number in 1...200 {
+            stats.recordHaptic()
+            stats.recordItemNumber(number)
+        }
+        XCTAssertEqual(stats.totalHaptics, 200)
+        XCTAssertEqual(stats.sessionHaptics, 200)
+        XCTAssertEqual(publishedCounts, Array(0...200))
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 0)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "stats.totalHaptics"), 0)
+        XCTAssertNil(sharedDefaults.object(forKey: "currentItemNumber"))
+        subscription.cancel()
+
+        stats.flushPendingPersistence()
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 200)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "stats.totalHaptics"), 200)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), 200)
+        XCTAssertEqual(defaults.double(forKey: "stats.peakSpeed"), stats.peakSpeed)
+    }
+
+    func testPeriodicSaveIsNotPostponedByContinuousInput() {
+        stats = HapticStats(defaults: defaults, sharedDefaults: sharedDefaults, persistenceInterval: 0.04)
+        let savedDuringInput = expectation(description: "Batch saved during ongoing input")
+        stats.recordHaptic()
+        let input = Timer(timeInterval: 0.005, repeats: true) { [self] timer in
+            stats.recordHaptic()
+            stats.recordItemNumber(stats.totalHaptics)
+            if defaults.integer(forKey: "stats.totalHaptics") > 0 {
+                timer.invalidate()
+                savedDuringInput.fulfill()
+            }
+        }
+        RunLoop.main.add(input, forMode: .common)
+        wait(for: [savedDuringInput], timeout: 2)
+        input.invalidate()
+        XCTAssertGreaterThan(defaults.integer(forKey: "stats.totalHaptics"), 0)
+        XCTAssertGreaterThan(stats.totalHaptics, defaults.integer(forKey: "stats.totalHaptics"))
+    }
+
+    func testExplicitSaveAllowsAnotherTimedBatch() {
+        stats = HapticStats(defaults: defaults, sharedDefaults: sharedDefaults, persistenceInterval: 0.02)
+        stats.recordHaptic()
+        stats.flushPendingPersistence()
+        stats.recordHaptic()
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 1)
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.1))
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 2)
+    }
+
+    func testRecreatedStatisticsLoadTheLatestSavedBatch() {
+        for number in 1...37 {
+            stats.recordHaptic()
+            stats.recordItemNumber(-number)
+        }
+        stats.flushPendingPersistence()
+        let reloaded = HapticStats(defaults: defaults, sharedDefaults: sharedDefaults)
+        XCTAssertEqual(reloaded.totalHaptics, 37)
+        XCTAssertEqual(reloaded.peakSpeed, stats.peakSpeed)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), -37)
+    }
+
+    func testSessionEndSavesPendingCountersAndComplicationNumber() {
+        for _ in 0..<23 { stats.recordHaptic() }
+        stats.recordItemNumber(91)
+        stats.endSession()
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 23)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "stats.totalHaptics"), 23)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "stats.longestSession"), 23)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), 91)
+    }
+
+    func testStatisticsResetCannotResurrectAnOlderPendingCount() {
+        for _ in 0..<13 { stats.recordHaptic() }
+        stats.resetStats()
+        stats.flushPendingPersistence()
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 0)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "stats.totalHaptics"), 0)
+        XCTAssertEqual(defaults.double(forKey: "stats.peakSpeed"), 0)
+    }
+
+    func testCounterResetReplacesThePendingComplicationNumber() {
+        stats.recordItemNumber(124)
+        stats.recordItemNumber(0)
+        stats.flushPendingPersistence()
+        XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), 0)
+        stats.flushPendingPersistence()
+        XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), 0)
+    }
+
+    func testSavingWorksWithoutAnAppGroupStore() {
+        stats = HapticStats(defaults: defaults, sharedDefaults: nil)
+        stats.recordHaptic()
+        stats.recordItemNumber(-6)
+        stats.flushPendingPersistence()
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 1)
+    }
+
     func testTotalHapticsPersistsToUserDefaults() {
         stats.recordHaptic()
         stats.recordHaptic()
-        XCTAssertEqual(UserDefaults.standard.integer(forKey: "stats.totalHaptics"), 2)
+        stats.flushPendingPersistence()
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 2)
     }
 
     func testLongestSessionPersistsToUserDefaults() {
         for _ in 0..<7 { stats.recordHaptic() }
         stats.endSession()
-        XCTAssertEqual(UserDefaults.standard.integer(forKey: "stats.longestSession"), 7)
+        XCTAssertEqual(defaults.integer(forKey: "stats.longestSession"), 7)
     }
 
     func testTotalSessionsPersistsToUserDefaults() {
         stats.startSession()
         stats.startSession()
-        XCTAssertEqual(UserDefaults.standard.integer(forKey: "stats.totalSessions"), 2)
+        XCTAssertEqual(defaults.integer(forKey: "stats.totalSessions"), 2)
     }
 
     func testSessionHapticsDoesNotPersistToUserDefaults() {
@@ -248,8 +340,8 @@ final class HapticStatsTests: XCTestCase {
         // sessionHaptics should not be stored in UserDefaults
         // The key "stats.sessionHaptics" should remain at default (0)
         // since sessionHaptics has no didSet that writes to UserDefaults
-        UserDefaults.standard.removeObject(forKey: "stats.sessionHaptics")
-        XCTAssertEqual(UserDefaults.standard.integer(forKey: "stats.sessionHaptics"), 0)
+        defaults.removeObject(forKey: "stats.sessionHaptics")
+        XCTAssertEqual(defaults.integer(forKey: "stats.sessionHaptics"), 0)
     }
 
     // MARK: - Peak Speed
@@ -289,7 +381,8 @@ final class HapticStatsTests: XCTestCase {
 
     func testPeakSpeedPersistsToUserDefaults() {
         for _ in 0..<10 { stats.recordHaptic() }
-        XCTAssertGreaterThan(UserDefaults.standard.double(forKey: "stats.peakSpeed"), 0)
+        stats.flushPendingPersistence()
+        XCTAssertGreaterThan(defaults.double(forKey: "stats.peakSpeed"), 0)
     }
 
     // MARK: - Streak
@@ -313,7 +406,7 @@ final class HapticStatsTests: XCTestCase {
 
         // Simulate yesterday's date
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Calendar.current.startOfDay(for: Date()))!
-        UserDefaults.standard.set(yesterday.timeIntervalSince1970, forKey: "stats.lastSessionDate")
+        defaults.set(yesterday.timeIntervalSince1970, forKey: "stats.lastSessionDate")
 
         stats.startSession()
         XCTAssertEqual(stats.currentStreak, 2)
@@ -325,7 +418,7 @@ final class HapticStatsTests: XCTestCase {
 
         // Simulate 3 days ago
         let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: Calendar.current.startOfDay(for: Date()))!
-        UserDefaults.standard.set(threeDaysAgo.timeIntervalSince1970, forKey: "stats.lastSessionDate")
+        defaults.set(threeDaysAgo.timeIntervalSince1970, forKey: "stats.lastSessionDate")
 
         stats.startSession()
         XCTAssertEqual(stats.currentStreak, 1)
@@ -340,14 +433,14 @@ final class HapticStatsTests: XCTestCase {
         stats.startSession()
         // Simulate yesterday
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Calendar.current.startOfDay(for: Date()))!
-        UserDefaults.standard.set(yesterday.timeIntervalSince1970, forKey: "stats.lastSessionDate")
+        defaults.set(yesterday.timeIntervalSince1970, forKey: "stats.lastSessionDate")
         stats.startSession()
         XCTAssertEqual(stats.formattedStreak, "2 days")
     }
 
     func testStreakPersistsToUserDefaults() {
         stats.startSession()
-        XCTAssertEqual(UserDefaults.standard.integer(forKey: "stats.currentStreak"), 1)
+        XCTAssertEqual(defaults.integer(forKey: "stats.currentStreak"), 1)
     }
 
     func testResetClearsStreak() {
@@ -412,7 +505,7 @@ final class HapticStatsTests: XCTestCase {
         stats.startSpinning()
         Thread.sleep(forTimeInterval: 0.1)
         stats.stopSpinning()
-        XCTAssertGreaterThan(UserDefaults.standard.double(forKey: "stats.totalSpinTime"), 0)
+        XCTAssertGreaterThan(defaults.double(forKey: "stats.totalSpinTime"), 0)
     }
 
     // MARK: - Average Session

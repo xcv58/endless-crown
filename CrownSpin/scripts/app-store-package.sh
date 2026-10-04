@@ -6,7 +6,7 @@ PROJECT_PATH="$ROOT_DIR/CrownSpin/CrownSpin.xcodeproj"
 EXPORT_OPTIONS="$ROOT_DIR/CrownSpin/AppStoreExportOptions.plist"
 ARCHIVE_PATH="${ARCHIVE_PATH:-/tmp/CrownSpin-submit.xcarchive}"
 EXPORT_PATH="${EXPORT_PATH:-/tmp/CrownSpin-submit-export}"
-IPA_OUTPUT="$ROOT_DIR/CrownSpin/AppStoreBuilds/CrownSpin-1.0-1.ipa"
+IPA_OUTPUT="${IPA_OUTPUT:-}"
 MODE="${1:-export}"
 
 case "$MODE" in
@@ -18,7 +18,6 @@ case "$MODE" in
     ;;
 esac
 
-mkdir -p "$(dirname "$IPA_OUTPUT")"
 rm -rf "$ARCHIVE_PATH" "$EXPORT_PATH"
 
 xcodebuild \
@@ -47,6 +46,10 @@ else
     -exportPath "$EXPORT_PATH" \
     -exportOptionsPlist "$EXPORT_OPTIONS" \
     -allowProvisioningUpdates
+  VERSION="$(/usr/libexec/PlistBuddy -c 'Print :ApplicationProperties:CFBundleShortVersionString' "$ARCHIVE_PATH/Info.plist")"
+  BUILD="$(/usr/libexec/PlistBuddy -c 'Print :ApplicationProperties:CFBundleVersion' "$ARCHIVE_PATH/Info.plist")"
+  IPA_OUTPUT="${IPA_OUTPUT:-$ROOT_DIR/CrownSpin/AppStoreBuilds/CrownSpin-$VERSION-$BUILD.ipa}"
+  mkdir -p "$(dirname "$IPA_OUTPUT")"
   cp "$EXPORT_PATH/CrownSpin.ipa" "$IPA_OUTPUT"
   echo "Exported IPA: $IPA_OUTPUT"
 fi
