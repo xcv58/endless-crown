@@ -1,0 +1,20 @@
+{
+  "browserVersion": "154.0.8037.93",
+  "mobile": [
+    {
+      "file": "preview.html",
+      "viewport": 390,
+      "documentWidth": 390,
+      "images": 6,
+      "complete": true
+    },
+    {
+      "file": "comparison.html",
+      "viewport": 390,
+      "documentWidth": 390,
+      "images": 2,
+      "complete": true
+    }
+  ],
+  "pageErrors": []
+}

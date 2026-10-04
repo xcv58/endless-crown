@@ -1,0 +1,92 @@
+{
+  "app": "Endless Crown",
+  "version": "1.0.1",
+  "locale": "en-US",
+  "width": 416,
+  "height": 496,
+  "format": "PNG",
+  "deviceClass": "Apple Watch Series 12 / 11 / 10",
+  "style": {
+    "background": "#080b09",
+    "headline": "#d5e5c3",
+    "description": "#e4e8e2"
+  },
+  "captureProvenance": "Existing authentic app captures. The 1.0.1 production patch changes timer and persistence internals; the displayed screens and controls are unchanged. No simulated data or AI-generated UI.",
+  "slides": [
+    {
+      "order": 1,
+      "id": "spin",
+      "headline": "Turn the Crown.",
+      "description": "Feel the haptics.",
+      "source": "../Screenshots/apple-watch-46mm-main.jpg",
+      "alt": "Endless Crown running on Apple Watch, with the Digital Crown visible on the right and the Clicks effect selected.",
+      "claimEvidence": "ContentView.handleScrollChange and triggerHaptic; real captured scrolling UI.",
+      "presentation": "watch-hero"
+    },
+    {
+      "order": 2,
+      "id": "effects",
+      "headline": "15 ways to feel it.",
+      "description": "Find your favorite haptic effect.",
+      "source": "../Screenshots/apple-watch-46mm-02-effects.jpg",
+      "alt": "Effects picker showing Clicks, Ping, Soft, and the Motion group.",
+      "claimEvidence": "HapticPattern has 15 selection cases, including Random."
+    },
+    {
+      "order": 3,
+      "id": "gestures",
+      "headline": "Simple by design.",
+      "description": "Tap to switch. Long-press to explore.",
+      "source": "../Screenshots/apple-watch-46mm-04-guide.jpg",
+      "alt": "Gesture guide explaining tap, long-press, and double-tap actions.",
+      "claimEvidence": "Effect chip and number-row tap/long-press gestures; InteractionGuideView."
+    },
+    {
+      "order": 4,
+      "id": "numbers",
+      "headline": "Count your way.",
+      "description": "Six formats. One endless scroll.",
+      "source": "../Screenshots/apple-watch-46mm-05-numbers.jpg",
+      "alt": "Number formats picker showing Decimal, Roman, and Binary.",
+      "claimEvidence": "NumberSystem has Decimal, Roman, Binary, Hex, Octal, and Base-26; infinite-window rebalancing."
+    },
+    {
+      "order": 5,
+      "id": "stats",
+      "headline": "See your spin stats.",
+      "description": "Session and all-time stats, kept locally.",
+      "source": "../Screenshots/apple-watch-46mm-06-stats.jpg",
+      "alt": "Local statistics screen showing this session, all time, best session, and sessions.",
+      "claimEvidence": "HapticStats stores counters in local UserDefaults and the local app group."
+    },
+    {
+      "order": 6,
+      "id": "ambient",
+      "headline": "A quieter screen.",
+      "description": "Ambient mode keeps the visuals subtle.",
+      "source": "../Screenshots/apple-watch-46mm-01-main.jpg",
+      "alt": "Minimal dark main screen with subdued numbers and the Clicks effect chip.",
+      "claimEvidence": "ContentView.isAmbientMode and ItemRow opacity/contrast behavior; no battery or always-on claim."
+    }
+  ],
+  "deviceArtwork": {
+    "model": "Apple Watch Series 11, 46mm, Space Gray aluminum, Black Sport Band",
+    "resourcePage": "https://developer.apple.com/design/resources/#product-bezels",
+    "download": "https://devimages-cdn.apple.com/design/resources/download/Bezel-Apple-Watch-Series-11-2025.dmg",
+    "archiveMember": "PNG/Sport Band/Apple Watch S11 - 46mm - Aluminum Space Gray + Sport Band Black.png",
+    "file": "resources/apple-watch-series-11-46mm-space-gray-black-sport-band.png",
+    "sha256": "6b992b970200961e38fa25ae953bcbeebfc76ff158a3ee8ca039edfe6779c029",
+    "naturalSize": [
+      560,
+      880
+    ],
+    "screenRect": {
+      "x": 72,
+      "y": 192,
+      "width": 416,
+      "height": 496
+    },
+    "presentation": "Complete official image, proportionally scaled; no cropping, rotation, added effects, or hardware modification.",
+    "distribution": "The standalone Apple resource is ignored by Git and excluded from export ZIPs. Obtain it directly from Apple to render again."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "endless-crown-screenshot-kit",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

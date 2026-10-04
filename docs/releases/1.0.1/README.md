@@ -2,7 +2,7 @@
 
 Planned version: **1.0.1 (15)**. App Store app ID: **6777250620**.
 
-This is a maintenance update for the existing Watch-only app. The public App Store lookup returned version 1.0 during preparation. Build 15 follows the repository's build 14; its availability in App Store Connect must be confirmed before upload.
+This is a maintenance update for the existing Watch-only app. App Store Connect shows released version 1.0/build 15. The prepared distribution archive is version 1.0.1/build 15; binary upload and processing remain pending.
 
 ## Ready-to-use copy
 
@@ -10,7 +10,15 @@ This is a maintenance update for the existing Watch-only app. The public App Sto
 - [App Review notes, English (U.S.)](review-notes-en-US.txt)
 - [Existing listing metadata](../../../AppStoreMetadata.md)
 
-Listing description, subtitle, keywords, privacy answers, pricing, and screenshots have no change required by this patch. Existing screenshots are in [AppStoreAssets](../../../CrownSpin/AppStoreAssets/Screenshots).
+Listing description, subtitle, keywords, privacy answers, and pricing have no change required by the production patch. A new set of six annotated Apple Watch screenshots is prepared in the [editable screenshot kit](../../../CrownSpin/AppStoreAssets/ScreenshotKit/README.md), with explanations around authentic app captures, official Watch artwork on the first image, and larger bezel-free feature screens. See the [gallery](../../../CrownSpin/AppStoreAssets/ScreenshotKit/preview.html) for the upload order.
+
+## App Store draft prepared
+
+On October 4, 2026, version **1.0.1** was created in App Store Connect in **Prepare for Submission**. The six English (U.S.) Watch screenshots were uploaded and ordered from Crown hero through Ambient Mode. What's New and App Review notes were saved, and the existing promotional text was retained. A page reload confirmed the assets and copy persisted. The inherited manual release choice remains selected.
+
+[Store draft](https://appstoreconnect.apple.com/apps/6777250620/distribution/ios/version/inflight) · [Preparation record](app-store-preparation.json)
+
+No build is selected. Binary upload, TestFlight acceptance, App Review submission, and public release remain pending.
 
 ## Included changes
 
@@ -42,10 +50,9 @@ This Mac has no Watch simulator runtime installed. The repository's GitHub Tests
 
 Preparation status is recorded in the local release validation report. Before store delivery:
 
-- Confirm version 1.0.1 and build 15 are unused in App Store Connect.
 - Upload the prepared distribution build and wait for processing.
 - Install that processed build through TestFlight on Apple Watch; check fast Clicks and Random, effect switching, menu timing, retained statistics, counter reset, number formats, and the complication.
-- Select the build, paste the prepared What's New and App Review notes, retain the existing listing assets, and submit for review.
+- Select the processed build, confirm the already-saved release copy and six Watch screenshots, and submit for review when authorized.
 - Choose the desired public-release timing after review.
 
-Upload, TestFlight assignment, submission, and public release are separate steps and are not performed as part of this preparation.
+The draft metadata and screenshots are saved. Binary upload, TestFlight assignment, App Review submission, and public release are separate steps and have not been performed.
