@@ -122,25 +122,22 @@ Suggested App Store Connect answers, assuming no analytics, ads, crash reporting
 
 ## Screenshots
 
-Prepared Apple Watch screenshots:
+Prepared annotated Apple Watch screenshots for version 1.0.1, in upload order:
 
-- `CrownSpin/AppStoreAssets/Screenshots/apple-watch-46mm-01-main.jpg`
-- `CrownSpin/AppStoreAssets/Screenshots/apple-watch-46mm-02-effects.jpg`
-- `CrownSpin/AppStoreAssets/Screenshots/apple-watch-46mm-03-menu.jpg`
-- `CrownSpin/AppStoreAssets/Screenshots/apple-watch-46mm-04-guide.jpg`
-- `CrownSpin/AppStoreAssets/Screenshots/apple-watch-46mm-05-numbers.jpg`
-- `CrownSpin/AppStoreAssets/Screenshots/apple-watch-46mm-06-stats.jpg`
+1. [**Turn the Crown.**](CrownSpin/AppStoreAssets/ScreenshotKit/en-US/01-spin.png) — Feel the haptics.
+2. [**15 ways to feel it.**](CrownSpin/AppStoreAssets/ScreenshotKit/en-US/02-effects.png) — Find your favorite haptic effect.
+3. [**Simple by design.**](CrownSpin/AppStoreAssets/ScreenshotKit/en-US/03-gestures.png) — Tap to switch. Long-press to explore.
+4. [**Count your way.**](CrownSpin/AppStoreAssets/ScreenshotKit/en-US/04-numbers.png) — Six formats. One endless scroll.
+5. [**See your spin stats.**](CrownSpin/AppStoreAssets/ScreenshotKit/en-US/05-stats.png) — Session and all-time stats, kept locally.
+6. [**A quieter screen.**](CrownSpin/AppStoreAssets/ScreenshotKit/en-US/06-ambient.png) — Ambient mode keeps the visuals subtle.
 
-Each screenshot is `416 x 496`, RGB, no alpha channel, and matches Apple's Series 11 / Series 10 Apple Watch screenshot size. Upload one to ten screenshots in the Apple Watch section.
+Each PNG is `416 x 496`, RGB, with no alpha channel. This is an accepted Apple Watch Series 12 / Series 11 / Series 10 screenshot size. The same size must be used across every Watch localization. Six files are prepared within Apple's limit of ten.
 
-Suggested captions:
+[Preview gallery](CrownSpin/AppStoreAssets/ScreenshotKit/preview.html) · [Editable kit and upload notes](CrownSpin/AppStoreAssets/ScreenshotKit/README.md)
 
-1. Spin the Digital Crown for quiet haptics
-2. Pick from grouped haptic effects
-3. Open settings with a double-tap
-4. Learn tap, long-press, and double-tap
-5. Choose the number system you like
-6. Review your local haptic stats
+The first image places the authentic app capture inside official Apple Watch Series 11 hardware artwork to show the Digital Crown. The remaining five images use larger, bezel-free app captures. Captures are complete and proportionate below the explanatory text; original screen content is retained. The existing raw JPEG captures remain in `CrownSpin/AppStoreAssets/Screenshots/`.
+
+Uploaded all six English (U.S.) PNGs to the version 1.0.1 Apple Watch screenshot slot on October 4, 2026, in the order shown above. Save and page reload confirmed persistence. The version is **Prepare for Submission**; no build is selected and App Review submission remains pending. See the [preparation record](docs/releases/1.0.1/app-store-preparation.json).
 
 ---
 

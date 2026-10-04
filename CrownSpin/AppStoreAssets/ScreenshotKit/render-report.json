@@ -1,0 +1,325 @@
+{
+  "renderer": "Playwright Chromium",
+  "viewport": [
+    416,
+    496
+  ],
+  "locale": "en-US",
+  "sourceUI": "proportionally fitted complete authentic captures",
+  "slides": [
+    {
+      "order": 1,
+      "filename": "en-US/01-spin.png",
+      "headline": "Turn the Crown.",
+      "description": "Feel the haptics.",
+      "presentation": "watch-hero",
+      "bezelSha256": "6b992b970200961e38fa25ae953bcbeebfc76ff158a3ee8ca039edfe6779c029",
+      "source": "../Screenshots/apple-watch-46mm-main.jpg",
+      "sourceSha256": "dc3ad93ce642229bb761f278cc0586439dccdf48f5ecacecb8683800c8757874",
+      "exportSha256": "e16660052adbc16ef1fe310959bb40a4636485d3d50e302293d1354ffc102712",
+      "metrics": {
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 416,
+          "height": 496
+        },
+        "copy": {
+          "x": 22,
+          "y": 20,
+          "width": 372,
+          "height": 65
+        },
+        "headline": {
+          "x": 103.234375,
+          "y": 20,
+          "width": 209.515625,
+          "height": 37
+        },
+        "description": {
+          "x": 139.90625,
+          "y": 63,
+          "width": 136.1875,
+          "height": 22
+        },
+        "image": {
+          "x": 117,
+          "y": 179,
+          "width": 182,
+          "height": 217
+        },
+        "naturalImage": [
+          416,
+          496
+        ],
+        "device": {
+          "x": 85.5,
+          "y": 95,
+          "width": 245,
+          "height": 385
+        },
+        "bezel": {
+          "x": 85.5,
+          "y": 95,
+          "width": 245,
+          "height": 385
+        },
+        "naturalBezel": [
+          560,
+          880
+        ]
+      }
+    },
+    {
+      "order": 2,
+      "filename": "en-US/02-effects.png",
+      "headline": "15 ways to feel it.",
+      "description": "Find your favorite haptic effect.",
+      "presentation": "flat",
+      "bezelSha256": null,
+      "source": "../Screenshots/apple-watch-46mm-02-effects.jpg",
+      "sourceSha256": "859d88940691076b3e33cee78ec4413dd980bbf9635c07dbc4320a1835bbf818",
+      "exportSha256": "21fcd227de15b051e9011893b054893cac2f92e29f1b2b71f993456312d18e20",
+      "metrics": {
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 416,
+          "height": 496
+        },
+        "copy": {
+          "x": 22,
+          "y": 20,
+          "width": 372,
+          "height": 65
+        },
+        "headline": {
+          "x": 96.625,
+          "y": 20,
+          "width": 222.734375,
+          "height": 37
+        },
+        "description": {
+          "x": 94.953125,
+          "y": 65,
+          "width": 226.078125,
+          "height": 19
+        },
+        "image": {
+          "x": 44,
+          "y": 95,
+          "width": 328,
+          "height": 391.0625
+        },
+        "naturalImage": [
+          416,
+          496
+        ],
+        "device": null,
+        "bezel": null,
+        "naturalBezel": null
+      }
+    },
+    {
+      "order": 3,
+      "filename": "en-US/03-gestures.png",
+      "headline": "Simple by design.",
+      "description": "Tap to switch. Long-press to explore.",
+      "presentation": "flat",
+      "bezelSha256": null,
+      "source": "../Screenshots/apple-watch-46mm-04-guide.jpg",
+      "sourceSha256": "0cbea1a172b9865d341702864ae65afc30676d8544d192f202108b30c177528a",
+      "exportSha256": "1f138d4949efe35367dbcad147e217325ed53816ccc31249191c3e7ebc8fc618",
+      "metrics": {
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 416,
+          "height": 496
+        },
+        "copy": {
+          "x": 22,
+          "y": 20,
+          "width": 372,
+          "height": 65
+        },
+        "headline": {
+          "x": 91.859375,
+          "y": 20,
+          "width": 232.28125,
+          "height": 37
+        },
+        "description": {
+          "x": 73.71875,
+          "y": 65,
+          "width": 268.546875,
+          "height": 19
+        },
+        "image": {
+          "x": 44,
+          "y": 95,
+          "width": 328,
+          "height": 391.0625
+        },
+        "naturalImage": [
+          416,
+          496
+        ],
+        "device": null,
+        "bezel": null,
+        "naturalBezel": null
+      }
+    },
+    {
+      "order": 4,
+      "filename": "en-US/04-numbers.png",
+      "headline": "Count your way.",
+      "description": "Six formats. One endless scroll.",
+      "presentation": "flat",
+      "bezelSha256": null,
+      "source": "../Screenshots/apple-watch-46mm-05-numbers.jpg",
+      "sourceSha256": "ff6e77abc18e7eb7b16b2c7f6fc2d680fb8aecf1fdabb25ede4bd18e4fd1178a",
+      "exportSha256": "ee1732fb679e3468cb55f7a8d11ebf364438668d60e51b0a83fa6b7c5031ee30",
+      "metrics": {
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 416,
+          "height": 496
+        },
+        "copy": {
+          "x": 22,
+          "y": 20,
+          "width": 372,
+          "height": 65
+        },
+        "headline": {
+          "x": 102,
+          "y": 20,
+          "width": 212,
+          "height": 37
+        },
+        "description": {
+          "x": 93.953125,
+          "y": 65,
+          "width": 228.09375,
+          "height": 19
+        },
+        "image": {
+          "x": 44,
+          "y": 95,
+          "width": 328,
+          "height": 391.0625
+        },
+        "naturalImage": [
+          416,
+          496
+        ],
+        "device": null,
+        "bezel": null,
+        "naturalBezel": null
+      }
+    },
+    {
+      "order": 5,
+      "filename": "en-US/05-stats.png",
+      "headline": "See your spin stats.",
+      "description": "Session and all-time stats, kept locally.",
+      "presentation": "flat",
+      "bezelSha256": null,
+      "source": "../Screenshots/apple-watch-46mm-06-stats.jpg",
+      "sourceSha256": "6b4ef17ab3d7db4d6af20b806eee5c7da2bff67b6bd5ee253f1ac5bc28a484d2",
+      "exportSha256": "b5d57ae96399e6cf9c6dae370791ad2472828757e94ed3e3effa4aecc4407c4a",
+      "metrics": {
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 416,
+          "height": 496
+        },
+        "copy": {
+          "x": 22,
+          "y": 20,
+          "width": 372,
+          "height": 65
+        },
+        "headline": {
+          "x": 79.828125,
+          "y": 20,
+          "width": 256.328125,
+          "height": 37
+        },
+        "description": {
+          "x": 68,
+          "y": 65,
+          "width": 279.984375,
+          "height": 19
+        },
+        "image": {
+          "x": 44,
+          "y": 95,
+          "width": 328,
+          "height": 391.0625
+        },
+        "naturalImage": [
+          416,
+          496
+        ],
+        "device": null,
+        "bezel": null,
+        "naturalBezel": null
+      }
+    },
+    {
+      "order": 6,
+      "filename": "en-US/06-ambient.png",
+      "headline": "A quieter screen.",
+      "description": "Ambient mode keeps the visuals subtle.",
+      "presentation": "flat",
+      "bezelSha256": null,
+      "source": "../Screenshots/apple-watch-46mm-01-main.jpg",
+      "sourceSha256": "bea338074a1d8c3f5bbe73365cc62858c4690873d6d8d40e62e5787fab2880ea",
+      "exportSha256": "f9fa521f1bbec9e34f374c82ce31c45669c69d28dd73437a749eea0101f81e86",
+      "metrics": {
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 416,
+          "height": 496
+        },
+        "copy": {
+          "x": 22,
+          "y": 20,
+          "width": 372,
+          "height": 65
+        },
+        "headline": {
+          "x": 96.703125,
+          "y": 20,
+          "width": 222.59375,
+          "height": 37
+        },
+        "description": {
+          "x": 63.578125,
+          "y": 65,
+          "width": 288.84375,
+          "height": 19
+        },
+        "image": {
+          "x": 44,
+          "y": 95,
+          "width": 328,
+          "height": 391.0625
+        },
+        "naturalImage": [
+          416,
+          496
+        ],
+        "device": null,
+        "bezel": null,
+        "naturalBezel": null
+      }
+    }
+  ],
+  "pageErrors": []
+}

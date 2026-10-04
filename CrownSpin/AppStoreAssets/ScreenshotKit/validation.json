@@ -1,0 +1,118 @@
+{
+  "files": [
+    {
+      "file": "01-spin.png",
+      "size": [
+        416,
+        496
+      ],
+      "mode": "RGB",
+      "bytes": 46521,
+      "sha256": "e16660052adbc16ef1fe310959bb40a4636485d3d50e302293d1354ffc102712"
+    },
+    {
+      "file": "02-effects.png",
+      "size": [
+        416,
+        496
+      ],
+      "mode": "RGB",
+      "bytes": 54815,
+      "sha256": "21fcd227de15b051e9011893b054893cac2f92e29f1b2b71f993456312d18e20"
+    },
+    {
+      "file": "03-gestures.png",
+      "size": [
+        416,
+        496
+      ],
+      "mode": "RGB",
+      "bytes": 70063,
+      "sha256": "1f138d4949efe35367dbcad147e217325ed53816ccc31249191c3e7ebc8fc618"
+    },
+    {
+      "file": "04-numbers.png",
+      "size": [
+        416,
+        496
+      ],
+      "mode": "RGB",
+      "bytes": 53038,
+      "sha256": "ee1732fb679e3468cb55f7a8d11ebf364438668d60e51b0a83fa6b7c5031ee30"
+    },
+    {
+      "file": "05-stats.png",
+      "size": [
+        416,
+        496
+      ],
+      "mode": "RGB",
+      "bytes": 67135,
+      "sha256": "b5d57ae96399e6cf9c6dae370791ad2472828757e94ed3e3effa4aecc4407c4a"
+    },
+    {
+      "file": "06-ambient.png",
+      "size": [
+        416,
+        496
+      ],
+      "mode": "RGB",
+      "bytes": 31765,
+      "sha256": "f9fa521f1bbec9e34f374c82ce31c45669c69d28dd73437a749eea0101f81e86"
+    }
+  ],
+  "pngsValid": true,
+  "opaqueRGB": true,
+  "allCanvasDimensions": [
+    416,
+    496
+  ],
+  "textContrast": {
+    "headline": 14.9,
+    "description": 15.95
+  },
+  "completeAspectRatioPreservedCaptures": true,
+  "copyFitsCanvas": true,
+  "textDoesNotCoverUI": true,
+  "noBrowserErrors": true,
+  "heroOnlyDeviceBezel": true,
+  "officialArtworkSha256Verified": "6b992b970200961e38fa25ae953bcbeebfc76ff158a3ee8ca039edfe6779c029",
+  "deviceArtworkCompleteAndProportional": true,
+  "captureMatchesOfficialScreenAperture": true,
+  "remainingFiveExportsUnchanged": true,
+  "originalCaptureHashesUnchanged": true,
+  "previewMobileCheck": {
+    "browserVersion": "154.0.8037.93",
+    "mobile": [
+      {
+        "file": "preview.html",
+        "viewport": 390,
+        "documentWidth": 390,
+        "images": 6,
+        "complete": true
+      },
+      {
+        "file": "comparison.html",
+        "viewport": 390,
+        "documentWidth": 390,
+        "images": 2,
+        "complete": true
+      }
+    ],
+    "pageErrors": []
+  },
+  "archive": "endless-crown-1.0.1-en-US-watch.zip",
+  "archiveSha256": "dc1f65c464f48339cafc156c4bb4bda6838834495bcd0ea5319ca66087f16bf8",
+  "archiveContainsOnlySixUploadPNGs": true,
+  "standaloneAppleArtworkExcludedFromGitAndZip": true,
+  "appSourceUnchanged": true,
+  "uploadedToAppStoreConnect": true,
+  "appStoreVerification": {
+    "version": "1.0.1",
+    "locale": "en-US",
+    "status": "Prepare for Submission",
+    "savedAndVerifiedAfterReload": true,
+    "verifiedAtUTC": "2026-10-04T04:32:38+00:00",
+    "evidence": "../../../docs/releases/1.0.1/app-store-preparation.json"
+  }
+}

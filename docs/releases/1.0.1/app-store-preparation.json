@@ -1,0 +1,48 @@
+{
+  "app": "Endless Crown",
+  "appStoreAppId": "6777250620",
+  "version": "1.0.1",
+  "locale": "en-US",
+  "preparedAtUTC": "2026-10-04T04:32:38+00:00",
+  "status": "Prepare for Submission",
+  "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/ios/version/inflight",
+  "method": "Chrome browser via Computer Use, using the existing signed-in account",
+  "screenshots": {
+    "deviceTab": "Apple Watch",
+    "displayGroup": "Series 12",
+    "size": [
+      416,
+      496
+    ],
+    "order": [
+      "01-spin.png",
+      "02-effects.png",
+      "03-gestures.png",
+      "04-numbers.png",
+      "05-stats.png",
+      "06-ambient.png"
+    ],
+    "count": 6,
+    "savedAndVerifiedAfterReload": true
+  },
+  "whatsNew": "Internal efficiency improvements during Crown scrolling, with the same familiar haptic feedback.",
+  "whatsNewSavedAndVerifiedAfterReload": true,
+  "reviewNotesSavedAndVerifiedAfterReload": true,
+  "promotionalTextRetained": true,
+  "descriptionRetained": true,
+  "keywordsRetained": true,
+  "releaseMode": "Manually release this version",
+  "buildSelected": false,
+  "buildSection": "Upload your builds using one of several tools.",
+  "submittedForReview": false,
+  "released": false,
+  "releasedVersionObserved": {
+    "version": "1.0",
+    "build": "15"
+  },
+  "remainingSteps": [
+    "Upload and process the prepared 1.0.1 binary",
+    "Validate the processed build through TestFlight",
+    "Select the build and submit for App Review when authorized"
+  ]
+}
