@@ -28,6 +28,9 @@
 		DFF9BB562F3589000041DFEE /* HapticPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01234550000000000000004 /* HapticPattern.swift */; };
 		DFF9BB572F3589000041DFEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFF9BB512F3589000041DFEE /* Assets.xcassets */; };
 		DFF9BB582F3589000041DFEE /* CrownSpin Complication.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DFF9BB522F3589000041DFEE /* CrownSpin Complication.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D15000010000000000000001 /* DisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15000020000000000000001 /* DisplayMode.swift */; };
+		D15000010000000000000002 /* DisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15000020000000000000001 /* DisplayMode.swift */; };
+		D15000010000000000000003 /* DisplayModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15000020000000000000002 /* DisplayModeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +99,8 @@
 		DFF9BB512F3589000041DFEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFF9BB522F3589000041DFEE /* CrownSpin Complication.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CrownSpin Complication.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFF9BB532F3589000041DFEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D15000020000000000000001 /* DisplayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayMode.swift; sourceTree = "<group>"; };
+		D15000020000000000000002 /* DisplayModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayModeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +131,7 @@
 		AABB00040000000000000001 /* CrownSpinTests */ = {
 			isa = PBXGroup;
 			children = (
+				D15000020000000000000002 /* DisplayModeTests.swift */,
 				AABB00020000000000000001 /* HapticPatternTests.swift */,
 				AABB00020000000000000002 /* HapticStatsTests.swift */,
 				AABB00020000000000000003 /* CrownSpinComplicationTests.swift */,
@@ -151,6 +157,7 @@
 				DFF9BB3D2F3588300041DFEE /* HapticStats.swift */,
 				DFF9BB3E2F3588300041DFEE /* PatternPicker.swift */,
 				DFF9BB3F2F3588300041DFEE /* StatsView.swift */,
+				D15000020000000000000001 /* DisplayMode.swift */,
 				C01234550000000000000001 /* CrownSpinApp.swift */,
 				C01234550000000000000002 /* ContentView.swift */,
 				C01234550000000000000004 /* HapticPattern.swift */,
@@ -337,6 +344,8 @@
 				AABB00010000000000000004 /* HapticPattern.swift in Sources */,
 				AABB00010000000000000005 /* HapticStats.swift in Sources */,
 				AABB00010000000000000006 /* CrownSpinComplication.swift in Sources */,
+				D15000010000000000000002 /* DisplayMode.swift in Sources */,
+				D15000010000000000000003 /* DisplayModeTests.swift in Sources */,
 				AABB00010000000000000001 /* HapticPatternTests.swift in Sources */,
 				AABB00010000000000000002 /* HapticStatsTests.swift in Sources */,
 				AABB00010000000000000003 /* CrownSpinComplicationTests.swift in Sources */,
@@ -347,6 +356,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D15000010000000000000001 /* DisplayMode.swift in Sources */,
 				C01234560000000000000001 /* CrownSpinApp.swift in Sources */,
 				C01234560000000000000002 /* ContentView.swift in Sources */,
 				DFF9BB402F3588300041DFEE /* PatternPicker.swift in Sources */,
@@ -386,7 +396,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Endless Crown";
@@ -401,7 +411,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Endless Crown";
@@ -417,7 +427,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = media.jenny.crownspin.watchapp.tests;
@@ -434,7 +444,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = media.jenny.crownspin.watchapp.tests;
@@ -455,7 +465,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "CrownSpin Watch App/CrownSpin Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CrownSpin Watch App/Info.plist";
@@ -487,7 +497,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = "CrownSpin Watch App/CrownSpin Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CrownSpin Watch App/Info.plist";
@@ -635,7 +645,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "CrownSpin Complication/CrownSpin Complication.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CrownSpin Complication/Info.plist";
@@ -664,7 +674,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "CrownSpin Complication/CrownSpin Complication.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CrownSpin Complication/Info.plist";
