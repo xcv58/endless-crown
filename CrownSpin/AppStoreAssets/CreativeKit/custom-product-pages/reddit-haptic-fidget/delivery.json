@@ -1,0 +1,77 @@
+{
+  "appId": "6777250620",
+  "referenceName": "Reddit \u2014 Haptic Fidget",
+  "locale": "en-US",
+  "sourceAppVersion": "1.0.1",
+  "editorId": "72ce00c8-d2f6-4b52-8936-d5a17d174419",
+  "productPageId": "bda8da49-0953-45b7-8f8d-4198c720305f",
+  "editorUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/productpages/72ce00c8-d2f6-4b52-8936-d5a17d174419",
+  "productPageUrl": "https://apps.apple.com/us/app/endless-crown/id6777250620?ppid=bda8da49-0953-45b7-8f8d-4198c720305f",
+  "promotionalText": "Turn the Digital Crown and feel the clicks. Explore 15 haptic effects, with Standard, Ambient, and Haptics Only display modes.",
+  "keywords": [
+    "fidget",
+    "tactile",
+    "sensory",
+    "clicks"
+  ],
+  "deepLink": null,
+  "header": {
+    "file": "../../production/2026-10-07-selected-c-v1/exports/endless-crown-c-universal-en-US-v2.png",
+    "status": "Attached; native reference preview passed; Waiting for Review in independent asset submission",
+    "sha256": "bb3f0330692b90b62f44225f32ddc050fce688a34b3e395be4893588a8f32fac",
+    "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
+    "reviewSubmission": {
+      "status": "Waiting for Review",
+      "submissionId": "5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
+      "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
+      "items": 1,
+      "verified": "App Store Connect showed 1 Item Submitted and corrected universal v2 Waiting for Review"
+    }
+  },
+  "search": {
+    "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+    "file": "../../production/2026-10-07-selected-c-v1/exports/endless-crown-c-search-en-US-v2.jpg",
+    "status": "Attached; existing standalone submission Waiting for Review"
+  },
+  "watchScreenshots": {
+    "status": "Not customized",
+    "observed": "Copy Existing Product Page and the complete Media Manager expose only iPhone and iPad slots; no Watch screenshots were copied or exposed for reordering.",
+    "intendedOrder": [
+      "01-spin.png",
+      "02-effects.png",
+      "06-ambient.png",
+      "03-gestures.png",
+      "04-numbers.png",
+      "05-stats.png"
+    ],
+    "boundary": "Do not claim the custom page contains Watch screenshots without verifying live rendering after approval."
+  },
+  "submission": {
+    "status": "Ready to Submit draft; shared-asset reviews pending",
+    "reason": "The last Add for Review validation reported the search image is already included in another submission. The corrected header v2 has since been submitted independently as well. Submit the CPP after both final shared assets are approved.",
+    "sharedAssetSubmissionId": "3648e06c-ec06-4939-aca6-638166b57ea2"
+  },
+  "publication": {
+    "status": "Pending review and verification",
+    "authorized": true
+  },
+  "nativePreviews": {
+    "searchIPhoneLight": "Passed: complete selected C and headline visible",
+    "headerV1IPhoneLight": "Failed: start of headline clipped; do not publish header v1",
+    "headerV2": "Passed: iPhone light/dark and iPad portrait light/landscape dark; headline visible with Watch/Crown focal point retained",
+    "searchIPadLight": "Passed: complete selected C and headline visible"
+  },
+  "followUpAutomationId": "publish-endless-crown-c-artwork",
+  "checkedAt": "2026-10-07T02:57:28.108511+00:00",
+  "linkVerification": {
+    "copiedFromAppStoreConnect": true,
+    "nativeReferencePreviews": "Verified on iPhone and iPad",
+    "publicNativeLink": "Pending CPP approval; do not claim native Watch or physical iPhone acceptance yet."
+  },
+  "followUp": {
+    "automationId": "publish-endless-crown-c-artwork",
+    "status": "ACTIVE",
+    "intervalHours": 4,
+    "updatedForCPP": true
+  }
+}

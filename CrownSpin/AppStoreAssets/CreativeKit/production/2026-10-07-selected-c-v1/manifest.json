@@ -46,7 +46,7 @@
         "width": 4320,
         "height": 1851
       },
-      "status": "Submitted: Waiting for Review"
+      "status": "Reference only; under review but failed native iPhone header crop. Do not publish as header."
     },
     {
       "placement": "search",
@@ -58,6 +58,24 @@
       "sha256": "c807d587cc7638037e1450b977fe74b692e9451ecfed96eb7668e07ca3925b7c",
       "bytes": 419343,
       "status": "Submitted: Waiting for Review"
+    },
+    {
+      "placement": "header",
+      "file": "exports/endless-crown-c-universal-en-US-v2.png",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "sha256": "bb3f0330692b90b62f44225f32ddc050fce688a34b3e395be4893588a8f32fac",
+      "bytes": 4808578,
+      "artworkRect": {
+        "x": 1122,
+        "y": 832,
+        "width": 3000,
+        "height": 1286
+      },
+      "status": "Submitted: Waiting for Review",
+      "assetId": "20000019-3f4a-833c-801a-e31510b1067e"
     }
   ],
   "guidanceChecked": "2026-10-07",
@@ -65,6 +83,19 @@
     "https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications",
     "https://developer.apple.com/help/app-store-connect/manage-app-information/manage-your-app-store-assets"
   ],
-  "status": "Universal PNG and search JPEG v2 accepted and submitted; Waiting for Review. Native placement previews and publication pending approval.",
-  "universal": "Entire C at 4320 x 1851 centered on a 5244 x 2950 charcoal canvas. Artwork fits the central 3:2 crop as well as 21:9, preserving headline and Watch."
+  "status": "Use universal v2 for header and search JPEG v2 for search. Header v1 failed the native iPhone crop check and must not be published.",
+  "universal": "V2 preserves the entire selected C at 3000 x 1286 centered on 5244 x 2950 charcoal canvas. Additional spacing fixes headline clipping observed with v1 in native iPhone preview.",
+  "nativePreviewVerification": {
+    "headerV2": [
+      "iPhone light",
+      "iPhone dark",
+      "iPad portrait light",
+      "iPad landscape dark"
+    ],
+    "searchV2": [
+      "iPhone light",
+      "iPad portrait light"
+    ],
+    "result": "Headline visible and Watch/Crown focal point retained. Apple states its preview is for reference and may differ from the final customer experience."
+  }
 }

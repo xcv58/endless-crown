@@ -48,13 +48,33 @@
       "alpha": false,
       "sha256": "c807d587cc7638037e1450b977fe74b692e9451ecfed96eb7668e07ca3925b7c",
       "bytes": 419343
+    },
+    {
+      "placement": "header",
+      "file": "exports/endless-crown-c-universal-en-US-v2.png",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "sha256": "bb3f0330692b90b62f44225f32ddc050fce688a34b3e395be4893588a8f32fac",
+      "bytes": 4808578,
+      "artworkRect": {
+        "x": 1122,
+        "y": 832,
+        "width": 3000,
+        "height": 1286
+      },
+      "status": "Waiting for Review",
+      "assetId": "20000019-3f4a-833c-801a-e31510b1067e"
     }
   ],
   "upload": "Verified complete: universal PNG and search JPEG v2 accepted by App Store Connect",
   "nativePreviews": {
-    "status": "Pending approval",
-    "verifiedBoundary": "Released-version Browse Asset Library is restricted to Approved and currently shows Assets (0). Placement selection and native previews must be checked after approval.",
-    "localCheck": "Source preserved intact; universal artwork is inside central 21:9 and 3:2 crops; dimensions, actual format, opacity and hashes verified."
+    "status": "Verified from CPP draft",
+    "headerV1": "Failed: native iPhone preview clipped the start of the headline. Do not publish it as header.",
+    "headerV2": "Passed on iPhone light/dark and iPad portrait light/landscape dark after refreshing the processed asset.",
+    "searchV2": "Passed on iPhone light and iPad portrait light.",
+    "boundary": "Final public Store placement still requires post-approval verification; native previews are reference renders."
   },
   "reviewSubmission": {
     "status": "Waiting for Review",
@@ -66,9 +86,9 @@
     "verified": "App Store Connect showed 2 Items Submitted and both selected assets Waiting for Review"
   },
   "publication": {
-    "status": "Pending approval and native placement previews",
+    "status": "Pending approval of corrected header v2 and existing search v2",
     "authorized": true,
-    "headerAssetId": "45400019-3f4a-833c-8020-5cef6148cc3a",
+    "headerAssetId": "20000019-3f4a-833c-801a-e31510b1067e",
     "searchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01"
   },
   "olderRejectedUpload": {
@@ -91,7 +111,8 @@
         "Product Page Header",
         "Search Results"
       ],
-      "status": "Waiting for Review"
+      "status": "Waiting for Review",
+      "publicationDecision": "Do not publish as header: failed native iPhone crop; replaced by universal v2"
     },
     {
       "file": "exports/endless-crown-c-search-en-US-v2.jpg",
@@ -100,13 +121,30 @@
         "Search Results"
       ],
       "status": "Waiting for Review"
+    },
+    {
+      "file": "exports/endless-crown-c-universal-en-US-v2.png",
+      "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
+      "worksWith": [
+        "Product Page Header",
+        "Search Results"
+      ],
+      "status": "Waiting for Review"
     }
   ],
-  "checkedAt": "2026-10-07T02:24:45.355382+00:00",
+  "checkedAt": "2026-10-07T02:57:28.108511+00:00",
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
     "status": "ACTIVE",
     "intervalHours": 4,
-    "purpose": "Check approval quietly, then verify native header/search previews and publish the two approved C assets; notify only on completion or required action."
+    "purpose": "Check shared-asset approval, submit the saved Reddit CPP, publish verified default placements using corrected header v2/search v2, and verify the approved campaign link; stay quiet while pending."
+  },
+  "customProductPage": "../../custom-product-pages/reddit-haptic-fidget/delivery.json",
+  "correctedHeaderReviewSubmission": {
+    "status": "Waiting for Review",
+    "submissionId": "5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
+    "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
+    "items": 1,
+    "verified": "App Store Connect showed 1 Item Submitted and corrected universal v2 Waiting for Review"
   }
 }
