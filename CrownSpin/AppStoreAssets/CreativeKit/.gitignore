@@ -1,0 +1,6 @@
+resources/
+.render/
+
+# Local App Store Connect proof screenshots
+.delivery-evidence/
+production/*/evidence/

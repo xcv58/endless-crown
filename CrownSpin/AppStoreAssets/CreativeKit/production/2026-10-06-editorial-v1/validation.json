@@ -1,0 +1,26 @@
+{
+  "exports": [
+    {
+      "file": "exports/endless-crown-editorial-header-en-US-v1.jpg",
+      "width": 3840,
+      "height": 1646,
+      "format": "JPEG",
+      "channels": 3,
+      "alpha": false,
+      "sha256": "47d9ba2764107f49c3faed2d452d5d47278e3436a7ff1ca2122ef862cc8bf366",
+      "bytes": 441235
+    },
+    {
+      "file": "exports/endless-crown-editorial-search-en-US-v1.jpg",
+      "width": 1920,
+      "height": 1280,
+      "format": "JPEG",
+      "channels": 3,
+      "alpha": false,
+      "sha256": "f59351f094e00ed6d71978bc32048a385957c1b85531ee54efa8c6595d652031",
+      "bytes": 233584
+    }
+  ],
+  "inspection": "Authentic unmodified released-app capture, 4698 and Clicks, projected into imagegen photo plates; native editable text and no battery-saving claims",
+  "nativeAppStorePreview": "Pending"
+}

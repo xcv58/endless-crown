@@ -1,0 +1,70 @@
+{
+  "created": "2026-10-07T02:16:07.797949+00:00",
+  "app": "Endless Crown",
+  "appId": "6777250620",
+  "locale": "en-US",
+  "source": "../../candidates/fresh-screenshot-round2/03-close-crop.png",
+  "sourceSha256": "afee13e8f0b51d4ece6613b44365d71486a66a44422649b34c9d31030a0476c8",
+  "method": "Deterministic sips export of the user-selected C. No generative redraw, screenshot overlay, or content edit.",
+  "header": "Full selected composition resampled to 3840 x 1646.",
+  "search": "Full selected composition resampled to 1920 x 823 and centered in a 1920 x 1280 charcoal canvas (#242927).",
+  "outputs": [
+    {
+      "placement": "header",
+      "file": "exports/endless-crown-c-header-en-US-v1.jpg",
+      "width": 3840,
+      "height": 1646,
+      "format": "JPEG",
+      "alpha": false,
+      "sha256": "3456e719658ab899889174525a3457f59917846f045b4cd92607133fbeedbf3b",
+      "bytes": 1308216,
+      "status": "Reference only: App Store Connect rejected dimensions"
+    },
+    {
+      "placement": "search",
+      "file": "exports/endless-crown-c-search-en-US-v1.jpg",
+      "width": 1920,
+      "height": 1280,
+      "format": "PNG",
+      "alpha": false,
+      "sha256": "38a7aa74d7fc375ccf2d83e5c13754ecc8c1f53d1f62c11c95295228ab6956c7",
+      "bytes": 2194741,
+      "status": "Superseded: PNG data under JPEG extension; do not upload"
+    },
+    {
+      "placement": "universal",
+      "file": "exports/endless-crown-c-universal-en-US-v1.png",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "sha256": "1153fac50b8900dab5e184c049c6cd395a6dbde3f211fae5d912b6ebcd9706f9",
+      "bytes": 8539408,
+      "artworkRect": {
+        "x": 462,
+        "y": 549,
+        "width": 4320,
+        "height": 1851
+      },
+      "status": "Submitted: Waiting for Review"
+    },
+    {
+      "placement": "search",
+      "file": "exports/endless-crown-c-search-en-US-v2.jpg",
+      "width": 1920,
+      "height": 1280,
+      "format": "JPEG",
+      "alpha": false,
+      "sha256": "c807d587cc7638037e1450b977fe74b692e9451ecfed96eb7668e07ca3925b7c",
+      "bytes": 419343,
+      "status": "Submitted: Waiting for Review"
+    }
+  ],
+  "guidanceChecked": "2026-10-07",
+  "guidance": [
+    "https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications",
+    "https://developer.apple.com/help/app-store-connect/manage-app-information/manage-your-app-store-assets"
+  ],
+  "status": "Universal PNG and search JPEG v2 accepted and submitted; Waiting for Review. Native placement previews and publication pending approval.",
+  "universal": "Entire C at 4320 x 1851 centered on a 5244 x 2950 charcoal canvas. Artwork fits the central 3:2 crop as well as 21:9, preserving headline and Watch."
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Endless Crown — creative asset draft</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body { background: #080b09; color: #d5e5c3; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    .art { position: relative; isolation: isolate; overflow: hidden; background: #080b09; }
+    .wash { position: absolute; inset: 0; background: radial-gradient(ellipse at 68% 43%, #263629 0%, #132018 29%, #080b09 64%); }
+    .rings { position: absolute; border: 2px solid #d5e5c314; border-radius: 50%; }
+    .ring-one { width: 1460px; height: 1460px; left: 1850px; top: -72px; }
+    .ring-two { width: 1700px; height: 1700px; left: 1730px; top: -192px; border-color: #d5e5c30a; }
+    .copy { position: absolute; left: 630px; top: 408px; width: 1450px; }
+    .brand { margin: 0 0 62px; font-size: 42px; font-weight: 500; letter-spacing: -.5px; color: #e4e8e2; }
+    h1 { margin: 0; font-size: 166px; line-height: 1.09; font-weight: 650; letter-spacing: -6px; }
+    h1 span { display: block; white-space: nowrap; }
+    .detail { margin: 48px 0 0; color: #bdc7b9; font-size: 39px; letter-spacing: -.5px; }
+    .watch { position: absolute; width: 750px; height: calc(750px * 880 / 560); left: 2240px; top: 105px; }
+    .capture { position: absolute; left: calc(100% * 72 / 560); top: calc(100% * 192 / 880); width: calc(100% * 416 / 560); height: calc(100% * 496 / 880); }
+    .frame { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .search .wash { background: radial-gradient(ellipse at 76% 49%, #263629 0%, #132018 31%, #080b09 78%); }
+    .search .copy { left: 150px; top: 371px; width: 910px; }
+    .search .brand { margin-bottom: 48px; font-size: 36px; }
+    .search h1 { font-size: 104px; line-height: 1.13; letter-spacing: -4px; }
+    .search .detail { margin-top: 44px; font-size: 31px; }
+    .search .watch { left: 1160px; top: 180px; width: 570px; height: calc(570px * 880 / 560); }
+    .search .ring-one { width: 1000px; height: 1000px; left: 962px; top: 117px; }
+    .search .ring-two { width: 1200px; height: 1200px; left: 862px; top: 17px; }
+  </style>
+</head>
+<body>
+  <main class="art" aria-label="Endless Crown creative asset">
+    <div class="wash"></div>
+    <div class="rings ring-two"></div>
+    <div class="rings ring-one"></div>
+    <div class="copy">
+      <p class="brand"></p>
+      <h1></h1>
+      <p class="detail"></p>
+    </div>
+    <div class="watch" aria-label="Authentic Endless Crown interface in official Apple Watch artwork">
+      <img class="capture" alt="Endless Crown main screen with Clicks selected">
+      <img class="frame" alt="Apple Watch Series 11">
+    </div>
+  </main>
+  <script>
+    (async () => {
+      const manifest = await fetch('./manifest.json').then(r => r.json());
+      const id = new URLSearchParams(location.search).get('placement') || 'header';
+      const placement = manifest.placements.find(p => p.id === id);
+      if (!placement) throw new Error('Unknown placement');
+      const art = document.querySelector('.art');
+      art.classList.add(id);
+      art.style.width = `${placement.width}px`;
+      art.style.height = `${placement.height}px`;
+      document.querySelector('.brand').textContent = manifest.app;
+      const heading = document.querySelector('h1');
+      for (const line of manifest.headline) {
+        const span = document.createElement('span');
+        span.textContent = line;
+        heading.append(span);
+      }
+      document.querySelector('.detail').textContent = manifest.supportingCopy;
+      document.querySelector('.capture').src = manifest.capture;
+      document.querySelector('.frame').src = manifest.deviceArtwork;
+      await Promise.all([...document.images].map(img => img.decode()));
+      await document.fonts.ready;
+      art.dataset.ready = 'true';
+    })().catch(error => {
+      document.body.textContent = error.message;
+      document.body.dataset.error = 'true';
+    });
+  </script>
+</body>
+</html>

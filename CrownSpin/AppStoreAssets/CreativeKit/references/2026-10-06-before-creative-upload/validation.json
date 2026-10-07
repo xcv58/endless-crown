@@ -1,0 +1,30 @@
+{
+  "preparedAt": "2026-10-06T21:51:16.080Z",
+  "status": "Local design draft; not uploaded, reviewed, or published",
+  "format": "JPEG",
+  "colorSpace": "RGB",
+  "hasAlpha": false,
+  "visualReview": "Header and search renders inspected; text and complete Watch are legible without overlap",
+  "nativePreviewChecked": false,
+  "exactTemplateSafeAreasValidated": false,
+  "sources": {
+    "captureSha256": "dc3ad93ce642229bb761f278cc0586439dccdf48f5ecacecb8683800c8757874",
+    "deviceArtworkSha256": "6b992b970200961e38fa25ae953bcbeebfc76ff158a3ee8ca039edfe6779c029"
+  },
+  "exports": [
+    {
+      "id": "header",
+      "width": 3840,
+      "height": 1646,
+      "filename": "endless-crown-header-en-US.jpg",
+      "sha256": "8c102a3b65c318dca0c3891c853d783e8af1cadad75846929ec7f31bf3b71801"
+    },
+    {
+      "id": "search",
+      "width": 1920,
+      "height": 1280,
+      "filename": "endless-crown-search-en-US.jpg",
+      "sha256": "2b85ca798a8b83ab7e15327e88f267c1db061992bce81e96473ec7d950a8429c"
+    }
+  ]
+}

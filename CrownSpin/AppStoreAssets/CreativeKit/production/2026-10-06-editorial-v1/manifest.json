@@ -1,0 +1,103 @@
+{
+  "app": "Endless Crown",
+  "appId": "6777250620",
+  "locale": "en-US",
+  "artDirection": "Editorial wrist, candidate 3 v3",
+  "sourceCandidate": "../../candidates/03-editorial-wrist-v3.png",
+  "capture": {
+    "path": "sources/endless-crown-4698.png",
+    "source": "Unmodified released 1.0.1 (16), commit 6e31483def5330b28e43244b60d182097a99f835",
+    "simulator": "Apple Watch Series 12 (46mm), watchOS 27.0",
+    "preferences": {
+      "baseOffset": 4698,
+      "hasSeenInteractionGuide": true,
+      "menuButtonHidden": true,
+      "selectedHapticPattern": "clicks",
+      "displayMode": "highContrast",
+      "numberSystem": "decimal"
+    },
+    "clock": "Actual system clock; Watch Simulator does not support status-bar override",
+    "sha256": "1a125a6fb8afcc82960ddfe6a1e7d2c2d16063300da88f9733ec4fdb8a59bc6b"
+  },
+  "mode": "Built-in imagegen photography plates; native HTML composition using authentic app capture",
+  "headline": [
+    "Turn the Crown.",
+    "Feel the haptics."
+  ],
+  "placements": [
+    {
+      "id": "header",
+      "width": 3840,
+      "height": 1646,
+      "photo": "sources/header-photo-plate.png",
+      "photoSize": [
+        1915,
+        821
+      ],
+      "quad": [
+        [
+          840,
+          272
+        ],
+        [
+          1180,
+          208
+        ],
+        [
+          1260,
+          617
+        ],
+        [
+          914,
+          666
+        ]
+      ],
+      "copy": {
+        "x": 96,
+        "y": 238,
+        "brandSize": 36,
+        "headingSize": 75
+      },
+      "filename": "endless-crown-editorial-header-en-US-v1.jpg",
+      "photoSha256": "1025f0ece7357af5d5b25cdfc9688d6c715b81f192f704b4e1a4156276507923"
+    },
+    {
+      "id": "search",
+      "width": 1920,
+      "height": 1280,
+      "photo": "sources/search-photo-plate.png",
+      "photoSize": [
+        1536,
+        1024
+      ],
+      "quad": [
+        [
+          677,
+          411
+        ],
+        [
+          969,
+          345
+        ],
+        [
+          1036,
+          691
+        ],
+        [
+          738,
+          743
+        ]
+      ],
+      "copy": {
+        "x": 96,
+        "y": 148,
+        "brandSize": 30,
+        "headingSize": 59
+      },
+      "filename": "endless-crown-editorial-search-en-US-v1.jpg",
+      "photoSha256": "a17db738ec9537006f127278aebf9d5af66d093302a958728a8d638b4dbfc82d"
+    }
+  ],
+  "preservedReferences": "../../references/2026-10-06-before-creative-upload",
+  "status": "Rejected by user; reference only; do not submit or publish"
+}

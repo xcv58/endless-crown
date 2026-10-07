@@ -1,0 +1,112 @@
+{
+  "appId": "6777250620",
+  "locale": "en-US",
+  "assets": [
+    {
+      "placement": "header",
+      "file": "exports/endless-crown-c-header-en-US-v1.jpg",
+      "width": 3840,
+      "height": 1646,
+      "format": "JPEG",
+      "alpha": false,
+      "sha256": "3456e719658ab899889174525a3457f59917846f045b4cd92607133fbeedbf3b",
+      "bytes": 1308216
+    },
+    {
+      "placement": "search",
+      "file": "exports/endless-crown-c-search-en-US-v1.jpg",
+      "width": 1920,
+      "height": 1280,
+      "format": "PNG",
+      "alpha": false,
+      "sha256": "38a7aa74d7fc375ccf2d83e5c13754ecc8c1f53d1f62c11c95295228ab6956c7",
+      "bytes": 2194741,
+      "status": "Superseded: PNG data under JPEG extension; do not upload"
+    },
+    {
+      "placement": "universal",
+      "file": "exports/endless-crown-c-universal-en-US-v1.png",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "sha256": "1153fac50b8900dab5e184c049c6cd395a6dbde3f211fae5d912b6ebcd9706f9",
+      "bytes": 8539408,
+      "artworkRect": {
+        "x": 462,
+        "y": 549,
+        "width": 4320,
+        "height": 1851
+      }
+    },
+    {
+      "placement": "search",
+      "file": "exports/endless-crown-c-search-en-US-v2.jpg",
+      "width": 1920,
+      "height": 1280,
+      "format": "JPEG",
+      "alpha": false,
+      "sha256": "c807d587cc7638037e1450b977fe74b692e9451ecfed96eb7668e07ca3925b7c",
+      "bytes": 419343
+    }
+  ],
+  "upload": "Verified complete: universal PNG and search JPEG v2 accepted by App Store Connect",
+  "nativePreviews": {
+    "status": "Pending approval",
+    "verifiedBoundary": "Released-version Browse Asset Library is restricted to Approved and currently shows Assets (0). Placement selection and native previews must be checked after approval.",
+    "localCheck": "Source preserved intact; universal artwork is inside central 21:9 and 3:2 crops; dimensions, actual format, opacity and hashes verified."
+  },
+  "reviewSubmission": {
+    "status": "Waiting for Review",
+    "submissionId": "3648e06c-ec06-4939-aca6-638166b57ea2",
+    "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/3648e06c-ec06-4939-aca6-638166b57ea2",
+    "items": 2,
+    "platform": "iOS",
+    "latestReleasedVersion": "1.0.1",
+    "verified": "App Store Connect showed 2 Items Submitted and both selected assets Waiting for Review"
+  },
+  "publication": {
+    "status": "Pending approval and native placement previews",
+    "authorized": true,
+    "headerAssetId": "45400019-3f4a-833c-8020-5cef6148cc3a",
+    "searchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01"
+  },
+  "olderRejectedUpload": {
+    "observed": "One incomplete endless-crown-editorial-search-en-US-v1.jpg entry with no size, compatibility or review status",
+    "assetId": "51400019-3f4a-833c-801e-dc1844953952",
+    "action": "Retained unselected; do not submit"
+  },
+  "currentAppVersion": "1.0.1 Ready for Distribution, verified live 2026-10-07",
+  "repository": "Artwork-only commit and push from clean release worktree; unrelated energy-test changes excluded",
+  "firstAttempt": {
+    "header": "Rejected by App Store Connect: File dimensions are invalid despite matching documented 3840 x 1646",
+    "search": "Failed upload entry: PNG bytes under JPEG extension, now corrected in v2. Asset ID 48400019-3f4a-833c-800d-345ba866e25c retained unselected.",
+    "publication": "Not performed"
+  },
+  "acceptedAssets": [
+    {
+      "file": "exports/endless-crown-c-universal-en-US-v1.png",
+      "assetId": "45400019-3f4a-833c-8020-5cef6148cc3a",
+      "worksWith": [
+        "Product Page Header",
+        "Search Results"
+      ],
+      "status": "Waiting for Review"
+    },
+    {
+      "file": "exports/endless-crown-c-search-en-US-v2.jpg",
+      "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+      "worksWith": [
+        "Search Results"
+      ],
+      "status": "Waiting for Review"
+    }
+  ],
+  "checkedAt": "2026-10-07T02:24:45.355382+00:00",
+  "followUp": {
+    "automationId": "publish-endless-crown-c-artwork",
+    "status": "ACTIVE",
+    "intervalHours": 4,
+    "purpose": "Check approval quietly, then verify native header/search previews and publish the two approved C assets; notify only on completion or required action."
+  }
+}

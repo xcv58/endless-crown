@@ -1,0 +1,137 @@
+{
+  "created": "2026-10-07T02:01:14.145143+00:00",
+  "tool": "built-in image_gen.imagegen",
+  "original": "../03-editorial-wrist-v3.png",
+  "originalSha256": "b30bec933f8ff7000a94b7108dac2826f33373109822c3749f623d2789d69548",
+  "inputReferences": [
+    {
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/candidates/03-editorial-wrist-v3.png",
+      "sha256": "b30bec933f8ff7000a94b7108dac2826f33373109822c3749f623d2789d69548"
+    },
+    {
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/resources/apple-watch-series-11-46mm-space-gray-black-sport-band.png",
+      "sha256": "6b992b970200961e38fa25ae953bcbeebfc76ff158a3ee8ca039edfe6779c029"
+    }
+  ],
+  "outputs": [
+    {
+      "id": "01-minimal-repair",
+      "label": "1 — Closest to the original",
+      "file": "01-minimal-repair.png",
+      "sourceGeneratedPath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-5b1972f3-4c71-4c5f-9337-30559a19cb8a.png",
+      "size": [
+        1916,
+        821
+      ],
+      "sha256": "abcdb881fb77e629cdc865e5673d5136995a9c10aadfeeb61c4f9a3bea62471e",
+      "parent": null,
+      "review": {
+        "status": "shortlisted_with_reservation",
+        "note": "The visible second ridged wheel is removed. This is the closest repair to the original pinching pose. The outer face remains thick and partly occluded; hardware is less convincing than option 4."
+      }
+    },
+    {
+      "id": "02-clear-single-crown",
+      "label": "2 — Clearer Crown, lighter grip",
+      "file": "02-clear-single-crown.png",
+      "sourceGeneratedPath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-ac2cd7ac-0940-405e-b842-b2fcdc6daf7e.png",
+      "size": [
+        1916,
+        821
+      ],
+      "sha256": "96e67c63dc5bd66af9ef36c212a6ee3d344322f2c422152185e2126e96567be0",
+      "parent": null,
+      "review": {
+        "status": "failed_hardware_review",
+        "note": "A smaller protruding ridged cylinder remains beside the main Crown."
+      }
+    },
+    {
+      "id": "03-single-finger-contact",
+      "label": "3 — Single-finger gesture",
+      "file": "03-single-finger-contact.png",
+      "sourceGeneratedPath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-88d21bcf-66c7-44d2-b915-af06b8d1175f.png",
+      "size": [
+        1916,
+        821
+      ],
+      "sha256": "24a3391b230cbe95707f959108b3dc65d7ce51c060601c708b0409ecc601144b",
+      "parent": null,
+      "review": {
+        "status": "failed_hardware_review",
+        "note": "A second smaller protruding ridged cylinder remains visible."
+      }
+    },
+    {
+      "id": "02-clear-single-crown-v2",
+      "label": "2 — Compact Crown, pinch gesture",
+      "file": "02-clear-single-crown-v2.png",
+      "sourceGeneratedPath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-3f9987f3-43ea-4844-80bc-0629374a4a62.png",
+      "size": [
+        1915,
+        821
+      ],
+      "sha256": "77d40ad0677b813310220d09603016a75d234458e069bb080f3e3da67d995153",
+      "parent": "02-clear-single-crown",
+      "review": {
+        "status": "failed_hardware_review",
+        "note": "The targeted correction retains the stepped Crown and smaller protruding cylinder."
+      }
+    },
+    {
+      "id": "03-single-finger-contact-v2",
+      "label": "3 — Compact Crown, single-finger gesture",
+      "file": "03-single-finger-contact-v2.png",
+      "sourceGeneratedPath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-e1831ad0-f926-4b48-bb96-c99928d3b6dd.png",
+      "size": [
+        1915,
+        821
+      ],
+      "sha256": "65a899a6cf99fd613f75837aa49feea3abb3db9877b199f38f819d852f2ec927",
+      "parent": "03-single-finger-contact",
+      "review": {
+        "status": "failed_hardware_review",
+        "note": "The targeted correction retains a protruding smaller cylinder."
+      }
+    },
+    {
+      "id": "04-hovering-hand",
+      "label": "4 — Crown fully visible",
+      "file": "04-hovering-hand.png",
+      "sourceGeneratedPath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-e178884f-71ae-4aaf-8969-a809a60eb217.png",
+      "size": [
+        1916,
+        821
+      ],
+      "sha256": "a158f03c84202676d585ee83b0aa4d9f1d563649cc262421e7667daf7c706722",
+      "parent": null,
+      "review": {
+        "status": "on_hold_after_user_hardware_concern",
+        "note": "User sees a double Crown in this option as well. Previous recommendation withdrawn; do not treat this as hardware verified.",
+        "previousStatus": "recommended_pending_user_choice"
+      }
+    },
+    {
+      "id": "05-top-edge-touch",
+      "label": "5 — Light top-edge touch",
+      "file": "05-top-edge-touch.png",
+      "sourceGeneratedPath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-c1b07c9e-a64a-4d34-821c-8ed847f9eee5.png",
+      "size": [
+        1916,
+        821
+      ],
+      "sha256": "ed7bd6e1d70c121d2b8836f4c2d847b7b3ae6fdf9aa0756d541098d62430188d",
+      "parent": null,
+      "review": {
+        "status": "failed_hardware_review",
+        "note": "The new contact pose still generates a smaller cylinder beyond the main Crown."
+      }
+    }
+  ],
+  "recommended": null,
+  "selection": "Previous recommendation withdrawn after user hardware concern",
+  "productionStatus": "Design alternatives only; not final Store exports",
+  "externalActions": "No upload, review submission or publication in this generation round",
+  "inspection": "Unretouched sips crops at x1190 y210 width180 height200; enlarged only for inspection",
+  "followUp": "../fresh-screenshot-round2/preview.html"
+}

@@ -1,0 +1,89 @@
+{
+  "mode": "Built-in image_gen",
+  "preparedDate": "2026-10-06",
+  "status": "Four concept candidates, not uploaded or published",
+  "prompts": "prompts.json",
+  "outputs": [
+    {
+      "id": "01-tactile-minimal",
+      "label": "Tactile minimalism",
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/candidates/01-tactile-minimal.png",
+      "sourcePath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-60ad2508-1563-4ffe-b876-b4834c320032.png",
+      "width": 1916,
+      "height": 821,
+      "sha256": "b7f8f87399d33deb80cb5c260f33d8ad57200a359a0292237aa18bb83bdd73bc"
+    },
+    {
+      "id": "02-playful-color",
+      "label": "Playful color",
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/candidates/02-playful-color.png",
+      "sourcePath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-444efab1-d7be-4ed6-8e4f-32da7a707aed.png",
+      "width": 1916,
+      "height": 821,
+      "sha256": "2d380d1e55b63f2b9eb8ae91751944f735a5df1b4f9d07da535967bb176c37dc"
+    },
+    {
+      "id": "03-editorial-wrist",
+      "label": "Editorial wrist shot",
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/candidates/03-editorial-wrist.png",
+      "sourcePath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-b0d84b33-65e8-499f-843a-166d15e52ec5.png",
+      "width": 1916,
+      "height": 821,
+      "sha256": "82e522acd9dbc4ea07261a3abc2132dd71544e4095dc7ba2d13849f37eabab67"
+    },
+    {
+      "id": "04-abstract-motion",
+      "label": "Abstract haptic motion",
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/candidates/04-abstract-motion.png",
+      "sourcePath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-3cae6462-7298-4b3b-ba21-60b68fb4809f.png",
+      "width": 1916,
+      "height": 821,
+      "sha256": "1e74f1f489767213d41f29fc382be1bc6913c01a982fbb1e9d4ea847b0bd07a9"
+    }
+  ],
+  "review": {
+    "marketingText": "All four show Endless Crown and the exact requested headline without added claims.",
+    "subject": "Each direction depicts an Apple Watch and Crown scrolling or haptic motion.",
+    "productionBoundary": "Generated Watch screens and hardware are illustrative. Replace or verify against authentic capture before final store use.",
+    "specificIssues": [
+      "Playful color duplicates a negative-number row.",
+      "Editorial wrist and abstract motion omit the reference system clock.",
+      "Exact Apple export dimensions, safe areas, crops, and native Store preview remain pending direction selection."
+    ]
+  },
+  "refinements": [
+    {
+      "id": "03-editorial-wrist-v2",
+      "mode": "Built-in image_gen edit",
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/candidates/03-editorial-wrist-v2.png",
+      "sourcePath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-d23f2d62-76ec-489d-b707-217ff69b1634.png",
+      "editTarget": "03-editorial-wrist.png",
+      "prompt": "03-editorial-wrist-v2-prompt.txt",
+      "width": 1916,
+      "height": 821,
+      "sha256": "ffafb39675502500e21873aa475fe16791f2780da8c296caffb86de996902a5e",
+      "changes": [
+        "Neutral diffuse daylight and reduced orange grading",
+        "More natural skin, shadows and knit texture",
+        "Selected row 4286; consecutive neighbors 4283 to 4288",
+        "Restored system time 3:26"
+      ],
+      "review": "Visually inspected headline, consecutive row values, time, fingers and Watch. This remains generated concept artwork."
+    },
+    {
+      "id": "03-editorial-wrist-v3",
+      "mode": "Built-in image_gen edit",
+      "path": "/Users/yihong/work/CrownSpin/CrownSpin/AppStoreAssets/CreativeKit/candidates/03-editorial-wrist-v3.png",
+      "sourcePath": "/Users/yihong/.codex/generated_images/01a0fe14-2d3f-7bb3-9617-7f569202e390/exec-b46a9af1-bcfa-4dda-a448-243b3fadfff9.png",
+      "editTarget": "03-editorial-wrist-v2.png",
+      "prompt": "03-editorial-wrist-v3-prompt.txt",
+      "width": 1915,
+      "height": 821,
+      "sha256": "b30bec933f8ff7000a94b7108dac2826f33373109822c3749f623d2789d69548",
+      "changes": [
+        "Selected counter 4698; consecutive visible rows 4695 to 4700"
+      ],
+      "review": "Visually verified all six counter values, preserved headline, clock 3:26 and Clicks chip; photograph retains the selected natural style."
+    }
+  ]
+}

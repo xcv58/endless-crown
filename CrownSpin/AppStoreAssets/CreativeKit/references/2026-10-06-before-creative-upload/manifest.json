@@ -1,0 +1,25 @@
+{
+  "app": "Endless Crown",
+  "locale": "en-US",
+  "status": "Local design draft; not uploaded, reviewed, or published",
+  "headline": ["Turn the Crown.", "Feel the haptics."],
+  "supportingCopy": "A haptic fidget for Apple Watch.",
+  "capture": "../Screenshots/apple-watch-46mm-main.jpg",
+  "captureProvenance": "Existing authentic main-screen capture used in the approved 1.0.1 screenshot kit. No app UI or displayed data is fabricated.",
+  "deviceArtwork": "resources/apple-watch-series-11-46mm-space-gray-black-sport-band.png",
+  "deviceArtworkProvenance": "Official Apple Watch Series 11 46mm Space Gray aluminum with Black Sport Band. Supplied hardware image is displayed complete and proportionally scaled. Obtain the source and license from Apple; do not commit the standalone resource.",
+  "deviceArtworkSource": "https://developer.apple.com/design/resources/#product-bezels",
+  "deviceArtworkSha256": "6b992b970200961e38fa25ae953bcbeebfc76ff158a3ee8ca039edfe6779c029",
+  "deviceNaturalSize": {"width": 560, "height": 880},
+  "deviceScreenRect": {"x": 72, "y": 192, "width": 416, "height": 496},
+  "placements": [
+    {"id": "header", "width": 3840, "height": 1646, "filename": "endless-crown-header-en-US.jpg"},
+    {"id": "search", "width": 1920, "height": 1280, "filename": "endless-crown-search-en-US.jpg"}
+  ],
+  "guidance": [
+    "https://developer.apple.com/news/?id=ljpl7kyn",
+    "https://developer.apple.com/app-store/asset-best-practices/",
+    "https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications",
+    "https://developer.apple.com/help/app-store-connect/manage-app-information/manage-your-app-store-assets"
+  ]
+}

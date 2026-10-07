@@ -1,0 +1,77 @@
+{
+  "created": "2026-10-06",
+  "reason": "User asked to preserve previous versions before preparing App Store creatives",
+  "assets": [
+    {
+      "path": "candidates/03-editorial-wrist-v3.png",
+      "sha256": "b30bec933f8ff7000a94b7108dac2826f33373109822c3749f623d2789d69548"
+    },
+    {
+      "path": "candidates/03-editorial-wrist-v3-prompt.txt",
+      "sha256": "f927965e97b2cc7b61a9a71dabe93ae9afe7b00f4d30260080fd486cef016718"
+    },
+    {
+      "path": "exports/endless-crown-header-en-US.jpg",
+      "sha256": "8c102a3b65c318dca0c3891c853d783e8af1cadad75846929ec7f31bf3b71801"
+    },
+    {
+      "path": "exports/endless-crown-search-en-US.jpg",
+      "sha256": "2b85ca798a8b83ab7e15327e88f267c1db061992bce81e96473ec7d950a8429c"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "c54b784ea72e142ff36415e83956140b8f2872b431a6e94408b806b913e50f56"
+    },
+    {
+      "path": "validation.json",
+      "sha256": "04518015332b57ada56025f157123db64e2f7627c2415b3fec5b81984a4755ba"
+    }
+  ],
+  "currentStoreScreenshots": [
+    {
+      "path": "current-store-screenshots/README.md",
+      "sha256": "da2c5d9fa56500cc84439e249fb287fcab525ec666853646d9ec624046087583",
+      "bytes": 6961
+    },
+    {
+      "path": "current-store-screenshots/en-US/01-spin.png",
+      "sha256": "e16660052adbc16ef1fe310959bb40a4636485d3d50e302293d1354ffc102712",
+      "bytes": 46521
+    },
+    {
+      "path": "current-store-screenshots/en-US/02-effects.png",
+      "sha256": "21fcd227de15b051e9011893b054893cac2f92e29f1b2b71f993456312d18e20",
+      "bytes": 54815
+    },
+    {
+      "path": "current-store-screenshots/en-US/03-gestures.png",
+      "sha256": "1f138d4949efe35367dbcad147e217325ed53816ccc31249191c3e7ebc8fc618",
+      "bytes": 70063
+    },
+    {
+      "path": "current-store-screenshots/en-US/04-numbers.png",
+      "sha256": "ee1732fb679e3468cb55f7a8d11ebf364438668d60e51b0a83fa6b7c5031ee30",
+      "bytes": 53038
+    },
+    {
+      "path": "current-store-screenshots/en-US/05-stats.png",
+      "sha256": "b5d57ae96399e6cf9c6dae370791ad2472828757e94ed3e3effa4aecc4407c4a",
+      "bytes": 67135
+    },
+    {
+      "path": "current-store-screenshots/en-US/06-ambient.png",
+      "sha256": "f9fa521f1bbec9e34f374c82ce31c45669c69d28dd73437a749eea0101f81e86",
+      "bytes": 31765
+    },
+    {
+      "path": "current-store-screenshots/endless-crown-1.0.1-en-US-watch.zip",
+      "sha256": "dc1f65c464f48339cafc156c4bb4bda6838834495bcd0ea5319ca66087f16bf8",
+      "bytes": 321400
+    },
+    {
+      "path": "current-store-screenshots/manifest.json",
+      "sha256": "59cad52ea640348ee9f249bcd850797458031a621e8fc52d85535cdda0b75b8e",
+      "bytes": 4025
+    }
+  ]
+}

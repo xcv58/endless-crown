@@ -1,0 +1,24 @@
+{
+  "app": "Endless Crown",
+  "appId": "6777250620",
+  "locale": "en-US",
+  "date": "2026-10-06",
+  "status": "rejected_by_user_reference_only",
+  "uploadAttempt": {
+    "files": [
+      "exports/endless-crown-editorial-header-en-US-v1.jpg",
+      "exports/endless-crown-editorial-search-en-US-v1.jpg"
+    ],
+    "fileChooserSetFiles": "succeeded",
+    "serverState": "Verified live: one incomplete search entry exists; header file not present",
+    "observedAssetId": "51400019-3f4a-833c-801e-dc1844953952"
+  },
+  "nativePreviews": "Not applicable: rejected materials remain unselected",
+  "reviewSubmission": "not submitted; workflow canceled locally",
+  "publication": "not performed",
+  "currentVersionAtBeforeCheck": "1.0.1 Ready for Distribution",
+  "preservedPriorAssets": "../../references/2026-10-06-before-creative-upload",
+  "authRequirement": "Only needed to inspect any draft uploads; do not resume submission of this rejected package",
+  "rejectionReason": "User reports misaligned screen and duplicated Crown artifacts in the later composite",
+  "selectedReplacement": "../../candidates/fresh-screenshot-round2/03-close-crop.png"
+}
