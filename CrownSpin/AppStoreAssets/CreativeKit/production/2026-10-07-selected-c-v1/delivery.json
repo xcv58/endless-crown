@@ -135,8 +135,8 @@
   "checkedAt": "2026-10-07T02:57:28.108511+00:00",
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
-    "status": "ACTIVE",
-    "intervalHours": 4,
+    "status": "PAUSED",
+    "intervalHours": 24,
     "purpose": "Check shared-asset approval, submit the saved Reddit CPP, publish verified default placements using corrected header v2/search v2, and verify the approved campaign link; stay quiet while pending."
   },
   "customProductPage": "../../custom-product-pages/reddit-haptic-fidget/delivery.json",
@@ -146,5 +146,13 @@
     "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
     "items": 1,
     "verified": "App Store Connect showed 1 Item Submitted and corrected universal v2 Waiting for Review"
+  },
+  "lastAutomationAttempt": {
+    "at": "2026-10-08T03:11:44.288Z",
+    "status": "Blocked before live verification",
+    "reason": "Computer Use browser/UI tools are unavailable in this scheduled session. Current App Store Connect review and publication state could not be verified.",
+    "storeChangesPerformed": false,
+    "needsUserAction": "Restore Computer Use access for this chat and resume the daily follow-up.",
+    "reviewStatusBoundary": "Existing review statuses and checkedAt remain the last verified values; this run does not confirm that review is still pending."
   }
 }
