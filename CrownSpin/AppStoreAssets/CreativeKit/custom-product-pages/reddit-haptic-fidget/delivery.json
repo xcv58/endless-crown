@@ -70,9 +70,10 @@
   },
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
-    "status": "PAUSED",
+    "status": "ACTIVE",
     "intervalHours": 24,
-    "updatedForCPP": true
+    "updatedForCPP": true,
+    "resumedAt": "2026-10-08T03:22:11Z"
   },
   "lastAutomationAttempt": {
     "at": "2026-10-08T03:11:44.288Z",
@@ -80,6 +81,16 @@
     "reason": "Computer Use browser/UI tools are unavailable in this scheduled session. Current App Store Connect review and publication state could not be verified.",
     "storeChangesPerformed": false,
     "needsUserAction": "Restore Computer Use access for this chat and resume the daily follow-up.",
-    "reviewStatusBoundary": "Existing review statuses and checkedAt remain the last verified values; this run does not confirm that review is still pending."
+    "reviewStatusBoundary": "Existing review statuses and checkedAt remain the last verified values; this run does not confirm that review is still pending.",
+    "resolvedAt": "2026-10-08T03:22:11Z",
+    "resolution": "Computer Use verified through the supported Node REPL desktop interface; daily follow-up resumed."
+  },
+  "computerUseAccess": {
+    "verifiedAt": "2026-10-08T03:22:11Z",
+    "status": "Available",
+    "interface": "Supported Node REPL and @oai/sky desktop API",
+    "verified": "Successfully read Chrome accessibility state through sky.get_app_state.",
+    "setupGuide": "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules/@oai/sky/docs/skills/oai_sky_lib/macos/SKILL.md",
+    "boundary": "Access verification only; current App Store Connect review and publication state were not checked in this access test."
   }
 }
