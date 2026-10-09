@@ -132,7 +132,7 @@
       "status": "Approved"
     }
   ],
-  "checkedAt": "2026-10-09T02:31:54Z",
+  "checkedAt": "2026-10-09T03:27:22Z",
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
     "status": "ACTIVE",
@@ -167,7 +167,7 @@
     "boundary": "Access verification only; current App Store Connect review and publication state were not checked in this access test."
   },
   "lastAssetReviewCheck": {
-    "checkedAt": "2026-10-09T02:31:54Z",
+    "checkedAt": "2026-10-09T03:27:22Z",
     "source": "Live App Store Connect Asset Library through Computer Use",
     "sourceUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/asset-library",
     "header": {
