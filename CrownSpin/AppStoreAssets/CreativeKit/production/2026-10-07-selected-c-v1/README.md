@@ -9,11 +9,11 @@ The user selected [C — Close tactile detail](../../candidates/fresh-screenshot
 - [Preview](preview.html), [manifest](manifest.json), and [live delivery state](delivery.json).
 - [Reddit custom product page](../../custom-product-pages/reddit-haptic-fidget/README.md).
 
-Header v2 passes Apple's reference preview on iPhone in light/dark appearance and iPad in portrait/light and landscape/dark. Search v2 passes iPhone and iPad light previews. Final public placements and CPP link presentation await approval and live verification.
+Header v2 passes Apple's reference preview on iPhone in light/dark appearance and iPad in portrait/light and landscape/dark. Search v2 passes iPhone and iPad light previews. Both final assets are Approved and were published on the released 1.0.1 English (U.S.) default Header and Search Results placements on October 9, 2026. Exact asset IDs and Ready for Distribution usage were verified in Asset Library. The Reddit CPP is submitted and Waiting for Review. Public Store propagation and CPP link presentation still require verification.
 
 ## Earlier export attempts
 
-Universal v1 is under review but failed the native iPhone headline crop check; **do not publish it as the header**. The 3840 × 1646 header JPEG v1 matched Apple's specification but was rejected by App Store Connect. Search v1 contained PNG bytes under a JPEG extension; search v2 corrects this. All earlier files are retained as references.
+Universal v1 is Approved but failed the native iPhone headline crop check; **do not publish it as the header**. The 3840 × 1646 header JPEG v1 matched Apple's specification but was rejected by App Store Connect. Search v1 contained PNG bytes under a JPEG extension; search v2 corrects this. All earlier files are retained as references.
 
 Dimensions, actual container formats, opacity and source hashes are verified. Upscaling the 1916 × 821 source does not add photographic detail. Review state is recorded in delivery.json. The existing released build and Watch screenshots are preserved.
 

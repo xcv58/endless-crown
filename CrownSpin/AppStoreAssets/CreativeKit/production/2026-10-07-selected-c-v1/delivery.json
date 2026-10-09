@@ -37,7 +37,8 @@
         "y": 549,
         "width": 4320,
         "height": 1851
-      }
+      },
+      "status": "Approved reference only; failed native iPhone header crop. Do not publish as header."
     },
     {
       "placement": "search",
@@ -47,7 +48,9 @@
       "format": "JPEG",
       "alpha": false,
       "sha256": "c807d587cc7638037e1450b977fe74b692e9451ecfed96eb7668e07ca3925b7c",
-      "bytes": 419343
+      "bytes": 419343,
+      "status": "Approved",
+      "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01"
     },
     {
       "placement": "header",
@@ -70,33 +73,41 @@
   ],
   "upload": "Verified complete: universal PNG and search JPEG v2 accepted by App Store Connect",
   "nativePreviews": {
-    "status": "Verified from CPP draft",
+    "status": "Verified before publication and on published default placements",
     "headerV1": "Failed: native iPhone preview clipped the start of the headline. Do not publish it as header.",
     "headerV2": "Passed on iPhone light/dark and iPad portrait light/landscape dark after refreshing the processed asset.",
     "searchV2": "Passed on iPhone light and iPad portrait light.",
-    "boundary": "Final public Store placement still requires post-approval verification; native previews are reference renders."
+    "boundary": "Final public Store placement still requires post-approval verification; native previews are reference renders.",
+    "recheckedAt": "2026-10-09T23:53:25Z",
+    "currentCheck": "Corrected header v2 passed iPhone light/dark and iPad landscape dark reference previews; search v2 passed iPhone light. Published default iPhone header and search previews matched the selected C."
   },
   "reviewSubmission": {
-    "status": "Waiting for Review",
+    "status": "Approved assets",
     "submissionId": "3648e06c-ec06-4939-aca6-638166b57ea2",
     "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/3648e06c-ec06-4939-aca6-638166b57ea2",
     "items": 2,
     "platform": "iOS",
     "latestReleasedVersion": "1.0.1",
-    "verified": "App Store Connect showed 2 Items Submitted and both selected assets Waiting for Review"
+    "verified": "Both assets in this submission are Approved in the live Asset Library; submission detail was not reopened."
   },
   "publication": {
-    "status": "Header v2 approved; waiting for search v2 approval before publishing both placements",
+    "status": "Published in App Store Connect",
     "authorized": true,
     "headerAssetId": "20000019-3f4a-833c-801a-e31510b1067e",
-    "searchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01"
+    "searchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+    "appVersion": "1.0.1",
+    "build": "16",
+    "locale": "en-US",
+    "verified": "Published Header and Search Results separately, confirmed both native reference previews and exact asset IDs in Recent Usage for iOS App Version 1.0.1 Ready for Distribution.",
+    "publicStoreBoundary": "App Store Connect publication is confirmed; storefront propagation and physical native Store presentation have not been verified.",
+    "publicationVerifiedAt": "2026-10-09T23:53:25Z"
   },
   "olderRejectedUpload": {
     "observed": "One incomplete endless-crown-editorial-search-en-US-v1.jpg entry with no size, compatibility or review status",
     "assetId": "51400019-3f4a-833c-801e-dc1844953952",
     "action": "Retained unselected; do not submit"
   },
-  "currentAppVersion": "1.0.1 Ready for Distribution, verified live 2026-10-07",
+  "currentAppVersion": "1.0.1 Ready for Distribution, build 16, verified live 2026-10-09",
   "repository": "Artwork-only commit and push from clean release worktree; unrelated energy-test changes excluded",
   "firstAttempt": {
     "header": "Rejected by App Store Connect: File dimensions are invalid despite matching documented 3840 x 1646",
@@ -111,7 +122,7 @@
         "Product Page Header",
         "Search Results"
       ],
-      "status": "Waiting for Review",
+      "status": "Approved",
       "publicationDecision": "Do not publish as header: failed native iPhone crop; replaced by universal v2"
     },
     {
@@ -120,7 +131,7 @@
       "worksWith": [
         "Search Results"
       ],
-      "status": "Waiting for Review"
+      "status": "Approved"
     },
     {
       "file": "exports/endless-crown-c-universal-en-US-v2.png",
@@ -132,12 +143,12 @@
       "status": "Approved"
     }
   ],
-  "checkedAt": "2026-10-09T03:27:22Z",
+  "checkedAt": "2026-10-09T23:53:25Z",
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
     "status": "ACTIVE",
     "intervalHours": 24,
-    "purpose": "Check shared-asset approval, submit the saved Reddit CPP, publish verified default placements using corrected header v2/search v2, and verify the approved campaign link; stay quiet while pending.",
+    "purpose": "Follow Reddit CPP approval and verify campaign link, keywords, Watch screenshot fallback and public presentation; default C placements are already published.",
     "resumedAt": "2026-10-08T03:22:11Z"
   },
   "customProductPage": "../../custom-product-pages/reddit-haptic-fidget/delivery.json",
@@ -167,8 +178,8 @@
     "boundary": "Access verification only; current App Store Connect review and publication state were not checked in this access test."
   },
   "lastAssetReviewCheck": {
-    "checkedAt": "2026-10-09T03:27:22Z",
-    "source": "Live App Store Connect Asset Library through Computer Use",
+    "checkedAt": "2026-10-09T23:53:25Z",
+    "source": "Live App Store Connect Asset Library and placement Recent Usage through Computer Use",
     "sourceUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/asset-library",
     "header": {
       "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
@@ -176,9 +187,16 @@
     },
     "search": {
       "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
-      "status": "Waiting for Review"
+      "status": "Approved"
     },
-    "storeChangesPerformed": false,
-    "nextStep": "Wait for search v2 approval, then publish the final default placements and submit the existing CPP."
-  }
+    "storeChangesPerformed": true,
+    "nextStep": "Follow the submitted Reddit CPP review, then verify approval, enabled campaign link, keyword publication and actual public presentation."
+  },
+  "proofScreenshots": [
+    "../../.delivery-evidence/final-assets-approved-2026-10-09.png",
+    "../../.delivery-evidence/default-header-published-preview-2026-10-09.png",
+    "../../.delivery-evidence/default-search-published-preview-2026-10-09.png",
+    "../../.delivery-evidence/header-v2-live-usage-2026-10-09.png",
+    "../../.delivery-evidence/search-v2-live-usage-2026-10-09.png"
+  ]
 }

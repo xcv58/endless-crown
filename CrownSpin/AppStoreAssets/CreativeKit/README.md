@@ -2,7 +2,7 @@
 
 ## Selected artwork
 
-**The user selected [C — Close tactile detail](candidates/fresh-screenshot-round2/03-close-crop.png).** Preserve the exact image, including the photograph, Watch, finger contact, screen and typography. The source is 1916 × 821. [Final exports and delivery state](production/2026-10-07-selected-c-v1/README.md) are prepared and uploaded. Native CPP previews exposed headline clipping in header v1; header v2 fixes it with additional canvas spacing. Use header v2 and search JPEG v2 after approval. The [Reddit custom page](custom-product-pages/reddit-haptic-fidget/README.md) is saved and awaits shared-asset approval before submission.
+**The user selected [C — Close tactile detail](candidates/fresh-screenshot-round2/03-close-crop.png).** Preserve the exact image, including the photograph, Watch, finger contact, screen and typography. The source is 1916 × 821. [Final exports and delivery state](production/2026-10-07-selected-c-v1/README.md) are prepared and uploaded. Native CPP previews exposed headline clipping in header v1; header v2 fixes it with additional canvas spacing. Header v2 and search JPEG v2 are now approved and published on the default English (U.S.) listing. The [Reddit custom page](custom-product-pages/reddit-haptic-fidget/README.md) was submitted on October 9, 2026 and is Waiting for Review; its public presentation remains unverified.
 
 [Compare the four fresh concepts](candidates/fresh-screenshot-round2/preview.html) · [Exact prompts and provenance](candidates/fresh-screenshot-round2/README.md). They were generated from the authentic 4698 app capture and official hardware reference. All prior versions remain preserved.
 

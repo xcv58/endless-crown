@@ -1,6 +1,6 @@
 {
   "appId": "6777250620",
-  "referenceName": "Reddit \u2014 Haptic Fidget",
+  "referenceName": "Reddit — Haptic Fidget",
   "locale": "en-US",
   "sourceAppVersion": "1.0.1",
   "editorId": "72ce00c8-d2f6-4b52-8936-d5a17d174419",
@@ -17,7 +17,7 @@
   "deepLink": null,
   "header": {
     "file": "../../production/2026-10-07-selected-c-v1/exports/endless-crown-c-universal-en-US-v2.png",
-    "status": "Attached; native reference preview passed; asset Approved in Asset Library",
+    "status": "Attached; native reference preview passed; asset Approved",
     "sha256": "bb3f0330692b90b62f44225f32ddc050fce688a34b3e395be4893588a8f32fac",
     "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
     "reviewSubmission": {
@@ -31,7 +31,7 @@
   "search": {
     "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
     "file": "../../production/2026-10-07-selected-c-v1/exports/endless-crown-c-search-en-US-v2.jpg",
-    "status": "Attached; asset Waiting for Review in Asset Library"
+    "status": "Attached; native reference preview passed; asset Approved"
   },
   "watchScreenshots": {
     "status": "Not customized",
@@ -47,12 +47,18 @@
     "boundary": "Do not claim the custom page contains Watch screenshots without verifying live rendering after approval."
   },
   "submission": {
-    "status": "Last verified Ready to Submit draft; shared search asset review pending",
-    "reason": "The last CPP Add for Review validation blocked submission because the shared search image is in another submission. Header v2 is now approved, while search v2 is still Waiting for Review. Submit the existing CPP after search v2 approval.",
+    "status": "Waiting for Review",
+    "submissionId": "d553c689-be1f-4ebe-9a09-10210b48ac12",
+    "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d553c689-be1f-4ebe-9a09-10210b48ac12",
+    "submittedAt": "2026-10-09T23:50:00Z",
+    "submittedTimePrecision": "Minute; App Store Connect displayed Oct 9, 2026 at 7:50 PM EDT.",
+    "items": 1,
+    "verified": "1 Item Submitted confirmation, submission detail Waiting for Review, and CPP editor Waiting for Review; saved promotional text and four selected keywords verified after reload.",
+    "previousBlocker": "Resolved: shared search v2 approved before this submission.",
     "sharedAssetSubmissionId": "3648e06c-ec06-4939-aca6-638166b57ea2"
   },
   "publication": {
-    "status": "Header v2 approved; waiting for search review and CPP submission",
+    "status": "Waiting for CPP review; both shared assets approved and default placements published",
     "authorized": true
   },
   "nativePreviews": {
@@ -62,11 +68,13 @@
     "searchIPadLight": "Passed: complete selected C and headline visible"
   },
   "followUpAutomationId": "publish-endless-crown-c-artwork",
-  "checkedAt": "2026-10-07T02:57:28.108511+00:00",
+  "checkedAt": "2026-10-09T23:53:25Z",
   "linkVerification": {
     "copiedFromAppStoreConnect": true,
     "nativeReferencePreviews": "Verified on iPhone and iPad",
-    "publicNativeLink": "Pending CPP approval; do not claim native Watch or physical iPhone acceptance yet."
+    "publicNativeLink": "Pending CPP approval; public presentation, Watch screenshot fallback and native Watch/physical iPhone rendering are not verified.",
+    "enabledInAppStoreConnect": true,
+    "enabledCheckedAt": "2026-10-09T23:53:25Z"
   },
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
@@ -94,8 +102,8 @@
     "boundary": "Access verification only; current App Store Connect review and publication state were not checked in this access test."
   },
   "lastAssetReviewCheck": {
-    "checkedAt": "2026-10-09T03:27:22Z",
-    "source": "Live App Store Connect Asset Library through Computer Use",
+    "checkedAt": "2026-10-09T23:53:25Z",
+    "source": "Live App Store Connect Asset Library and placement Recent Usage through Computer Use",
     "sourceUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/asset-library",
     "header": {
       "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
@@ -103,9 +111,25 @@
     },
     "search": {
       "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
-      "status": "Waiting for Review"
+      "status": "Approved"
     },
-    "storeChangesPerformed": false,
-    "nextStep": "Wait for search v2 approval, then publish the final default placements and submit the existing CPP."
-  }
+    "storeChangesPerformed": true,
+    "nextStep": "Follow the submitted Reddit CPP review, then verify approval, enabled campaign link, keyword publication and actual public presentation."
+  },
+  "keywordVerification": {
+    "checkedAt": "2026-10-09T23:53:25Z",
+    "selected": [
+      "fidget",
+      "tactile",
+      "sensory",
+      "clicks"
+    ],
+    "verified": "All four remain checked in the reloaded Waiting for Review editor.",
+    "nextStep": "After approval, confirm keyword publication if the UI requires it."
+  },
+  "proofScreenshots": [
+    "../../.delivery-evidence/reddit-cpp-submitted-2026-10-09.png",
+    "../../.delivery-evidence/reddit-cpp-waiting-for-review-2026-10-09.png",
+    "../../.delivery-evidence/reddit-cpp-pending-metadata-2026-10-09.png"
+  ]
 }

@@ -46,7 +46,7 @@
         "width": 4320,
         "height": 1851
       },
-      "status": "Reference only; under review but failed native iPhone header crop. Do not publish as header."
+      "status": "Approved reference only; failed native iPhone header crop. Do not publish as header."
     },
     {
       "placement": "search",
@@ -57,7 +57,8 @@
       "alpha": false,
       "sha256": "c807d587cc7638037e1450b977fe74b692e9451ecfed96eb7668e07ca3925b7c",
       "bytes": 419343,
-      "status": "Submitted: Waiting for Review"
+      "status": "Approved; published on default Search Results 2026-10-09",
+      "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01"
     },
     {
       "placement": "header",
@@ -74,7 +75,7 @@
         "width": 3000,
         "height": 1286
       },
-      "status": "Approved: verified in App Store Connect Asset Library",
+      "status": "Approved; published on default Product Page Header 2026-10-09",
       "assetId": "20000019-3f4a-833c-801a-e31510b1067e"
     }
   ],
@@ -97,5 +98,6 @@
       "iPad portrait light"
     ],
     "result": "Headline visible and Watch/Crown focal point retained. Apple states its preview is for reference and may differ from the final customer experience."
-  }
+  },
+  "publicationCheckedAt": "2026-10-09T23:53:25Z"
 }
