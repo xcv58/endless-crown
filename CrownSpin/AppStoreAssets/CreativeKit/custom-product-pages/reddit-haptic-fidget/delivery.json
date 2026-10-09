@@ -17,21 +17,21 @@
   "deepLink": null,
   "header": {
     "file": "../../production/2026-10-07-selected-c-v1/exports/endless-crown-c-universal-en-US-v2.png",
-    "status": "Attached; native reference preview passed; Waiting for Review in independent asset submission",
+    "status": "Attached; native reference preview passed; asset Approved in Asset Library",
     "sha256": "bb3f0330692b90b62f44225f32ddc050fce688a34b3e395be4893588a8f32fac",
     "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
     "reviewSubmission": {
-      "status": "Waiting for Review",
+      "status": "Approved",
       "submissionId": "5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
       "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
       "items": 1,
-      "verified": "App Store Connect showed 1 Item Submitted and corrected universal v2 Waiting for Review"
+      "verified": "Corrected header v2 asset is Approved in the live Asset Library; the submission detail was not reopened."
     }
   },
   "search": {
     "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
     "file": "../../production/2026-10-07-selected-c-v1/exports/endless-crown-c-search-en-US-v2.jpg",
-    "status": "Attached; existing standalone submission Waiting for Review"
+    "status": "Attached; asset Waiting for Review in Asset Library"
   },
   "watchScreenshots": {
     "status": "Not customized",
@@ -47,12 +47,12 @@
     "boundary": "Do not claim the custom page contains Watch screenshots without verifying live rendering after approval."
   },
   "submission": {
-    "status": "Ready to Submit draft; shared-asset reviews pending",
-    "reason": "The last Add for Review validation reported the search image is already included in another submission. The corrected header v2 has since been submitted independently as well. Submit the CPP after both final shared assets are approved.",
+    "status": "Last verified Ready to Submit draft; shared search asset review pending",
+    "reason": "The last CPP Add for Review validation blocked submission because the shared search image is in another submission. Header v2 is now approved, while search v2 is still Waiting for Review. Submit the existing CPP after search v2 approval.",
     "sharedAssetSubmissionId": "3648e06c-ec06-4939-aca6-638166b57ea2"
   },
   "publication": {
-    "status": "Pending review and verification",
+    "status": "Header v2 approved; waiting for search review and CPP submission",
     "authorized": true
   },
   "nativePreviews": {
@@ -92,5 +92,20 @@
     "verified": "Successfully read Chrome accessibility state through sky.get_app_state.",
     "setupGuide": "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules/@oai/sky/docs/skills/oai_sky_lib/macos/SKILL.md",
     "boundary": "Access verification only; current App Store Connect review and publication state were not checked in this access test."
+  },
+  "lastAssetReviewCheck": {
+    "checkedAt": "2026-10-09T02:31:54Z",
+    "source": "Live App Store Connect Asset Library through Computer Use",
+    "sourceUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/asset-library",
+    "header": {
+      "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
+      "status": "Approved"
+    },
+    "search": {
+      "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+      "status": "Waiting for Review"
+    },
+    "storeChangesPerformed": false,
+    "nextStep": "Wait for search v2 approval, then publish the final default placements and submit the existing CPP."
   }
 }

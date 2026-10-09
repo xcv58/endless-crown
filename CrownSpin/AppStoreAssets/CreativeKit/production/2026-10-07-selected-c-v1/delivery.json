@@ -64,7 +64,7 @@
         "width": 3000,
         "height": 1286
       },
-      "status": "Waiting for Review",
+      "status": "Approved",
       "assetId": "20000019-3f4a-833c-801a-e31510b1067e"
     }
   ],
@@ -86,7 +86,7 @@
     "verified": "App Store Connect showed 2 Items Submitted and both selected assets Waiting for Review"
   },
   "publication": {
-    "status": "Pending approval of corrected header v2 and existing search v2",
+    "status": "Header v2 approved; waiting for search v2 approval before publishing both placements",
     "authorized": true,
     "headerAssetId": "20000019-3f4a-833c-801a-e31510b1067e",
     "searchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01"
@@ -129,10 +129,10 @@
         "Product Page Header",
         "Search Results"
       ],
-      "status": "Waiting for Review"
+      "status": "Approved"
     }
   ],
-  "checkedAt": "2026-10-07T02:57:28.108511+00:00",
+  "checkedAt": "2026-10-09T02:31:54Z",
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
     "status": "ACTIVE",
@@ -142,11 +142,11 @@
   },
   "customProductPage": "../../custom-product-pages/reddit-haptic-fidget/delivery.json",
   "correctedHeaderReviewSubmission": {
-    "status": "Waiting for Review",
+    "status": "Approved",
     "submissionId": "5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
     "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/5bf7189c-c7c9-4791-a2c2-fc3cda25f346",
     "items": 1,
-    "verified": "App Store Connect showed 1 Item Submitted and corrected universal v2 Waiting for Review"
+    "verified": "Corrected header v2 asset is Approved in the live Asset Library; the submission detail was not reopened."
   },
   "lastAutomationAttempt": {
     "at": "2026-10-08T03:11:44.288Z",
@@ -165,5 +165,20 @@
     "verified": "Successfully read Chrome accessibility state through sky.get_app_state.",
     "setupGuide": "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules/@oai/sky/docs/skills/oai_sky_lib/macos/SKILL.md",
     "boundary": "Access verification only; current App Store Connect review and publication state were not checked in this access test."
+  },
+  "lastAssetReviewCheck": {
+    "checkedAt": "2026-10-09T02:31:54Z",
+    "source": "Live App Store Connect Asset Library through Computer Use",
+    "sourceUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/asset-library",
+    "header": {
+      "assetId": "20000019-3f4a-833c-801a-e31510b1067e",
+      "status": "Approved"
+    },
+    "search": {
+      "assetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+      "status": "Waiting for Review"
+    },
+    "storeChangesPerformed": false,
+    "nextStep": "Wait for search v2 approval, then publish the final default placements and submit the existing CPP."
   }
 }
