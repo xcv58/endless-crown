@@ -1,5 +1,9 @@
 # Endless Crown App Store creative assets
 
+## Pending replacement without canvas bands
+
+[Header v4 and search v3](production/2026-10-10-fullbleed-c-v3/README.md) replace the baked-in charcoal surround with photographic extensions. Both passed Apple iPhone/iPad reference crop checks and are Waiting for Review through a new version of the existing CPP. The current public v2 assets remain live. A new daily follow-up will publish the exact approved replacements on default placements after approval. The previously stopped monitor is historical.
+
 ## Selected artwork
 
 **The user selected [C — Close tactile detail](candidates/fresh-screenshot-round2/03-close-crop.png).** Preserve the exact image, including the photograph, Watch, finger contact, screen and typography. The source is 1916 × 821. [Final exports and delivery state](production/2026-10-07-selected-c-v1/README.md) are prepared and uploaded. Native CPP previews exposed headline clipping in header v1; header v2 fixes it with additional canvas spacing. Header v2 and search JPEG v2 are now approved and published on the default English (U.S.) listing. The [Reddit custom page](custom-product-pages/reddit-haptic-fidget/README.md) is now Approved and publicly accessible, but its Chrome web presentation omits Watch screenshots. The ordinary listing retains its Watch screenshots. User iPhone screenshots now confirm C is live on both headers and in search results. The custom capture also skips the usual Watch Preview section before its promotional text, while the ordinary listing shows the Watch gallery. Use the ordinary listing for promotion while the CPP screenshot issue remains unresolved; the daily follow-up remains stopped.

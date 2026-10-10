@@ -1,5 +1,9 @@
 # Reddit — Haptic Fidget custom product page
 
+## Pending artwork update
+
+A new version of this existing CPP was submitted on October 10, 2026 at 12:31 AM EDT with [border-free header v4/search v3](../../production/2026-10-10-fullbleed-c-v3/README.md). [Submission d95afe16](https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf) is Waiting for Review. The public page ID and URL are unchanged, and all four keywords and promotional text were preserved. Apple states the approved new version replaces the existing CPP. This artwork update does not resolve the Watch screenshot issue. The old approval and public-state notes below describe the preserved v2 version; the new daily follow-up is active.
+
 Created from released version 1.0.1 for the Reddit audience. The English (U.S.) page was submitted on October 9, 2026 and confirmed **Approved** at 03:29 UTC on October 10 (October 9 in EDT). Its public web presentation omits Watch screenshots, so the campaign is not yet recommended for promotion. [Delivery details](delivery.json) retain exact identifiers, assets and verified status.
 
 Promotional text: **Turn the Digital Crown and feel the clicks. Explore 15 haptic effects, with Standard, Ambient, and Haptics Only display modes.** (126 of 170 characters.) Selected approved-version keywords: `fidget`, `tactile`, `sensory`, `clicks`.

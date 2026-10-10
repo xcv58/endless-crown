@@ -1,5 +1,9 @@
 # Selected C — Store exports
 
+## Pending border-free replacement
+
+The user reported visible charcoal bands in physical iPhone captures. [Full-bleed header v4/search v3](../2026-10-10-fullbleed-c-v3/README.md) now pass Apple crop checks and are Waiting for Review. Preserve this published v2 package until the replacements are approved and published; a new daily follow-up handles publication.
+
 The user selected [C — Close tactile detail](../../candidates/fresh-screenshot-round2/03-close-crop.png). Exports preserve its photo, Watch, screen and typography through deterministic resizing and canvas padding.
 
 ## Current delivery files

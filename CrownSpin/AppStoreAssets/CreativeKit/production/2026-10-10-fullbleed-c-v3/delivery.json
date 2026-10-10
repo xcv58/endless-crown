@@ -1,0 +1,149 @@
+{
+  "appId": "6777250620",
+  "locale": "en-US",
+  "checkedAt": "2026-10-10T04:34:13+00:00",
+  "reason": "User physical iPhone captures revealed charcoal canvas bands around the published C artwork.",
+  "assets": [
+    {
+      "file": "exports/endless-crown-c-universal-en-US-v4.png",
+      "placement": "header",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "bytes": 11269754,
+      "sha256": "9ee77fe109893af4782eb3a7020015cf4d552e769b9ae6bb46bb7f448f56988b",
+      "assetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+      "status": "Waiting for Review"
+    },
+    {
+      "file": "exports/endless-crown-c-search-en-US-v3.jpg",
+      "placement": "search",
+      "width": 1920,
+      "height": 1280,
+      "format": "JPEG",
+      "alpha": false,
+      "bytes": 577885,
+      "sha256": "d8bfed65925f36de8bfc23a78d89f8e34494cee1abd3125780aeaa6b2b113b8e",
+      "assetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
+      "status": "Waiting for Review"
+    }
+  ],
+  "failedReference": {
+    "file": "exports/endless-crown-c-universal-en-US-v3.png",
+    "placement": "header",
+    "width": 5244,
+    "height": 2950,
+    "format": "PNG",
+    "alpha": false,
+    "bytes": 12068200,
+    "sha256": "8026135531ddac484fe8d7809033741cf727db5375dcffeba1c29514777e003d",
+    "assetId": "e7c00019-3f4a-833c-800b-3520ec4a855e",
+    "status": "Failed iPhone headline crop; retained unselected; do not submit or publish"
+  },
+  "nativeReferencePreviews": {
+    "headerV4": "Passed: iPhone light/dark and iPad portrait light/landscape dark. Complete headline, Watch/Crown and 4698 focal point visible; photograph fills frame without canvas bars.",
+    "searchV3": "Passed: iPhone light/dark and iPad portrait light/landscape dark. Complete headline and Watch visible; no letterbox bands.",
+    "boundary": "App Store Connect reference previews only. The replacements are not yet approved or public, and have not been tested in the physical Store."
+  },
+  "reviewSubmission": {
+    "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+    "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+    "status": "Waiting for Review",
+    "submittedAt": "2026-10-10T04:31:00Z",
+    "timePrecision": "Minute; App Store Connect displayed Oct 10, 2026 at 12:31 AM EDT.",
+    "items": 1,
+    "item": "New version of existing Reddit — Haptic Fidget Custom Product Page",
+    "sharedAssetsIncluded": [
+      "f3400019-3f4a-833c-8033-d6d81c3631ed",
+      "1e800019-3f4a-833c-8039-c5e3a3684b65"
+    ],
+    "verified": "CPP submission detail and both exact shared Asset Library entries show Waiting for Review."
+  },
+  "customProductPageUpdate": {
+    "editorId": "29e02965-7989-4a9f-9e8b-13c080d71d2a",
+    "editorUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/productpages/29e02965-7989-4a9f-9e8b-13c080d71d2a",
+    "productPageId": "bda8da49-0953-45b7-8f8d-4198c720305f",
+    "samePublicPage": true,
+    "header": {
+      "file": "exports/endless-crown-c-universal-en-US-v4.png",
+      "placement": "header",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "bytes": 11269754,
+      "sha256": "9ee77fe109893af4782eb3a7020015cf4d552e769b9ae6bb46bb7f448f56988b",
+      "assetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+      "status": "Waiting for Review"
+    },
+    "search": {
+      "file": "exports/endless-crown-c-search-en-US-v3.jpg",
+      "placement": "search",
+      "width": 1920,
+      "height": 1280,
+      "format": "JPEG",
+      "alpha": false,
+      "bytes": 577885,
+      "sha256": "d8bfed65925f36de8bfc23a78d89f8e34494cee1abd3125780aeaa6b2b113b8e",
+      "assetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
+      "status": "Waiting for Review"
+    },
+    "submission": {
+      "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+      "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+      "status": "Waiting for Review",
+      "submittedAt": "2026-10-10T04:31:00Z",
+      "timePrecision": "Minute; App Store Connect displayed Oct 10, 2026 at 12:31 AM EDT.",
+      "items": 1,
+      "item": "New version of existing Reddit — Haptic Fidget Custom Product Page",
+      "sharedAssetsIncluded": [
+        "f3400019-3f4a-833c-8033-d6d81c3631ed",
+        "1e800019-3f4a-833c-8039-c5e3a3684b65"
+      ],
+      "verified": "CPP submission detail and both exact shared Asset Library entries show Waiting for Review."
+    },
+    "keywords": [
+      "fidget",
+      "tactile",
+      "sensory",
+      "clicks"
+    ],
+    "keywordVerification": "All four checked after saving/reloading and after Add for Review. New version creation reset keywords; restored before submission.",
+    "promotionalText": "Turn the Digital Crown and feel the clicks. Explore 15 haptic effects, with Standard, Ambient, and Haptics Only display modes.",
+    "replacementBehavior": "UI states the new approved version replaces the existing version upon approval.",
+    "watchScreenshotIssueResolved": false,
+    "checkedAt": "2026-10-10T04:34:13+00:00"
+  },
+  "publication": {
+    "status": "Pending approval; default placements unchanged",
+    "authorized": true,
+    "targetHeaderAssetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+    "targetSearchAssetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
+    "currentHeaderAssetId": "20000019-3f4a-833c-801a-e31510b1067e",
+    "currentSearchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+    "appVersion": "1.0.1",
+    "build": "16",
+    "nextStep": "After shared assets approved, select exact header v4 and search v3 on current released default English (U.S.) placements, verify crops, and publish separately."
+  },
+  "followUp": {
+    "automationId": "publish-endless-crown-border-free-artwork",
+    "status": "ACTIVE",
+    "intervalHours": 24,
+    "purpose": "Follow approval, verify updated CPP artwork and publish exact approved header v4/search v3 on default released English (U.S.) placements; quiet while unchanged."
+  },
+  "proofScreenshots": [
+    "../../.delivery-evidence/header-v4-iphone-light-2026-10-10.png",
+    "../../.delivery-evidence/header-v4-iphone-dark-2026-10-10.png",
+    "../../.delivery-evidence/header-v4-ipad-portrait-light-2026-10-10.png",
+    "../../.delivery-evidence/header-v4-ipad-landscape-dark-2026-10-10.png",
+    "../../.delivery-evidence/search-v3-iphone-light-2026-10-10.png",
+    "../../.delivery-evidence/search-v3-iphone-dark-2026-10-10.png",
+    "../../.delivery-evidence/search-v3-ipad-portrait-light-2026-10-10.png",
+    "../../.delivery-evidence/search-v3-ipad-landscape-dark-2026-10-10.png",
+    "../../.delivery-evidence/fullbleed-c-submitted-2026-10-10.png",
+    "../../.delivery-evidence/header-v4-waiting-for-review-2026-10-10.png",
+    "../../.delivery-evidence/search-v3-waiting-for-review-2026-10-10.png"
+  ],
+  "preservation": "All prior selected C versions, failed references, rejected editorial, current released build and Watch screenshot kit retained. CPP Watch screenshot omission remains separate and unresolved."
+}

@@ -209,5 +209,67 @@
       }
     ]
   },
-  "nextStep": "Use the ordinary listing for promotion. CPP Watch screenshot handling needs investigation; check farther down the native page before claiming a complete native screenshot omission."
+  "nextStep": "Follow existing new-version review; after approval verify header v4/search v3, link and keywords. Watch screenshot issue remains unresolved; ordinary listing remains recommended for promotion.",
+  "pendingArtworkUpdate": {
+    "editorId": "29e02965-7989-4a9f-9e8b-13c080d71d2a",
+    "editorUrl": "https://appstoreconnect.apple.com/apps/6777250620/distribution/productpages/29e02965-7989-4a9f-9e8b-13c080d71d2a",
+    "productPageId": "bda8da49-0953-45b7-8f8d-4198c720305f",
+    "samePublicPage": true,
+    "header": {
+      "file": "../../production/2026-10-10-fullbleed-c-v3/exports/endless-crown-c-universal-en-US-v4.png",
+      "placement": "header",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "bytes": 11269754,
+      "sha256": "9ee77fe109893af4782eb3a7020015cf4d552e769b9ae6bb46bb7f448f56988b",
+      "assetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+      "status": "Waiting for Review"
+    },
+    "search": {
+      "file": "../../production/2026-10-10-fullbleed-c-v3/exports/endless-crown-c-search-en-US-v3.jpg",
+      "placement": "search",
+      "width": 1920,
+      "height": 1280,
+      "format": "JPEG",
+      "alpha": false,
+      "bytes": 577885,
+      "sha256": "d8bfed65925f36de8bfc23a78d89f8e34494cee1abd3125780aeaa6b2b113b8e",
+      "assetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
+      "status": "Waiting for Review"
+    },
+    "submission": {
+      "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+      "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+      "status": "Waiting for Review",
+      "submittedAt": "2026-10-10T04:31:00Z",
+      "timePrecision": "Minute; App Store Connect displayed Oct 10, 2026 at 12:31 AM EDT.",
+      "items": 1,
+      "item": "New version of existing Reddit — Haptic Fidget Custom Product Page",
+      "sharedAssetsIncluded": [
+        "f3400019-3f4a-833c-8033-d6d81c3631ed",
+        "1e800019-3f4a-833c-8039-c5e3a3684b65"
+      ],
+      "verified": "CPP submission detail and both exact shared Asset Library entries show Waiting for Review."
+    },
+    "keywords": [
+      "fidget",
+      "tactile",
+      "sensory",
+      "clicks"
+    ],
+    "keywordVerification": "All four checked after saving/reloading and after Add for Review. New version creation reset keywords; restored before submission.",
+    "promotionalText": "Turn the Digital Crown and feel the clicks. Explore 15 haptic effects, with Standard, Ambient, and Haptics Only display modes.",
+    "replacementBehavior": "UI states the new approved version replaces the existing version upon approval.",
+    "watchScreenshotIssueResolved": false,
+    "checkedAt": "2026-10-10T04:34:13+00:00",
+    "package": "../../production/2026-10-10-fullbleed-c-v3/delivery.json"
+  },
+  "replacementFollowUp": {
+    "automationId": "publish-endless-crown-border-free-artwork",
+    "status": "ACTIVE",
+    "intervalHours": 24,
+    "purpose": "Follow approval, verify updated CPP artwork and publish exact approved header v4/search v3 on default released English (U.S.) placements; quiet while unchanged."
+  }
 }

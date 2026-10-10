@@ -23,5 +23,12 @@
   "productionNotes": "Preserve the selected photo, Crown, screen and headline; the clock layout is a generated interpretation of the real screenshot",
   "productionPackage": "production/2026-10-07-selected-c-v1",
   "headerNativeCropFix": "production/2026-10-07-selected-c-v1/exports/endless-crown-c-universal-en-US-v2.png",
-  "customProductPage": "custom-product-pages/reddit-haptic-fidget"
+  "customProductPage": "custom-product-pages/reddit-haptic-fidget",
+  "pendingFullBleedReplacement": {
+    "package": "production/2026-10-10-fullbleed-c-v3",
+    "header": "exports/endless-crown-c-universal-en-US-v4.png",
+    "search": "exports/endless-crown-c-search-en-US-v3.jpg",
+    "status": "Waiting for Review",
+    "generationBoundary": "Generated edits retain C art direction and visible single-Crown composition; center pixels and subtle photographic details are not guaranteed unchanged. Upscaling does not add real photographic resolution."
+  }
 }

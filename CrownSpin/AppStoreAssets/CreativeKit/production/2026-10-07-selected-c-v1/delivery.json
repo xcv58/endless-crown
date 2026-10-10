@@ -250,5 +250,20 @@
         "sha256": "3032bf507380892d765fe5cd5a603d37bfa0837cb4746b4f273f8cd548beff73"
       }
     ]
+  },
+  "pendingReplacement": {
+    "package": "../2026-10-10-fullbleed-c-v3/delivery.json",
+    "headerAssetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+    "searchAssetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
+    "status": "Waiting for Review",
+    "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+    "reason": "Remove baked-in charcoal padding with photographic extensions; retain current published v2 until approval.",
+    "checkedAt": "2026-10-10T04:34:13+00:00"
+  },
+  "replacementFollowUp": {
+    "automationId": "publish-endless-crown-border-free-artwork",
+    "status": "ACTIVE",
+    "intervalHours": 24,
+    "purpose": "Follow approval, verify updated CPP artwork and publish exact approved header v4/search v3 on default released English (U.S.) placements; quiet while unchanged."
   }
 }

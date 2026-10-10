@@ -1,0 +1,70 @@
+{
+  "appId": "6777250620",
+  "locale": "en-US",
+  "createdAt": "2026-10-10T04:34:13+00:00",
+  "assets": [
+    {
+      "file": "exports/endless-crown-c-universal-en-US-v4.png",
+      "placement": "header",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "bytes": 11269754,
+      "sha256": "9ee77fe109893af4782eb3a7020015cf4d552e769b9ae6bb46bb7f448f56988b",
+      "assetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+      "status": "Waiting for Review"
+    },
+    {
+      "file": "exports/endless-crown-c-search-en-US-v3.jpg",
+      "placement": "search",
+      "width": 1920,
+      "height": 1280,
+      "format": "JPEG",
+      "alpha": false,
+      "bytes": 577885,
+      "sha256": "d8bfed65925f36de8bfc23a78d89f8e34494cee1abd3125780aeaa6b2b113b8e",
+      "assetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
+      "status": "Waiting for Review"
+    },
+    {
+      "file": "exports/endless-crown-c-universal-en-US-v3.png",
+      "placement": "header",
+      "width": 5244,
+      "height": 2950,
+      "format": "PNG",
+      "alpha": false,
+      "bytes": 12068200,
+      "sha256": "8026135531ddac484fe8d7809033741cf727db5375dcffeba1c29514777e003d",
+      "assetId": "e7c00019-3f4a-833c-800b-3520ec4a855e",
+      "status": "Failed iPhone headline crop; retained unselected; do not submit or publish"
+    }
+  ],
+  "provenance": {
+    "tool": "Built-in image_gen",
+    "selectedC": "../../candidates/fresh-screenshot-round2/03-close-crop.png",
+    "counter": 4698,
+    "method": "Generated photographic extensions to replace charcoal canvas padding, then sips format conversion/resampling. Header v4 moves text inward to clear Apple iPhone crop.",
+    "boundary": "Generated edits retain C art direction and visible single-Crown composition; center pixels and subtle photographic details are not guaranteed unchanged. Upscaling does not add real photographic resolution.",
+    "prompts": "prompts.json",
+    "finalHeaderPrompt": "header-safe-prompt.txt",
+    "sources": [
+      {
+        "file": "sources/header-fullbleed-safe.png",
+        "sha256": "49094cc4d1186a60aa066331bd8e03335a0ed991764a83246b18f01a99110e0c",
+        "bytes": 2062704
+      },
+      {
+        "file": "sources/header-fullbleed.png",
+        "sha256": "7ce9d57b8dccbe58e5dcc302647dcc36c49ddf66a038177104857cec92266556",
+        "bytes": 2199560
+      },
+      {
+        "file": "sources/search-fullbleed.png",
+        "sha256": "5fbfb953e128dd535c1a26a13e54be10283a1aa58104e355feb2d66c0625cef6",
+        "bytes": 2244967
+      }
+    ]
+  },
+  "specifications": "https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications"
+}
