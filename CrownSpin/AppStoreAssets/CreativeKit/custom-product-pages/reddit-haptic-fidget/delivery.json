@@ -44,9 +44,11 @@
       "04-numbers.png",
       "05-stats.png"
     ],
-    "boundary": "Confirmed only in the Chrome desktop web App Store presentation. Physical iPhone and native Watch Store remain unverified; screenshot reordering was not completed.",
+    "boundary": "No Watch screenshot slots were available in the CPP editor. Full public web page has no Watch screenshots; the user iPhone CPP capture lacks the usual Preview section. Content farther down the native page is not captured; no screenshot reordering was completed.",
     "publicWebStatus": "Missing on CPP; present on ordinary listing",
-    "publicWebCheckedAt": "2026-10-10T03:29:02Z"
+    "publicWebCheckedAt": "2026-10-10T03:29:02Z",
+    "nativeCaptureStatus": "Usual Preview section absent in user iPhone capture; ordinary listing has it.",
+    "nativeCaptureCheckedAt": "2026-10-10T04:10:59Z"
   },
   "submission": {
     "status": "Approved",
@@ -63,10 +65,10 @@
     "approvalTimeBoundary": "Approval was observed live at this check; App Store Connect did not show an exact approval timestamp."
   },
   "publication": {
-    "status": "Approved and public; campaign presentation requires native device verification",
+    "status": "Approved and public; C header verified on user iPhone, Watch preview concern remains",
     "authorized": true,
     "promotionReady": false,
-    "reason": "Public Chrome web campaign page omits Apple Watch screenshots, while the ordinary listing displays them. Do not recommend the campaign link until native iPhone presentation is checked."
+    "reason": "CPP has no Watch screenshots in the complete public web page. The user iPhone capture also omits the usual Preview section before promotional text. Use the ordinary listing for promotion while the CPP screenshot issue remains unresolved."
   },
   "nativePreviews": {
     "searchIPhoneLight": "Passed: complete selected C and headline visible",
@@ -79,7 +81,7 @@
   "linkVerification": {
     "copiedFromAppStoreConnect": true,
     "nativeReferencePreviews": "Verified on iPhone and iPad",
-    "publicNativeLink": "Public web link resolves to the approved CPP with the correct promotional text and Only for Watch label. Physical iPhone App Store and native Watch Store presentation have not been tested.",
+    "publicNativeLink": "User-provided iPhone screenshots show selected C on both links, and exact promotional text identifies the CPP. Its usual Watch Preview section is absent in the supplied viewport. Native Watch Store and content below the captured viewport are not verified.",
     "enabledInAppStoreConnect": true,
     "enabledCheckedAt": "2026-10-10T03:29:02Z",
     "publicWebCheckedAt": "2026-10-10T03:29:02Z"
@@ -92,7 +94,8 @@
     "resumedAt": "2026-10-08T03:22:11Z",
     "stoppedAt": "2026-10-10T03:29:02Z",
     "automationDeleted": true,
-    "reason": "Review is complete. The authorized follow-up stops after reporting an issue requiring user input: campaign Watch screenshots are absent in the public web renderer."
+    "reason": "Review is complete. The authorized follow-up stops after reporting an issue requiring user input: campaign Watch screenshots are absent in the public web renderer.",
+    "purpose": "Automation stopped. Native C header confirmed; custom-page Watch preview issue remains unresolved."
   },
   "lastAutomationAttempt": {
     "at": "2026-10-08T03:11:44.288Z",
@@ -147,7 +150,10 @@
     "../../.delivery-evidence/reddit-cpp-approved-editor-2026-10-10.png",
     "../../.delivery-evidence/reddit-cpp-public-top-2026-10-10.png",
     "../../.delivery-evidence/default-public-watch-screenshots-2026-10-10.png",
-    "../../.delivery-evidence/reddit-cpp-public-reloaded-2026-10-10.png"
+    "../../.delivery-evidence/reddit-cpp-public-reloaded-2026-10-10.png",
+    "../../.delivery-evidence/iphone-ordinary-listing-user-2026-10-10.jpg",
+    "../../.delivery-evidence/iphone-reddit-cpp-user-2026-10-10.jpg",
+    "../../.delivery-evidence/iphone-search-results-user-2026-10-10.jpg"
   ],
   "publicPresentation": {
     "checkedAt": "2026-10-10T03:29:02Z",
@@ -171,5 +177,37 @@
     "submissionStatus": "Approved",
     "storeChangesPerformed": false,
     "nextStep": "Physical iPhone App Store presentation check; use the ordinary listing for promotion while the CPP is not verified."
-  }
+  },
+  "nativeDeviceVerification": {
+    "checkedAt": "2026-10-10T04:10:59Z",
+    "source": "User-provided screenshots from the physical iPhone App Store for both links and search results; interpreted from visible content, not an automated device test.",
+    "deviceModel": "Not supplied",
+    "osVersion": "Not supplied",
+    "ordinaryListingHeader": "Selected C visible, with complete headline and Watch/Crown focal point.",
+    "ordinaryListingWatchPreview": "Preview, Only on Apple Watch, and Watch screenshot gallery visible.",
+    "customPageIdentity": "Photo 2 matches the exact custom-page promotional text, distinguishing it from the ordinary listing.",
+    "customPageHeader": "Selected C visible, with complete headline and Watch/Crown focal point.",
+    "customPageWatchPreview": "No Preview section or Watch screenshots visible; What’s New is followed by the custom promotional text.",
+    "customPageScreenshotBoundary": "The supplied image captures the top of the page only. It confirms the normal Preview placement is absent, but cannot rule out screenshots farther down the page.",
+    "searchResultsArtwork": "Selected C visible in the Endless Crown search result, with complete headline and charcoal canvas spacing.",
+    "nativeWatchStoreVerified": false,
+    "proofs": [
+      {
+        "surface": "ordinaryListing",
+        "file": "../../.delivery-evidence/iphone-ordinary-listing-user-2026-10-10.jpg",
+        "sha256": "42c773e80a326e16effa6c14a4790ca2902cfe49cd90de68c137626ab2230fee"
+      },
+      {
+        "surface": "customPage",
+        "file": "../../.delivery-evidence/iphone-reddit-cpp-user-2026-10-10.jpg",
+        "sha256": "fba68e9edfcf3a390b056189518df16ac3bbeb58417df41a88ec843db00f74c0"
+      },
+      {
+        "surface": "searchResults",
+        "file": "../../.delivery-evidence/iphone-search-results-user-2026-10-10.jpg",
+        "sha256": "3032bf507380892d765fe5cd5a603d37bfa0837cb4746b4f273f8cd548beff73"
+      }
+    ]
+  },
+  "nextStep": "Use the ordinary listing for promotion. CPP Watch screenshot handling needs investigation; check farther down the native page before claiming a complete native screenshot omission."
 }

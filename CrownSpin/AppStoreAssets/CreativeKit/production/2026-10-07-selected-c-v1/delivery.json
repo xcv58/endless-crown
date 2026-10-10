@@ -77,7 +77,7 @@
     "headerV1": "Failed: native iPhone preview clipped the start of the headline. Do not publish it as header.",
     "headerV2": "Passed on iPhone light/dark and iPad portrait light/landscape dark after refreshing the processed asset.",
     "searchV2": "Passed on iPhone light and iPad portrait light.",
-    "boundary": "Final public Store placement still requires post-approval verification; native previews are reference renders.",
+    "boundary": "Reference previews are separate from device proof. User iPhone screenshots now verify public default header and search artwork; other native Store surfaces remain untested.",
     "recheckedAt": "2026-10-09T23:53:25Z",
     "currentCheck": "Corrected header v2 passed iPhone light/dark and iPad landscape dark reference previews; search v2 passed iPhone light. Published default iPhone header and search previews matched the selected C."
   },
@@ -99,7 +99,7 @@
     "build": "16",
     "locale": "en-US",
     "verified": "Published Header and Search Results separately, confirmed both native reference previews and exact asset IDs in Recent Usage for iOS App Version 1.0.1 Ready for Distribution.",
-    "publicStoreBoundary": "App Store Connect publication is confirmed; storefront propagation and physical native Store presentation have not been verified.",
+    "publicStoreBoundary": "User iPhone screenshots confirm selected C is visible on the default header and search result. CPP header is also visible. Native Watch Store and other devices are not tested.",
     "publicationVerifiedAt": "2026-10-09T23:53:25Z"
   },
   "olderRejectedUpload": {
@@ -148,7 +148,7 @@
     "automationId": "publish-endless-crown-c-artwork",
     "status": "STOPPED",
     "intervalHours": 24,
-    "purpose": "Default placements already published. CPP now Approved; public web screenshot omission requires a physical iPhone presentation check.",
+    "purpose": "Default C header and search artwork verified on user iPhone. Automation stopped; CPP Watch preview concern remains unresolved.",
     "resumedAt": "2026-10-08T03:22:11Z",
     "stoppedAt": "2026-10-10T03:29:02Z",
     "automationDeleted": true,
@@ -200,7 +200,10 @@
     "../../.delivery-evidence/default-header-published-preview-2026-10-09.png",
     "../../.delivery-evidence/default-search-published-preview-2026-10-09.png",
     "../../.delivery-evidence/header-v2-live-usage-2026-10-09.png",
-    "../../.delivery-evidence/search-v2-live-usage-2026-10-09.png"
+    "../../.delivery-evidence/search-v2-live-usage-2026-10-09.png",
+    "../../.delivery-evidence/iphone-ordinary-listing-user-2026-10-10.jpg",
+    "../../.delivery-evidence/iphone-reddit-cpp-user-2026-10-10.jpg",
+    "../../.delivery-evidence/iphone-search-results-user-2026-10-10.jpg"
   ],
   "lastCPPReviewCheck": {
     "checkedAt": "2026-10-10T03:29:02Z",
@@ -216,5 +219,36 @@
     "customProductPage": "Approved and public with correct text and Watch-only label, but no Watch screenshots in Chrome web view.",
     "physicalIPhoneVerified": false,
     "nativeWatchStoreVerified": false
+  },
+  "nativeDeviceVerification": {
+    "checkedAt": "2026-10-10T04:10:59Z",
+    "source": "User-provided screenshots from the physical iPhone App Store for both links and search results; interpreted from visible content, not an automated device test.",
+    "deviceModel": "Not supplied",
+    "osVersion": "Not supplied",
+    "ordinaryListingHeader": "Selected C visible, with complete headline and Watch/Crown focal point.",
+    "ordinaryListingWatchPreview": "Preview, Only on Apple Watch, and Watch screenshot gallery visible.",
+    "customPageIdentity": "Photo 2 matches the exact custom-page promotional text, distinguishing it from the ordinary listing.",
+    "customPageHeader": "Selected C visible, with complete headline and Watch/Crown focal point.",
+    "customPageWatchPreview": "No Preview section or Watch screenshots visible; What’s New is followed by the custom promotional text.",
+    "customPageScreenshotBoundary": "The supplied image captures the top of the page only. It confirms the normal Preview placement is absent, but cannot rule out screenshots farther down the page.",
+    "searchResultsArtwork": "Selected C visible in the Endless Crown search result, with complete headline and charcoal canvas spacing.",
+    "nativeWatchStoreVerified": false,
+    "proofs": [
+      {
+        "surface": "ordinaryListing",
+        "file": "../../.delivery-evidence/iphone-ordinary-listing-user-2026-10-10.jpg",
+        "sha256": "42c773e80a326e16effa6c14a4790ca2902cfe49cd90de68c137626ab2230fee"
+      },
+      {
+        "surface": "customPage",
+        "file": "../../.delivery-evidence/iphone-reddit-cpp-user-2026-10-10.jpg",
+        "sha256": "fba68e9edfcf3a390b056189518df16ac3bbeb58417df41a88ec843db00f74c0"
+      },
+      {
+        "surface": "searchResults",
+        "file": "../../.delivery-evidence/iphone-search-results-user-2026-10-10.jpg",
+        "sha256": "3032bf507380892d765fe5cd5a603d37bfa0837cb4746b4f273f8cd548beff73"
+      }
+    ]
   }
 }
