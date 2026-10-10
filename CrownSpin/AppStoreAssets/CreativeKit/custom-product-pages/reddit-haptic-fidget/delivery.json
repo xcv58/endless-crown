@@ -44,22 +44,29 @@
       "04-numbers.png",
       "05-stats.png"
     ],
-    "boundary": "Do not claim the custom page contains Watch screenshots without verifying live rendering after approval."
+    "boundary": "Confirmed only in the Chrome desktop web App Store presentation. Physical iPhone and native Watch Store remain unverified; screenshot reordering was not completed.",
+    "publicWebStatus": "Missing on CPP; present on ordinary listing",
+    "publicWebCheckedAt": "2026-10-10T03:29:02Z"
   },
   "submission": {
-    "status": "Waiting for Review",
+    "status": "Approved",
     "submissionId": "d553c689-be1f-4ebe-9a09-10210b48ac12",
     "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d553c689-be1f-4ebe-9a09-10210b48ac12",
     "submittedAt": "2026-10-09T23:50:00Z",
     "submittedTimePrecision": "Minute; App Store Connect displayed Oct 9, 2026 at 7:50 PM EDT.",
     "items": 1,
-    "verified": "1 Item Submitted confirmation, submission detail Waiting for Review, and CPP editor Waiting for Review; saved promotional text and four selected keywords verified after reload.",
+    "verified": "Live submission detail shows Review Completed and Reddit — Haptic Fidget Approved. The CPP editor also shows Approved.",
     "previousBlocker": "Resolved: shared search v2 approved before this submission.",
-    "sharedAssetSubmissionId": "3648e06c-ec06-4939-aca6-638166b57ea2"
+    "sharedAssetSubmissionId": "3648e06c-ec06-4939-aca6-638166b57ea2",
+    "reviewStatus": "Review Completed",
+    "approvalObservedAt": "2026-10-10T03:29:02Z",
+    "approvalTimeBoundary": "Approval was observed live at this check; App Store Connect did not show an exact approval timestamp."
   },
   "publication": {
-    "status": "Waiting for CPP review; both shared assets approved and default placements published",
-    "authorized": true
+    "status": "Approved and public; campaign presentation requires native device verification",
+    "authorized": true,
+    "promotionReady": false,
+    "reason": "Public Chrome web campaign page omits Apple Watch screenshots, while the ordinary listing displays them. Do not recommend the campaign link until native iPhone presentation is checked."
   },
   "nativePreviews": {
     "searchIPhoneLight": "Passed: complete selected C and headline visible",
@@ -68,20 +75,24 @@
     "searchIPadLight": "Passed: complete selected C and headline visible"
   },
   "followUpAutomationId": "publish-endless-crown-c-artwork",
-  "checkedAt": "2026-10-09T23:53:25Z",
+  "checkedAt": "2026-10-10T03:29:02Z",
   "linkVerification": {
     "copiedFromAppStoreConnect": true,
     "nativeReferencePreviews": "Verified on iPhone and iPad",
-    "publicNativeLink": "Pending CPP approval; public presentation, Watch screenshot fallback and native Watch/physical iPhone rendering are not verified.",
+    "publicNativeLink": "Public web link resolves to the approved CPP with the correct promotional text and Only for Watch label. Physical iPhone App Store and native Watch Store presentation have not been tested.",
     "enabledInAppStoreConnect": true,
-    "enabledCheckedAt": "2026-10-09T23:53:25Z"
+    "enabledCheckedAt": "2026-10-10T03:29:02Z",
+    "publicWebCheckedAt": "2026-10-10T03:29:02Z"
   },
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
-    "status": "ACTIVE",
+    "status": "STOPPED",
     "intervalHours": 24,
     "updatedForCPP": true,
-    "resumedAt": "2026-10-08T03:22:11Z"
+    "resumedAt": "2026-10-08T03:22:11Z",
+    "stoppedAt": "2026-10-10T03:29:02Z",
+    "automationDeleted": true,
+    "reason": "Review is complete. The authorized follow-up stops after reporting an issue requiring user input: campaign Watch screenshots are absent in the public web renderer."
   },
   "lastAutomationAttempt": {
     "at": "2026-10-08T03:11:44.288Z",
@@ -117,19 +128,48 @@
     "nextStep": "Follow the submitted Reddit CPP review, then verify approval, enabled campaign link, keyword publication and actual public presentation."
   },
   "keywordVerification": {
-    "checkedAt": "2026-10-09T23:53:25Z",
+    "checkedAt": "2026-10-10T03:29:02Z",
     "selected": [
       "fidget",
       "tactile",
       "sensory",
       "clicks"
     ],
-    "verified": "All four remain checked in the reloaded Waiting for Review editor.",
-    "nextStep": "After approval, confirm keyword publication if the UI requires it."
+    "verified": "All four keywords remain checked in the Approved editor. Publish is disabled, so no additional keyword publication action is available or required in this UI.",
+    "nextStep": "No additional keyword action indicated by the approved editor.",
+    "publishButtonEnabled": false
   },
   "proofScreenshots": [
     "../../.delivery-evidence/reddit-cpp-submitted-2026-10-09.png",
     "../../.delivery-evidence/reddit-cpp-waiting-for-review-2026-10-09.png",
-    "../../.delivery-evidence/reddit-cpp-pending-metadata-2026-10-09.png"
-  ]
+    "../../.delivery-evidence/reddit-cpp-pending-metadata-2026-10-09.png",
+    "../../.delivery-evidence/reddit-cpp-approved-2026-10-10.png",
+    "../../.delivery-evidence/reddit-cpp-approved-editor-2026-10-10.png",
+    "../../.delivery-evidence/reddit-cpp-public-top-2026-10-10.png",
+    "../../.delivery-evidence/default-public-watch-screenshots-2026-10-10.png",
+    "../../.delivery-evidence/reddit-cpp-public-reloaded-2026-10-10.png"
+  ],
+  "publicPresentation": {
+    "checkedAt": "2026-10-10T03:29:02Z",
+    "surface": "Chrome desktop web App Store, United States",
+    "campaignUrl": "https://apps.apple.com/us/app/endless-crown/id6777250620?ppid=bda8da49-0953-45b7-8f8d-4198c720305f",
+    "ordinaryListingUrl": "https://apps.apple.com/us/app/endless-crown/id6777250620",
+    "campaignPromotionalTextMatches": true,
+    "watchOnlyLabel": "Only for Watch",
+    "watchScreenshotsPresent": false,
+    "ordinaryListingWatchScreenshotsPresent": true,
+    "headerObservation": "Both web pages use a generic app-icon banner; selected C artwork is not visible in this desktop web renderer. This does not establish whether the new native Store placements have propagated.",
+    "reloadConfirmed": true,
+    "physicalIPhoneVerified": false,
+    "nativeWatchStoreVerified": false,
+    "result": "Needs user input: inspect the campaign link in the physical iPhone App Store before promoting it.",
+    "causeBoundary": "The CPP editor exposes no Watch screenshot slots. A fallback limitation is a possible cause of the public omission, not a verified platform root cause."
+  },
+  "lastCPPReviewCheck": {
+    "checkedAt": "2026-10-10T03:29:02Z",
+    "source": "Live App Store Connect submission and approved CPP editor through Computer Use; public campaign and ordinary listing comparison",
+    "submissionStatus": "Approved",
+    "storeChangesPerformed": false,
+    "nextStep": "Physical iPhone App Store presentation check; use the ordinary listing for promotion while the CPP is not verified."
+  }
 }

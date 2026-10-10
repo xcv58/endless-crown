@@ -146,10 +146,13 @@
   "checkedAt": "2026-10-09T23:53:25Z",
   "followUp": {
     "automationId": "publish-endless-crown-c-artwork",
-    "status": "ACTIVE",
+    "status": "STOPPED",
     "intervalHours": 24,
-    "purpose": "Follow Reddit CPP approval and verify campaign link, keywords, Watch screenshot fallback and public presentation; default C placements are already published.",
-    "resumedAt": "2026-10-08T03:22:11Z"
+    "purpose": "Default placements already published. CPP now Approved; public web screenshot omission requires a physical iPhone presentation check.",
+    "resumedAt": "2026-10-08T03:22:11Z",
+    "stoppedAt": "2026-10-10T03:29:02Z",
+    "automationDeleted": true,
+    "reason": "Stopped under the authorized condition to report an issue requiring user input."
   },
   "customProductPage": "../../custom-product-pages/reddit-haptic-fidget/delivery.json",
   "correctedHeaderReviewSubmission": {
@@ -198,5 +201,20 @@
     "../../.delivery-evidence/default-search-published-preview-2026-10-09.png",
     "../../.delivery-evidence/header-v2-live-usage-2026-10-09.png",
     "../../.delivery-evidence/search-v2-live-usage-2026-10-09.png"
-  ]
+  ],
+  "lastCPPReviewCheck": {
+    "checkedAt": "2026-10-10T03:29:02Z",
+    "source": "Live App Store Connect submission and approved CPP editor through Computer Use; public campaign and ordinary listing comparison",
+    "submissionStatus": "Approved",
+    "storeChangesPerformed": false,
+    "nextStep": "Physical iPhone App Store presentation check; use the ordinary listing for promotion while the CPP is not verified."
+  },
+  "publicStoreCheck": {
+    "checkedAt": "2026-10-10T03:29:02Z",
+    "ordinaryListing": "Public Chrome web page shows Apple Watch screenshots and Only for Watch.",
+    "defaultArtwork": "C artwork is not displayed by the desktop web renderer; native Store propagation remains unverified.",
+    "customProductPage": "Approved and public with correct text and Watch-only label, but no Watch screenshots in Chrome web view.",
+    "physicalIPhoneVerified": false,
+    "nativeWatchStoreVerified": false
+  }
 }

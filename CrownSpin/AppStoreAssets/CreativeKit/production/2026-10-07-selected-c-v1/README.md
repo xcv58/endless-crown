@@ -9,7 +9,7 @@ The user selected [C — Close tactile detail](../../candidates/fresh-screenshot
 - [Preview](preview.html), [manifest](manifest.json), and [live delivery state](delivery.json).
 - [Reddit custom product page](../../custom-product-pages/reddit-haptic-fidget/README.md).
 
-Header v2 passes Apple's reference preview on iPhone in light/dark appearance and iPad in portrait/light and landscape/dark. Search v2 passes iPhone and iPad light previews. Both final assets are Approved and were published on the released 1.0.1 English (U.S.) default Header and Search Results placements on October 9, 2026. Exact asset IDs and Ready for Distribution usage were verified in Asset Library. The Reddit CPP is submitted and Waiting for Review. Public Store propagation and CPP link presentation still require verification.
+Header v2 passes Apple's reference preview on iPhone in light/dark appearance and iPad in portrait/light and landscape/dark. Search v2 passes iPhone and iPad light previews. Both final assets are Approved and were published on the released 1.0.1 English (U.S.) default Header and Search Results placements on October 9, 2026. Exact asset IDs and Ready for Distribution usage were verified in Asset Library. The Reddit CPP is now Approved and its link is enabled. The public Chrome web campaign page omits Watch screenshots while the ordinary listing shows them; the campaign needs a physical iPhone presentation check before promotion. The daily follow-up has stopped after reporting this issue. Native Store artwork propagation remains unverified; completed default placements were not republished.
 
 ## Earlier export attempts
 
