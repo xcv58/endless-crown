@@ -1,5 +1,7 @@
 # C artwork without canvas bands
 
+**October 11 access update:** App Store Connect is signed out and automatic sign-in failed. The replacement review was not verified today. The daily follow-up was stopped and deleted until Chrome authentication is restored; recorded review statuses remain the October 10 verification.
+
 The user asked to remove the charcoal space visible around C on their iPhone listing and search screenshots. Built-in imagegen extends the photograph to all canvas edges. Header v4 also moves the headline inward so Apple’s iPhone crop preserves both lines. The visible single Crown, counter 4698, and C art direction are retained; generated edits do not guarantee pixel-identical center detail.
 
 - [Header v4](exports/endless-crown-c-universal-en-US-v4.png): opaque 5244 × 2950 PNG.

@@ -268,8 +268,21 @@
   },
   "replacementFollowUp": {
     "automationId": "publish-endless-crown-border-free-artwork",
-    "status": "ACTIVE",
+    "status": "STOPPED",
     "intervalHours": 24,
-    "purpose": "Follow approval, verify updated CPP artwork and publish exact approved header v4/search v3 on default released English (U.S.) placements; quiet while unchanged."
+    "purpose": "Follow approval, verify updated CPP artwork and publish exact approved header v4/search v3 on default released English (U.S.) placements; quiet while unchanged.",
+    "automationDeleted": true,
+    "stoppedAt": "2026-10-11T04:36:36+00:00",
+    "reason": "Required App Store Connect sign-in; stopped under the authorized input-needed condition."
+  },
+  "lastBorderFreeAutomationAttempt": {
+    "at": "2026-10-11T04:33:38.468Z",
+    "status": "Blocked before live verification",
+    "reason": "App Store Connect redirected the review URL to sign-in. The existing 1Password sign-in attempt ended with authResult=FAILED and an empty Password field.",
+    "needsUserAction": "Sign in to App Store Connect in Chrome, then resume the follow-up.",
+    "storeChangesPerformed": false,
+    "reviewStatusBoundary": "Review and asset statuses remain last verified values from October 10; this run does not confirm that review is still pending.",
+    "proof": "../../.delivery-evidence/artwork-review-login-required-2026-10-11.png",
+    "computerUse": "Available through Node REPL and @oai/sky; direct cua_repl was absent in this scheduled run."
   }
 }

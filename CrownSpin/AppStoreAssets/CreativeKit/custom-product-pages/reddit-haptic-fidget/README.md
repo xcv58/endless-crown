@@ -1,5 +1,7 @@
 # Reddit — Haptic Fidget custom product page
 
+**October 11 access update:** App Store Connect is signed out and automatic sign-in failed. The replacement review was not verified today. The daily follow-up was stopped and deleted until Chrome authentication is restored; recorded review statuses remain the October 10 verification.
+
 ## Pending artwork update
 
 A new version of this existing CPP was submitted on October 10, 2026 at 12:31 AM EDT with [border-free header v4/search v3](../../production/2026-10-10-fullbleed-c-v3/README.md). [Submission d95afe16](https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf) is Waiting for Review. The public page ID and URL are unchanged, and all four keywords and promotional text were preserved. Apple states the approved new version replaces the existing CPP. This artwork update does not resolve the Watch screenshot issue. The old approval and public-state notes below describe the preserved v2 version; the new daily follow-up is active.

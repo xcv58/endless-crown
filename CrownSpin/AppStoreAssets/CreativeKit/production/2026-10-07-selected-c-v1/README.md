@@ -1,5 +1,7 @@
 # Selected C — Store exports
 
+**October 11 access update:** App Store Connect is signed out and automatic sign-in failed. The replacement review was not verified today. The daily follow-up was stopped and deleted until Chrome authentication is restored; recorded review statuses remain the October 10 verification.
+
 ## Pending border-free replacement
 
 The user reported visible charcoal bands in physical iPhone captures. [Full-bleed header v4/search v3](../2026-10-10-fullbleed-c-v3/README.md) now pass Apple crop checks and are Waiting for Review. Preserve this published v2 package until the replacements are approved and published; a new daily follow-up handles publication.

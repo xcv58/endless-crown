@@ -1,5 +1,7 @@
 # Endless Crown App Store creative assets
 
+**October 11 access update:** App Store Connect is signed out and automatic sign-in failed. The replacement review was not verified today. The daily follow-up was stopped and deleted until Chrome authentication is restored; recorded review statuses remain the October 10 verification.
+
 ## Pending replacement without canvas bands
 
 [Header v4 and search v3](production/2026-10-10-fullbleed-c-v3/README.md) replace the baked-in charcoal surround with photographic extensions. Both passed Apple iPhone/iPad reference crop checks and are Waiting for Review through a new version of the existing CPP. The current public v2 assets remain live. A new daily follow-up will publish the exact approved replacements on default placements after approval. The previously stopped monitor is historical.
