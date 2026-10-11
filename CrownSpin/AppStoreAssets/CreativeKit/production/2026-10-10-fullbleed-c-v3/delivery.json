@@ -1,7 +1,7 @@
 {
   "appId": "6777250620",
   "locale": "en-US",
-  "checkedAt": "2026-10-10T04:34:13+00:00",
+  "checkedAt": "2026-10-11T18:11:54+00:00",
   "reason": "User physical iPhone captures revealed charcoal canvas bands around the published C artwork.",
   "assets": [
     {
@@ -14,7 +14,8 @@
       "bytes": 11269754,
       "sha256": "9ee77fe109893af4782eb3a7020015cf4d552e769b9ae6bb46bb7f448f56988b",
       "assetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
-      "status": "Waiting for Review"
+      "status": "Approved",
+      "approvalObservedAt": "2026-10-11T18:11:54+00:00"
     },
     {
       "file": "exports/endless-crown-c-search-en-US-v3.jpg",
@@ -26,7 +27,8 @@
       "bytes": 577885,
       "sha256": "d8bfed65925f36de8bfc23a78d89f8e34494cee1abd3125780aeaa6b2b113b8e",
       "assetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
-      "status": "Waiting for Review"
+      "status": "Approved",
+      "approvalObservedAt": "2026-10-11T18:11:54+00:00"
     }
   ],
   "failedReference": {
@@ -44,12 +46,13 @@
   "nativeReferencePreviews": {
     "headerV4": "Passed: iPhone light/dark and iPad portrait light/landscape dark. Complete headline, Watch/Crown and 4698 focal point visible; photograph fills frame without canvas bars.",
     "searchV3": "Passed: iPhone light/dark and iPad portrait light/landscape dark. Complete headline and Watch visible; no letterbox bands.",
-    "boundary": "App Store Connect reference previews only. The replacements are not yet approved or public, and have not been tested in the physical Store."
+    "boundary": "Fresh App Store Connect reference checks passed for both approved assets on all four stated device/appearance combinations. Published default iPhone Header and Search previews also passed. Physical iPhone and native Watch Store propagation of these replacements has not been verified.",
+    "recheckedAt": "2026-10-11T18:11:54+00:00"
   },
   "reviewSubmission": {
     "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
     "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
-    "status": "Waiting for Review",
+    "status": "Approved",
     "submittedAt": "2026-10-10T04:31:00Z",
     "timePrecision": "Minute; App Store Connect displayed Oct 10, 2026 at 12:31 AM EDT.",
     "items": 1,
@@ -58,7 +61,10 @@
       "f3400019-3f4a-833c-8033-d6d81c3631ed",
       "1e800019-3f4a-833c-8039-c5e3a3684b65"
     ],
-    "verified": "CPP submission detail and both exact shared Asset Library entries show Waiting for Review."
+    "verified": "Live submission detail shows Review Completed and the Reddit — Haptic Fidget item Approved; both exact shared assets show Approved in Asset Library.",
+    "reviewStatus": "Review Completed",
+    "approvalObservedAt": "2026-10-11T18:11:54+00:00",
+    "approvalTimeBoundary": "Observed live on October 11; exact approval timestamp was not displayed."
   },
   "customProductPageUpdate": {
     "editorId": "29e02965-7989-4a9f-9e8b-13c080d71d2a",
@@ -75,7 +81,8 @@
       "bytes": 11269754,
       "sha256": "9ee77fe109893af4782eb3a7020015cf4d552e769b9ae6bb46bb7f448f56988b",
       "assetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
-      "status": "Waiting for Review"
+      "status": "Approved",
+      "approvalObservedAt": "2026-10-11T18:11:54+00:00"
     },
     "search": {
       "file": "exports/endless-crown-c-search-en-US-v3.jpg",
@@ -87,12 +94,13 @@
       "bytes": 577885,
       "sha256": "d8bfed65925f36de8bfc23a78d89f8e34494cee1abd3125780aeaa6b2b113b8e",
       "assetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
-      "status": "Waiting for Review"
+      "status": "Approved",
+      "approvalObservedAt": "2026-10-11T18:11:54+00:00"
     },
     "submission": {
       "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
       "url": "https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
-      "status": "Waiting for Review",
+      "status": "Approved",
       "submittedAt": "2026-10-10T04:31:00Z",
       "timePrecision": "Minute; App Store Connect displayed Oct 10, 2026 at 12:31 AM EDT.",
       "items": 1,
@@ -101,7 +109,10 @@
         "f3400019-3f4a-833c-8033-d6d81c3631ed",
         "1e800019-3f4a-833c-8039-c5e3a3684b65"
       ],
-      "verified": "CPP submission detail and both exact shared Asset Library entries show Waiting for Review."
+      "verified": "Live submission detail shows Review Completed and the Reddit — Haptic Fidget item Approved; both exact shared assets show Approved in Asset Library.",
+      "reviewStatus": "Review Completed",
+      "approvalObservedAt": "2026-10-11T18:11:54+00:00",
+      "approvalTimeBoundary": "Observed live on October 11; exact approval timestamp was not displayed."
     },
     "keywords": [
       "fidget",
@@ -109,31 +120,45 @@
       "sensory",
       "clicks"
     ],
-    "keywordVerification": "All four checked after saving/reloading and after Add for Review. New version creation reset keywords; restored before submission.",
+    "keywordVerification": "All four keywords checked in the approved editor; Publish is disabled, so no additional keyword action is available.",
     "promotionalText": "Turn the Digital Crown and feel the clicks. Explore 15 haptic effects, with Standard, Ambient, and Haptics Only display modes.",
     "replacementBehavior": "UI states the new approved version replaces the existing version upon approval.",
     "watchScreenshotIssueResolved": false,
-    "checkedAt": "2026-10-10T04:34:13+00:00"
+    "checkedAt": "2026-10-11T18:11:54+00:00",
+    "status": "Approved; replaced previous CPP version",
+    "linkEnabled": true,
+    "publishButtonEnabled": false
   },
   "publication": {
-    "status": "Pending approval; default placements unchanged",
+    "status": "Published in App Store Connect",
     "authorized": true,
     "targetHeaderAssetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
     "targetSearchAssetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
-    "currentHeaderAssetId": "20000019-3f4a-833c-801a-e31510b1067e",
-    "currentSearchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+    "currentHeaderAssetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+    "currentSearchAssetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
     "appVersion": "1.0.1",
     "build": "16",
-    "nextStep": "After shared assets approved, select exact header v4 and search v3 on current released default English (U.S.) placements, verify crops, and publish separately."
+    "nextStep": "Artwork delivery complete. Use ordinary listing for promotion while the separate CPP Watch screenshot issue remains unresolved.",
+    "previousHeaderAssetId": "20000019-3f4a-833c-801a-e31510b1067e",
+    "previousSearchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
+    "publicationVerifiedAt": "2026-10-11T18:11:54+00:00",
+    "locale": "en-US",
+    "verified": "Published default Header and Search Results separately. Exact Asset Library Recent Usage rows confirm iOS App Version 1.0.1 English (U.S.) Ready for Distribution for both assets; approved CPP usage is also present.",
+    "publicStoreBoundary": "Chrome web pages do not display the selected C artwork. New physical iPhone/native Watch Store propagation remains unverified."
   },
   "followUp": {
     "automationId": "publish-endless-crown-border-free-artwork",
-    "status": "STOPPED",
+    "status": "COMPLETE",
     "intervalHours": 24,
     "purpose": "Follow approval, verify updated CPP artwork and publish exact approved header v4/search v3 on default released English (U.S.) placements; quiet while unchanged.",
     "automationDeleted": true,
     "stoppedAt": "2026-10-11T04:36:36+00:00",
-    "reason": "Required App Store Connect sign-in; stopped under the authorized input-needed condition."
+    "reason": "After user restored Chrome sign-in, verified approval and completed exact default placements and updated CPP artwork. Authorized completion stop condition met.",
+    "previousStopReason": "Required App Store Connect sign-in; stopped under the authorized input-needed condition.",
+    "completedAt": "2026-10-11T18:11:54+00:00",
+    "resumedWorkAt": "2026-10-11T18:11:54+00:00",
+    "automationRecreated": false,
+    "automationDecision": "No replacement daily automation created: publication work completed during the requested resume check; the original stop condition is satisfied."
   },
   "proofScreenshots": [
     "../../.delivery-evidence/header-v4-iphone-light-2026-10-10.png",
@@ -147,7 +172,27 @@
     "../../.delivery-evidence/fullbleed-c-submitted-2026-10-10.png",
     "../../.delivery-evidence/header-v4-waiting-for-review-2026-10-10.png",
     "../../.delivery-evidence/search-v3-waiting-for-review-2026-10-10.png",
-    "../../.delivery-evidence/artwork-review-login-required-2026-10-11.png"
+    "../../.delivery-evidence/artwork-review-login-required-2026-10-11.png",
+    "../../.delivery-evidence/default-header-v4-iphone-published-2026-10-11.png",
+    "../../.delivery-evidence/default-header-v4-published-2026-10-11.png",
+    "../../.delivery-evidence/default-public-watch-screenshots-2026-10-11.png",
+    "../../.delivery-evidence/default-search-v3-iphone-published-2026-10-11.png",
+    "../../.delivery-evidence/default-search-v3-published-2026-10-11.png",
+    "../../.delivery-evidence/fullbleed-c-review-approved-2026-10-11.png",
+    "../../.delivery-evidence/header-v4-approved-2026-10-11.png",
+    "../../.delivery-evidence/header-v4-approved-ipad-landscape-dark-2026-10-11.png",
+    "../../.delivery-evidence/header-v4-approved-ipad-portrait-light-2026-10-11.png",
+    "../../.delivery-evidence/header-v4-approved-iphone-dark-2026-10-11.png",
+    "../../.delivery-evidence/header-v4-approved-iphone-light-2026-10-11.png",
+    "../../.delivery-evidence/header-v4-default-ready-for-distribution-2026-10-11.png",
+    "../../.delivery-evidence/reddit-cpp-fullbleed-approved-metadata-2026-10-11.png",
+    "../../.delivery-evidence/reddit-cpp-public-2026-10-11.png",
+    "../../.delivery-evidence/search-v3-approved-2026-10-11.png",
+    "../../.delivery-evidence/search-v3-approved-ipad-landscape-dark-2026-10-11.png",
+    "../../.delivery-evidence/search-v3-approved-ipad-portrait-light-2026-10-11.png",
+    "../../.delivery-evidence/search-v3-approved-iphone-dark-2026-10-11.png",
+    "../../.delivery-evidence/search-v3-approved-iphone-light-2026-10-11.png",
+    "../../.delivery-evidence/search-v3-default-ready-for-distribution-2026-10-11.png"
   ],
   "preservation": "All prior selected C versions, failed references, rejected editorial, current released build and Watch screenshot kit retained. CPP Watch screenshot omission remains separate and unresolved.",
   "lastBorderFreeAutomationAttempt": {
@@ -158,6 +203,26 @@
     "storeChangesPerformed": false,
     "reviewStatusBoundary": "Review and asset statuses remain last verified values from October 10; this run does not confirm that review is still pending.",
     "proof": "../../.delivery-evidence/artwork-review-login-required-2026-10-11.png",
-    "computerUse": "Available through Node REPL and @oai/sky; direct cua_repl was absent in this scheduled run."
+    "computerUse": "Available through Node REPL and @oai/sky; direct cua_repl was absent in this scheduled run.",
+    "resolvedAt": "2026-10-11T18:11:54+00:00",
+    "resolution": "User restored App Store Connect Chrome sign-in; live approval verified and authorized artwork publication completed.",
+    "userActionStillRequired": false
+  },
+  "publicPresentation": {
+    "checkedAt": "2026-10-11T18:11:54+00:00",
+    "surface": "Chrome desktop web App Store, United States",
+    "campaignUrl": "https://apps.apple.com/us/app/endless-crown/id6777250620?ppid=bda8da49-0953-45b7-8f8d-4198c720305f",
+    "ordinaryListingUrl": "https://apps.apple.com/us/app/endless-crown/id6777250620",
+    "campaignPromotionalTextMatches": true,
+    "watchOnlyLabel": "Only for Watch",
+    "watchScreenshotsPresent": false,
+    "ordinaryListingWatchScreenshotsPresent": true,
+    "headerObservation": "Chrome desktop web renders a generic banner rather than selected C on the campaign. This surface cannot verify the new native Store artwork propagation.",
+    "reloadConfirmed": false,
+    "physicalIPhoneVerified": false,
+    "nativeWatchStoreVerified": false,
+    "result": "Known CPP Watch screenshot omission persists in the complete Chrome accessibility page; ordinary listing still exposes its Apple Watch screenshot gallery. Continue ordinary listing for promotion.",
+    "causeBoundary": "The CPP editor exposes no Watch screenshot slots. A fallback limitation is a possible cause of the public omission, not a verified platform root cause.",
+    "verification": "Fresh navigation to exact campaign URL and ordinary listing; saved full accessibility snapshots and local screenshots."
   }
 }

@@ -91,7 +91,7 @@
     "verified": "Both assets in this submission are Approved in the live Asset Library; submission detail was not reopened."
   },
   "publication": {
-    "status": "Published in App Store Connect",
+    "status": "Historical v2 publication; superseded by header v4/search v3 on October 11",
     "authorized": true,
     "headerAssetId": "20000019-3f4a-833c-801a-e31510b1067e",
     "searchAssetId": "83400019-3f4a-833c-8014-c5b89ff50a01",
@@ -100,7 +100,8 @@
     "locale": "en-US",
     "verified": "Published Header and Search Results separately, confirmed both native reference previews and exact asset IDs in Recent Usage for iOS App Version 1.0.1 Ready for Distribution.",
     "publicStoreBoundary": "User iPhone screenshots confirm selected C is visible on the default header and search result. CPP header is also visible. Native Watch Store and other devices are not tested.",
-    "publicationVerifiedAt": "2026-10-09T23:53:25Z"
+    "publicationVerifiedAt": "2026-10-09T23:53:25Z",
+    "supersededAt": "2026-10-11T18:11:54+00:00"
   },
   "olderRejectedUpload": {
     "observed": "One incomplete endless-crown-editorial-search-en-US-v1.jpg entry with no size, compatibility or review status",
@@ -251,23 +252,19 @@
       }
     ]
   },
-  "pendingReplacement": {
-    "package": "../2026-10-10-fullbleed-c-v3/delivery.json",
-    "headerAssetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
-    "searchAssetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
-    "status": "Waiting for Review",
-    "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
-    "reason": "Remove baked-in charcoal padding with photographic extensions; retain current published v2 until approval.",
-    "checkedAt": "2026-10-10T04:34:13+00:00"
-  },
   "replacementFollowUp": {
     "automationId": "publish-endless-crown-border-free-artwork",
-    "status": "STOPPED",
+    "status": "COMPLETE",
     "intervalHours": 24,
     "purpose": "Follow approval, verify updated CPP artwork and publish exact approved header v4/search v3 on default released English (U.S.) placements; quiet while unchanged.",
     "automationDeleted": true,
     "stoppedAt": "2026-10-11T04:36:36+00:00",
-    "reason": "Required App Store Connect sign-in; stopped under the authorized input-needed condition."
+    "reason": "After user restored Chrome sign-in, verified approval and completed exact default placements and updated CPP artwork. Authorized completion stop condition met.",
+    "previousStopReason": "Required App Store Connect sign-in; stopped under the authorized input-needed condition.",
+    "completedAt": "2026-10-11T18:11:54+00:00",
+    "resumedWorkAt": "2026-10-11T18:11:54+00:00",
+    "automationRecreated": false,
+    "automationDecision": "No replacement daily automation created: publication work completed during the requested resume check; the original stop condition is satisfied."
   },
   "lastBorderFreeAutomationAttempt": {
     "at": "2026-10-11T04:33:38.468Z",
@@ -277,6 +274,18 @@
     "storeChangesPerformed": false,
     "reviewStatusBoundary": "Review and asset statuses remain last verified values from October 10; this run does not confirm that review is still pending.",
     "proof": "../../.delivery-evidence/artwork-review-login-required-2026-10-11.png",
-    "computerUse": "Available through Node REPL and @oai/sky; direct cua_repl was absent in this scheduled run."
+    "computerUse": "Available through Node REPL and @oai/sky; direct cua_repl was absent in this scheduled run.",
+    "resolvedAt": "2026-10-11T18:11:54+00:00",
+    "resolution": "User restored App Store Connect Chrome sign-in; live approval verified and authorized artwork publication completed.",
+    "userActionStillRequired": false
+  },
+  "completedReplacement": {
+    "package": "../2026-10-10-fullbleed-c-v3/delivery.json",
+    "headerAssetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+    "searchAssetId": "1e800019-3f4a-833c-8039-c5e3a3684b65",
+    "status": "Approved and published on default placements; new CPP version Approved",
+    "submissionId": "d95afe16-8f20-4d27-ac74-7bbf49c9e8cf",
+    "reason": "Photographic extensions replace prior charcoal padding. Prior v2 sources and delivery history preserved.",
+    "checkedAt": "2026-10-11T18:11:54+00:00"
   }
 }

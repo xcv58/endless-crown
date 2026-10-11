@@ -1,21 +1,21 @@
 # Selected C — Store exports
 
-**October 11 access update:** App Store Connect is signed out and automatic sign-in failed. The replacement review was not verified today. The daily follow-up was stopped and deleted until Chrome authentication is restored; recorded review statuses remain the October 10 verification.
+**October 11 publication update:** Chrome sign-in restored. Header v4 and search v3 are approved and published on the released 1.0.1 English (U.S.) default placements; the updated existing Reddit CPP is Approved with its link enabled. Exact asset usage and fresh reference crops are verified. The daily review task is complete, so its deleted automation was not recreated. New physical Store propagation is unverified; the separate CPP Watch screenshot omission remains.
 
-## Pending border-free replacement
+## Archived after border-free replacement
 
-The user reported visible charcoal bands in physical iPhone captures. [Full-bleed header v4/search v3](../2026-10-10-fullbleed-c-v3/README.md) now pass Apple crop checks and are Waiting for Review. Preserve this published v2 package until the replacements are approved and published; a new daily follow-up handles publication.
+[Header v4/search v3](../2026-10-10-fullbleed-c-v3/README.md) were approved and published on October 11. This v2 package and its October 9–10 publication/device evidence are retained for reference; the notes below describe that previous delivery. The exact updated CPP also shows Approved.
 
 The user selected [C — Close tactile detail](../../candidates/fresh-screenshot-round2/03-close-crop.png). Exports preserve its photo, Watch, screen and typography through deterministic resizing and canvas padding.
 
-## Current delivery files
+## Archived delivery files
 
 - [Universal header PNG v2](exports/endless-crown-c-universal-en-US-v2.png): 5244 × 2950 opaque PNG. C is centered at 3000 × 1286 on charcoal (#242927). Additional canvas spacing fixes headline clipping observed with v1 in Apple's native iPhone header preview.
 - [Search results JPEG v2](exports/endless-crown-c-search-en-US-v2.jpg): 1920 × 1280 opaque JPEG, with the full selected C centered on charcoal.
 - [Preview](preview.html), [manifest](manifest.json), and [live delivery state](delivery.json).
 - [Reddit custom product page](../../custom-product-pages/reddit-haptic-fidget/README.md).
 
-Header v2 passes Apple's reference preview on iPhone in light/dark appearance and iPad in portrait/light and landscape/dark. Search v2 passes iPhone and iPad light previews. Both final assets are Approved and were published on the released 1.0.1 English (U.S.) default Header and Search Results placements on October 9, 2026. Exact asset IDs and Ready for Distribution usage were verified in Asset Library. The Reddit CPP is now Approved and its link is enabled. The public Chrome web campaign page omits Watch screenshots while the ordinary listing shows them; the user iPhone capture also skips the usual Watch Preview section on the CPP. User iPhone screenshots confirm the selected C header on both links and C artwork in search results, with the complete headline visible. The ordinary listing retains its Watch gallery and is recommended for promotion. The custom capture does not show the full page, so screenshots farther down cannot be ruled out. The daily follow-up remains stopped; native Watch Store and other devices are untested. Completed placements were not republished.
+Header v2 passes Apple's reference preview on iPhone in light/dark appearance and iPad in portrait/light and landscape/dark. Search v2 passes iPhone and iPad light previews. Both final assets are Approved and were published on the released 1.0.1 English (U.S.) default Header and Search Results placements on October 9, 2026. Exact asset IDs and Ready for Distribution usage were verified in Asset Library. The Reddit CPP is now Approved and its link is enabled. The public Chrome web campaign page omits Watch screenshots while the ordinary listing shows them; the user iPhone capture also skips the usual Watch Preview section on the CPP. User iPhone screenshots confirm the selected C header on both links and C artwork in search results, with the complete headline visible. The ordinary listing retains its Watch gallery and is recommended for promotion. The custom capture does not show the full page, so screenshots farther down cannot be ruled out. The daily follow-up remains stopped; native Watch Store and other devices are untested. These prior v2 placements were replaced by header v4/search v3 on October 11.
 
 ## Earlier export attempts
 

@@ -2,11 +2,11 @@
   "selectedAsset": "candidates/fresh-screenshot-round2/03-close-crop.png",
   "counter": 4698,
   "sha256": "afee13e8f0b51d4ece6613b44365d71486a66a44422649b34c9d31030a0476c8",
-  "status": "C header v2 and search JPEG v2 approved and published; user iPhone screenshots confirm both default placements and CPP header. Reddit CPP Watch preview concern remains; ordinary listing recommended for promotion.",
+  "status": "Header v4 and search v3 approved and published on default English (U.S.) placements; updated existing Reddit CPP Approved. Known CPP Watch screenshot issue remains.",
   "preserve": "Keep the photograph, Watch hardware, Crown, screen and typography intact",
   "rejectedPackage": "production/2026-10-06-editorial-v1",
   "rejectionReason": "User reports misaligned screen and duplicated Crown artifacts in the later composite",
-  "externalBoundary": "No Store changes made for the device evidence check. Default C placements and CPP header visible on user iPhone. CPP usual Watch Preview placement absent in supplied viewport; full public web CPP has no screenshots. Rejected editorial and failed exports remain unselected references.",
+  "externalBoundary": "Fresh Apple reference previews pass without canvas bands; exact default usage is Ready for Distribution. New native Store propagation not verified. No Reddit message posted; ordinary listing recommended for promotion.",
   "alternatives": "candidates/fresh-screenshot-round2/preview.html",
   "previousRecommendation": "candidates/crown-repair-round1/04-hovering-hand.png",
   "previousRecommendationConcern": "User still sees a double Crown in repair option 4; prior recommendation withdrawn",
@@ -21,14 +21,19 @@
   "selectedBy": "user",
   "selectedAt": "2026-10-07T02:10:10.363447+00:00",
   "productionNotes": "Preserve the selected photo, Crown, screen and headline; the clock layout is a generated interpretation of the real screenshot",
-  "productionPackage": "production/2026-10-07-selected-c-v1",
-  "headerNativeCropFix": "production/2026-10-07-selected-c-v1/exports/endless-crown-c-universal-en-US-v2.png",
+  "productionPackage": "production/2026-10-10-fullbleed-c-v3",
+  "headerNativeCropFix": "production/2026-10-10-fullbleed-c-v3/exports/endless-crown-c-universal-en-US-v4.png",
   "customProductPage": "custom-product-pages/reddit-haptic-fidget",
-  "pendingFullBleedReplacement": {
+  "publishedFullBleedReplacement": {
     "package": "production/2026-10-10-fullbleed-c-v3",
     "header": "exports/endless-crown-c-universal-en-US-v4.png",
     "search": "exports/endless-crown-c-search-en-US-v3.jpg",
-    "status": "Waiting for Review",
-    "generationBoundary": "Generated edits retain C art direction and visible single-Crown composition; center pixels and subtle photographic details are not guaranteed unchanged. Upscaling does not add real photographic resolution."
-  }
+    "status": "Approved and published in App Store Connect",
+    "generationBoundary": "Generated edits retain C art direction and visible single-Crown composition; center pixels and subtle photographic details are not guaranteed unchanged. Upscaling does not add real photographic resolution.",
+    "checkedAt": "2026-10-11T18:11:54+00:00",
+    "headerAssetId": "f3400019-3f4a-833c-8033-d6d81c3631ed",
+    "searchAssetId": "1e800019-3f4a-833c-8039-c5e3a3684b65"
+  },
+  "previousProductionPackage": "production/2026-10-07-selected-c-v1",
+  "previousHeaderNativeCropFix": "production/2026-10-07-selected-c-v1/exports/endless-crown-c-universal-en-US-v2.png"
 }

@@ -1,6 +1,6 @@
 # C artwork without canvas bands
 
-**October 11 access update:** App Store Connect is signed out and automatic sign-in failed. The replacement review was not verified today. The daily follow-up was stopped and deleted until Chrome authentication is restored; recorded review statuses remain the October 10 verification.
+**October 11 publication update:** Chrome sign-in restored. Header v4 and search v3 are approved and published on the released 1.0.1 English (U.S.) default placements; the updated existing Reddit CPP is Approved with its link enabled. Exact asset usage and fresh reference crops are verified. The daily review task is complete, so its deleted automation was not recreated. New physical Store propagation is unverified; the separate CPP Watch screenshot omission remains.
 
 The user asked to remove the charcoal space visible around C on their iPhone listing and search screenshots. Built-in imagegen extends the photograph to all canvas edges. Header v4 also moves the headline inward so Apple’s iPhone crop preserves both lines. The visible single Crown, counter 4698, and C art direction are retained; generated edits do not guarantee pixel-identical center detail.
 
@@ -10,8 +10,8 @@ The user asked to remove the charcoal space visible around C on their iPhone lis
 
 Both final files pass App Store Connect reference previews on iPhone light/dark and iPad portrait light/landscape dark: full headline and Watch focal point, with no canvas bands. These are reference previews, not a physical Store test of the replacements.
 
-A new version of the existing Reddit — Haptic Fidget CPP was submitted with both shared assets on October 10, 2026 at 12:31 AM EDT. [Submission d95afe16](https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf) and both Asset Library entries show **Waiting for Review**. The public CPP ID and campaign URL stay the same. Promotional text and four keywords were preserved and reloaded before submission. Apple states this version replaces the existing CPP on approval.
+The existing Reddit — Haptic Fidget CPP update and both shared assets are **Approved**, confirmed live on October 11 in [submission d95afe16](https://appstoreconnect.apple.com/apps/6777250620/distribution/reviewsubmissions/details/d95afe16-8f20-4d27-ac74-7bbf49c9e8cf). Its public ID and campaign URL remain unchanged. The approved editor preserves the exact promotional text, four checked keywords and enabled link; Publish is disabled, so no additional keyword action is indicated.
 
-The currently published default placements still use v2. After approval, select exact header v4 and search v3 and publish the two default English (U.S.) placements. A daily follow-up handles that authorized work. No new build is required for this creative update.
+Header v4 and search v3 were published separately on default English (U.S.) placements on October 11. Exact Asset Library Recent Usage shows **1.0.1 Ready for Distribution** for both and **Approved** usage on the updated CPP. All eight device/appearance reference checks passed again; published default iPhone previews also passed. New physical iPhone and native Watch Store propagation remain unverified. The daily publication task is complete. No new build is required.
 
 Header v3 is a failed crop reference: Apple’s iPhone preview clipped its headline. **Never submit or publish it.** All prior assets are preserved. The CPP Watch screenshot omission is separate and remains unresolved; continue using the ordinary listing for promotion. The released build and Watch screenshot kit are unchanged.
