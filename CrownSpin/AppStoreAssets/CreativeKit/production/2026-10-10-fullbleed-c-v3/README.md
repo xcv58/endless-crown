@@ -2,6 +2,8 @@
 
 **October 11 publication update:** Chrome sign-in restored. Header v4 and search v3 are approved and published on the released 1.0.1 English (U.S.) default placements; the updated existing Reddit CPP is Approved with its link enabled. Exact asset usage and fresh reference crops are verified. The daily review task is complete, so its deleted automation was not recreated. New physical Store propagation is unverified; the separate CPP Watch screenshot omission remains.
 
+**October 11 user confirmation:** The user subsequently reported, “I checked and the new asset works in app store.” This records user acceptance of the visible replacement; no new screenshot or separate confirmation for each placement was supplied. Tomorrow’s reminder was cancelled because the check is complete.
+
 The user asked to remove the charcoal space visible around C on their iPhone listing and search screenshots. Built-in imagegen extends the photograph to all canvas edges. Header v4 also moves the headline inward so Apple’s iPhone crop preserves both lines. The visible single Crown, counter 4698, and C art direction are retained; generated edits do not guarantee pixel-identical center detail.
 
 - [Header v4](exports/endless-crown-c-universal-en-US-v4.png): opaque 5244 × 2950 PNG.

@@ -46,7 +46,7 @@
   "nativeReferencePreviews": {
     "headerV4": "Passed: iPhone light/dark and iPad portrait light/landscape dark. Complete headline, Watch/Crown and 4698 focal point visible; photograph fills frame without canvas bars.",
     "searchV3": "Passed: iPhone light/dark and iPad portrait light/landscape dark. Complete headline and Watch visible; no letterbox bands.",
-    "boundary": "Fresh App Store Connect reference checks passed for both approved assets on all four stated device/appearance combinations. Published default iPhone Header and Search previews also passed. Physical iPhone and native Watch Store propagation of these replacements has not been verified.",
+    "boundary": "App Store Connect reference checks passed for both approved assets on all four stated device/appearance combinations and published default iPhone previews. User subsequently confirmed the new artwork works in the App Store; no new screenshot or independent device test was supplied.",
     "recheckedAt": "2026-10-11T18:11:54+00:00"
   },
   "reviewSubmission": {
@@ -144,7 +144,7 @@
     "publicationVerifiedAt": "2026-10-11T18:11:54+00:00",
     "locale": "en-US",
     "verified": "Published default Header and Search Results separately. Exact Asset Library Recent Usage rows confirm iOS App Version 1.0.1 English (U.S.) Ready for Distribution for both assets; approved CPP usage is also present.",
-    "publicStoreBoundary": "Chrome web pages do not display the selected C artwork. New physical iPhone/native Watch Store propagation remains unverified."
+    "publicStoreBoundary": "User now confirms the new artwork works in the App Store. This is user-reported acceptance without a new screenshot or separate confirmation for each placement; native Watch Store remains unverified."
   },
   "followUp": {
     "automationId": "publish-endless-crown-border-free-artwork",
@@ -224,5 +224,17 @@
     "result": "Known CPP Watch screenshot omission persists in the complete Chrome accessibility page; ordinary listing still exposes its Apple Watch screenshot gallery. Continue ordinary listing for promotion.",
     "causeBoundary": "The CPP editor exposes no Watch screenshot slots. A fallback limitation is a possible cause of the public omission, not a verified platform root cause.",
     "verification": "Fresh navigation to exact campaign URL and ordinary listing; saved full accessibility snapshots and local screenshots."
+  },
+  "userStoreConfirmation": {
+    "reportedAt": "2026-10-12T00:32:52Z",
+    "localDate": "2026-10-11",
+    "source": "Direct user message in this chat",
+    "statement": "I checked and the new asset works in app store.",
+    "status": "New artwork visible and working according to user check",
+    "boundary": "User-reported acceptance; no new screenshot supplied. Header, search, CPP and native Watch Store were not separately identified in this confirmation.",
+    "reminder": {
+      "automationId": "check-endless-crown-artwork-tomorrow",
+      "status": "Deleted after user completed the requested check"
+    }
   }
 }
