@@ -20,6 +20,6 @@ Endless Crown does not require an account and does not include ads, analytics SD
 
 ## Contact
 
-For support or privacy questions, open an issue at:
+For support or privacy questions, email [EndlessCrown@jenny.media](mailto:EndlessCrown@jenny.media).
 
-https://github.com/xcv58/endless-crown/issues
+For public bug reports or feature requests, you can also [open an issue on GitHub](https://github.com/xcv58/endless-crown/issues).
