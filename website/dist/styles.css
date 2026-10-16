@@ -215,7 +215,7 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; color: va
 .number-styles p { margin-top: 10px; }
 
 /* Keep the appearance control on the physical right of the first header row. */
-.site-header { grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto; align-items: start; direction: ltr; }
+.site-header { grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto; align-items: center; direction: ltr; }
 .site-header > .brand { min-width: 0; min-height: 44px; }
 .site-header .brand img { flex-shrink: 0; }
 .site-header .brand span { min-width: 0; }
@@ -237,3 +237,22 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; color: va
  .site-header nav > a:not(.nav-download) { display: inline-flex; }
  .site-header nav a { padding: 8px 12px; }
 }
+
+/* Preserve one centered row until the complete navigation needs more room. */
+.site-header nav > a:not(.nav-download) { display: inline-flex; }
+.site-header[data-menu-compact] { min-height: 0; grid-template-columns: minmax(0, 1fr) auto auto; align-items: start; gap: 0 8px; padding-block: 10px; }
+.site-header[data-menu-compact] > .header-menu { display: inline-flex; grid-column: 2; grid-row: 1; }
+.site-header[data-menu-compact] > .theme-toggle { grid-column: 3; grid-row: 1; }
+.site-header[data-menu-compact] > .header-navigation { grid-column: 1 / -1; grid-row: 2; margin-top: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.site-header[data-menu-compact] nav { flex-direction: column; align-items: stretch; gap: 2px; }
+.site-header[data-menu-compact] nav a { padding: 8px 12px; }
+/* Measurement leaves the existing nodes and open disclosures untouched. */
+.site-header { --header-inline-gap: 1.5rem; }
+@media (max-width: 760px) { .site-header { --header-inline-gap: 12px; } }
+.site-header[data-menu-measuring] { column-gap: var(--header-inline-gap); }
+.site-header[data-menu-measuring] > .brand { width: max-content; }
+.site-header[data-menu-measuring] .brand span { white-space: nowrap; }
+.site-header[data-menu-measuring] > .header-navigation { display: block !important; position: absolute; opacity: 0; pointer-events: none; width: max-content; max-width: none; margin: 0; padding: 0; border: 0; }
+.site-header[data-menu-measuring] nav { flex-direction: row; flex-wrap: nowrap; gap: 8px 18px; }
+.site-header[data-menu-measuring] nav a { padding: 0; white-space: nowrap; }
+.site-header[data-menu-measuring] nav .nav-download { padding: .65rem 1.1rem; }

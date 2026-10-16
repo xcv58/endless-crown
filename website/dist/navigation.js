@@ -3,11 +3,27 @@ function initializeHeaderMenu({ header, control, panel, breakpoint, label }) {
   if (!header || !control || !panel) return;
   const phone = window.matchMedia(`(max-width: ${breakpoint}px)`);
   let lastHeaderFocus = null;
-  const isOpen = () => phone.matches && !panel.hidden;
+  let compact = false;
+  let initialized = false;
+  const desktopFits = () => {
+    const brand = header.querySelector('.brand, .logo');
+    const appearance = header.querySelector('.theme-toggle');
+    if (!brand || !appearance) return true;
+    header.setAttribute('data-menu-measuring', '');
+    try {
+      const style = getComputedStyle(header);
+      const available = header.getBoundingClientRect().width - parseFloat(style.paddingLeft || 0) - parseFloat(style.paddingRight || 0);
+      const needed = brand.getBoundingClientRect().width + panel.getBoundingClientRect().width + appearance.getBoundingClientRect().width + (parseFloat(style.columnGap) || 0) * 2;
+      return needed <= available;
+    } finally {
+      header.removeAttribute('data-menu-measuring');
+    }
+  };
+  const isOpen = () => compact && !panel.hidden;
   const setOpen = open => {
-    panel.hidden = phone.matches && !open;
-    control.setAttribute('aria-expanded', String(phone.matches && open));
-    control.setAttribute('aria-label', label(phone.matches && open));
+    panel.hidden = compact && !open;
+    control.setAttribute('aria-expanded', String(compact && open));
+    control.setAttribute('aria-label', label(compact && open));
     control.title = control.getAttribute('aria-label');
     if (!open) panel.querySelectorAll('details[open]').forEach(details => { details.open = false; });
   };
@@ -16,19 +32,24 @@ function initializeHeaderMenu({ header, control, panel, breakpoint, label }) {
     setOpen(false);
     if (wasOpen && returnFocus) control.focus({ preventScroll: true });
   };
-  const sync = () => {
+  const sync = (reset = false) => {
+    const nextCompact = phone.matches || !desktopFits();
+    if (initialized && compact === nextCompact && !reset) return;
     // CSS may hide the focused link before the media-query event reaches us.
     const active = document.activeElement === document.body ? lastHeaderFocus : document.activeElement;
     const panelFocused = !!active && panel.contains(active);
     const menuFocused = active === control;
-    control.hidden = !phone.matches;
+    compact = nextCompact;
+    initialized = true;
+    header.toggleAttribute('data-menu-compact', compact);
+    control.hidden = !compact;
     setOpen(false);
     // Match the visible reading order while retaining one set of native links.
-    if (phone.matches) {
+    if (compact) {
       if (header.lastElementChild !== panel) header.append(panel);
     } else if (panel.nextElementSibling !== control) header.insertBefore(panel, control);
-    if (phone.matches && panelFocused) control.focus({ preventScroll: true });
-    else if (!phone.matches && (panelFocused || menuFocused)) {
+    if (compact && panelFocused) control.focus({ preventScroll: true });
+    else if (!compact && (panelFocused || menuFocused)) {
       const destination = panelFocused ? active : panel.querySelector('a, summary, select, button');
       destination?.focus({ preventScroll: true });
     }
@@ -67,8 +88,19 @@ function initializeHeaderMenu({ header, control, panel, breakpoint, label }) {
       }
     }
   });
-  phone.addEventListener('change', sync);
-  window.addEventListener('pageshow', event => { if (event.persisted) sync(); });
+  let pendingSync = null;
+  const scheduleSync = () => {
+    if (pendingSync !== null) return;
+    pendingSync = requestAnimationFrame(() => { pendingSync = null; sync(); });
+  };
+  phone.addEventListener('change', scheduleSync);
+  window.addEventListener('resize', scheduleSync);
+  document.fonts?.ready.then(scheduleSync);
+  if (window.ResizeObserver) {
+    const observer = new ResizeObserver(scheduleSync);
+    [header, ...header.querySelectorAll('.brand, .logo, nav, summary')].forEach(element => observer.observe(element));
+  }
+  window.addEventListener('pageshow', event => { if (event.persisted) sync(true); });
   header.setAttribute('data-header-ready', '');
   sync();
 }

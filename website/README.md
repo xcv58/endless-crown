@@ -20,7 +20,7 @@ This is a static website with no dependencies, build step, analytics, or forms. 
 - Haptic categories match `HapticPattern.swift`.
 - Privacy wording mirrors the repository's `PrivacyPolicy.md`.
 - The hero shows US$0.99 as a one-time purchase, verified against the U.S. App Store listing on September 10, 2026, with a note that local prices vary by country or region. Recheck this amount when app pricing changes.
-- The theme toggle occupies the physical top-right header position on every page, including enlarged text. At 700 px and below, a disclosure menu retains all existing navigation links. Native links remain visible when its script is unavailable. Escape returns focus to Menu; outside clicks close it, and breakpoint changes retain a useful visible focus target. The App Store badge remains in the hero.
+- The theme toggle occupies the physical top-right header position on every page, including enlarged text. The desktop row stays vertically centered; at 700 px and below, or whenever the complete navigation cannot fit, a disclosure menu retains all existing links. Native links remain visible when its script is unavailable. Escape returns focus to Menu; outside clicks close it, and layout changes retain a useful visible focus target. The App Store badge remains in the hero.
 - Canonical URLs and the sitemap use the requested custom domain.
 
 Design references: Jenny Media's apps directory, FrameWink, and Heart Rate Insights. The site uses real app footage, unchanged app screenshots, a charcoal dark theme, and a silver-white light theme.
