@@ -213,3 +213,27 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; color: va
 .number-styles { margin-top: 14px; }
 .number-styles summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
 .number-styles p { margin-top: 10px; }
+
+/* Keep the appearance control on the physical right of the first header row. */
+.site-header { grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto; align-items: start; direction: ltr; }
+.site-header > .brand { min-width: 0; min-height: 44px; }
+.site-header .brand img { flex-shrink: 0; }
+.site-header .brand span { min-width: 0; }
+.site-header > .header-navigation { grid-column: 2; grid-row: 1; min-width: 0; }
+.site-header > .theme-toggle { grid-column: 3; grid-row: 1; }
+.site-header nav { gap: 8px 18px; }
+.site-header nav a { min-height: 44px; display: inline-flex; align-items: center; }
+.header-menu { display: none; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; color: var(--ink); background: var(--control-bg); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+.header-menu svg { width: 20px; height: 20px; }
+.header-menu-close, .header-menu[aria-expanded="true"] .header-menu-open { display: none; }
+.header-menu[aria-expanded="true"] .header-menu-close { display: block; }
+.site-header [hidden] { display: none !important; }
+@media (max-width: 700px) {
+ .site-header { min-height: 0; grid-template-columns: minmax(0, 1fr) auto auto; align-items: start; gap: 0 8px; padding-block: 10px; }
+ .site-header > .header-menu { display: inline-flex; grid-column: 2; grid-row: 1; }
+ .site-header > .theme-toggle { grid-column: 3; grid-row: 1; }
+ .site-header > .header-navigation { grid-column: 1 / -1; grid-row: 2; margin-top: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+ .site-header nav { flex-direction: column; align-items: stretch; gap: 2px; }
+ .site-header nav > a:not(.nav-download) { display: inline-flex; }
+ .site-header nav a { padding: 8px 12px; }
+}
