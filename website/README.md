@@ -11,7 +11,7 @@ This is a static website with no dependencies, build step, analytics, or forms. 
 ## Content and assets
 
 - Public name: **Endless Crown**. CrownSpin remains the internal app project name.
-- App Store: https://apps.apple.com/us/app/endless-crown/id6777250620
+- App Store: https://apps.apple.com/app/endless-crown/id6777250620
 - Screenshot and icon files come from the app's existing App Store assets.
 - `demo.mp4` is a 720 × 1280, 30 fps web copy of the original 27-second Reddit launch video. It retains the original sequence, captions, and audio. Playback starts only when requested, with sound enabled by default and native mute controls available. The 20 MB original remains outside the repository at `/Users/yihong/Movies/2026-06-20 Endless Crown/exports/endless-crown-reddit-draft-v18-longer-haptic-samples.mp4`.
 - The demo uses `preload="none"`, a poster frame, native playback controls, an explicit play button, and a text description. No Reddit player or third-party script is embedded.

@@ -209,3 +209,7 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; color: va
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+.number-styles { margin-top: 14px; }
+.number-styles summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+.number-styles p { margin-top: 10px; }
