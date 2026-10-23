@@ -266,3 +266,23 @@ Restoration is part of completing a pilot or runtime comparison. A failed instal
 Haptics Only captures record whether the display started black or with controls revealed; these states and older reports with unknown state stay separate. Revealing controls during a capture flags that run. Ordinary scroll-to-black behavior remains part of the selected workload.
 
 A failed automation rebuild invalidates its success record before compilation. `--skip-build` refuses old or changed app/runner/configuration products, including directories prepared before product records were introduced. Rebuild those in a fresh output directory; existing evidence is retained.
+
+
+Before starting a new pilot, runtime comparison or native-list comparison, pin
+its already accepted normal app locally:
+
+```sh
+python3 CrownSpin/scripts/energy-compare.py --record-normal PATH-TO-ACCEPTED-NORMAL-BUILD.json
+```
+
+The record must identify the app and source fingerprint and have
+`diagnosticMarkersAbsent: true` from normal-build acceptance. This command
+checks the current executable for diagnostic markers and records a fingerprint
+of the complete app bundle, including permissions and signature files. It does
+not install or launch anything and does not establish physical acceptance. A
+changed product cannot overwrite an existing fingerprint: accept the new normal
+build separately with a new record. Comparisons verify the recorded product
+before device work and again before restoration. Legacy records without a
+product fingerprint must be verified and recorded before reuse; source identity
+alone cannot distinguish the explicit legacy diagnostic variant from a normal
+app built from the same source.

@@ -3,11 +3,13 @@
 import argparse
 from datetime import datetime, timezone
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 import plistlib
 import shutil
 import statistics
+import stat
 import subprocess
 import sys
 import time
@@ -147,14 +149,56 @@ def summarize(manifest):
                             "Brightness and battery health were not independently measured."]}
 
 
-def restore_normal(session, manifest):
-    normal_path = Path(manifest["restoreNormalBuildManifest"])
-    normal = json.loads(normal_path.read_text())
+def normal_product(normal):
     app = Path(normal["app"])
     info = plistlib.loads((app / "Info.plist").read_bytes())
-    if info.get("EnergySourceFingerprint") != manifest.get("restoreSourceFingerprint", manifest["sourceFingerprint"]) or \
+    name = info.get("CFBundleExecutable")
+    if not isinstance(name, str) or not name or Path(name).name != name:
+        raise ValueError("Normal restore app has no valid executable.")
+    binary = (app / name).read_bytes()
+    if normal.get("diagnosticMarkersAbsent") is not True or any(marker in binary for marker in
+            (b"EnergyTestController", b"CROWN_START_DIAGNOSTICS")):
+        raise ValueError("Normal restore app must exclude diagnostic code.")
+    digest = hashlib.sha256()
+    for path in sorted(app.rglob("*")):
+        if path.is_file() or path.is_symlink():
+            value = str(path.readlink()).encode() if path.is_symlink() else path.read_bytes()
+            digest.update(str(path.relative_to(app)).encode() + b"\0" +
+                          str(stat.S_IMODE(path.lstat().st_mode)).encode() + b"\0" + value + b"\0")
+    return app, info, digest.hexdigest()
+
+
+def record_normal(path):
+    """Pin an already accepted normal build locally, without device actions."""
+    normal = json.loads(path.read_text())
+    app, info, fingerprint = normal_product(normal)
+    if not normal.get("sourceFingerprint") or info.get("CFBundleIdentifier") != energy.BUNDLE_ID or \
+            info.get("EnergySourceFingerprint") != normal.get("sourceFingerprint"):
+        raise ValueError("Normal restore app has the wrong identity.")
+    if normal.get("restoreProductFingerprint", fingerprint) != fingerprint:
+        raise ValueError("Accepted normal restore product changed; use a new accepted build record.")
+    normal["restoreProductFingerprint"] = fingerprint
+    save(path, normal)
+    print("Recorded accepted normal restore product: " + str(app), flush=True)
+
+
+def verified_normal(manifest):
+    if not manifest.get("restoreNormalBuildManifest"):
+        raise ValueError("Record an accepted normal restore product before device work.")
+    normal_path = Path(manifest["restoreNormalBuildManifest"])
+    normal = json.loads(normal_path.read_text())
+    app, info, fingerprint = normal_product(normal)
+    expected_source = manifest.get("restoreSourceFingerprint", manifest["sourceFingerprint"])
+    if not expected_source or info.get("EnergySourceFingerprint") != expected_source or \
             info.get("CFBundleIdentifier") != energy.BUNDLE_ID:
         raise ValueError("Normal restore app has the wrong identity.")
+    if normal.get("restoreProductFingerprint") != fingerprint:
+        raise ValueError("Normal restore product changed or is unrecorded; verify the accepted app and use --record-normal.")
+    return normal_path, normal, app
+
+
+def restore_normal(session, manifest):
+    normal_path, normal, app = verified_normal(manifest)
     env = energy.clean_device_environment()
     env["DEVELOPER_DIR"] = manifest["developerDir"]
     command = ["xcrun", "devicectl", "device", "install", "app", "--device", manifest["device"],
@@ -219,6 +263,7 @@ def run(args):
     if manifest.get("runtimeProfile"):
         raise ValueError("Use runtime-compare.py for the prepared runtime-profile session.")
     verify_builds(manifest)
+    verified_normal(manifest)
     manifest.update(status="running", startedAt=now())
     save(session / "comparison.json", manifest)
     try:
@@ -253,11 +298,18 @@ def run(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--session", required=True, type=Path)
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("--session", type=Path)
+    target.add_argument("--record-normal", type=Path, help="Pin an accepted normal build record locally; no device actions")
     parser.add_argument("--restore-only", action="store_true", help="Retry failed normal-app restoration without repeating captures")
     args = parser.parse_args()
     try:
-        run(args)
+        if args.record_normal:
+            if args.restore_only:
+                parser.error("--restore-only requires --session")
+            record_normal(args.record_normal.resolve())
+        else:
+            run(args)
         return 0
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         print("Error: " + str(error), flush=True)
