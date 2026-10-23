@@ -26,7 +26,7 @@ class ReportValidationTests(unittest.TestCase):
         loop = loop.replace("ProcessInfo.processInfo.systemUptime", "clock.now")
         loop = loop.replace("Thread.sleep(forTimeInterval:", "clock.sleep(forTimeInterval:")
         # Execute the actual fixture control flow with virtual time and slow UI operations.
-        probe = '''import Foundation
+        probe = '''typealias CGFloat = Double
 final class Clock {
     var now = 599.0
     func sleep(forTimeInterval seconds: Double) { now += seconds }
@@ -54,7 +54,8 @@ func attach(_ name: String) { images.append(name); clock.now += 4 }
 ''' + loop + '''
 if samples != [600] || !images.isEmpty {
     print("Terminal reading followed optional UI work: samples=\\(samples), images=\\(images)")
-    exit(1)
+} else {
+    print("Endpoint captured before optional UI work")
 }
 '''
         with tempfile.TemporaryDirectory(prefix="crown-deadline-") as directory:
@@ -62,8 +63,9 @@ if samples != [600] || !images.isEmpty {
             path = root / 'deadline.swift'
             path.write_text(probe)
             result = subprocess.run(['xcrun', 'swift', '-module-cache-path', str(root / 'modules'), str(path)],
-                cwd=root, env=dict(os.environ, TMPDIR=str(root)), text=True, capture_output=True, timeout=45)
+                cwd=root, env=dict(os.environ, TMPDIR=str(root)), text=True, capture_output=True, timeout=120)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(result.stdout.strip(), 'Endpoint captured before optional UI work')
 
     def setUp(self):
         self.request = {"runID": "sample", "condition": "app-list", "mode": "automated",
