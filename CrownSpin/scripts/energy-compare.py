@@ -6,10 +6,12 @@ import importlib.util
 import json
 from pathlib import Path
 import plistlib
+import shutil
 import statistics
 import subprocess
 import sys
 import time
+import uuid
 
 spec = importlib.util.spec_from_file_location("energy", Path(__file__).with_name("energy-tests.py"))
 energy = importlib.util.module_from_spec(spec)
@@ -177,9 +179,40 @@ def restore_normal(session, manifest):
     print("Normal optimized app restored and opened.", flush=True)
 
 
+def restore_after_capture(session, manifest):
+    capture_status = manifest["captureStatus"] if manifest["status"] in {"restoration-failed", "restoring"} else manifest["status"]
+    manifest["captureStatus"] = capture_status
+    manifest["status"] = "restoring"
+    save(session / "comparison.json", manifest)
+    try:
+        restore_normal(session, manifest)
+    except BaseException as error:
+        manifest.update(status="restoration-failed", restoreError=f"{type(error).__name__}: {error}")
+        raise
+    else:
+        manifest["status"] = capture_status
+        manifest.pop("restoreError", None)
+    finally:
+        save(session / "comparison.json", manifest)
+
+
+def retry_restore(session, manifest):
+    if manifest["status"] not in {"restoration-failed", "restoring"}:
+        raise ValueError("Retry restoration only for a restoration-failed session.")
+    previous = session / ("restore-prior-" + uuid.uuid4().hex)
+    previous.mkdir()
+    for path in session.glob("restore-*"):
+        if path.is_file():
+            shutil.copy2(path, previous / path.name)
+    save(previous / "comparison.json", manifest)
+    restore_after_capture(session, manifest)
+
+
 def run(args):
     session = args.session.resolve()
     manifest = json.loads((session / "comparison.json").read_text())
+    if getattr(args, "restore_only", False):
+        return retry_restore(session, manifest)
     if manifest["status"] != "ready" or manifest["attempts"]:
         raise ValueError("Run only a fresh prepared session.")
     if manifest.get("runtimeProfile"):
@@ -213,21 +246,14 @@ def run(args):
         manifest.update(status="stopped", error=str(error), stoppedAt=now())
         raise
     finally:
-        save(session / "comparison.json", manifest)
-        try:
-            restore_normal(session, manifest)
-        except Exception as error:
-            manifest["restoreError"] = str(error)
-            save(session / "comparison.json", manifest)
-            print("RESTORE NEEDS ATTENTION: " + str(error), flush=True)
-    if manifest.get("restoreError"):
-        raise ValueError(manifest["restoreError"])
+        restore_after_capture(session, manifest)
     print("Pilot complete. Charge observations are descriptive; no battery saving is established.", flush=True)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--session", required=True, type=Path)
+    parser.add_argument("--restore-only", action="store_true", help="Retry failed normal-app restoration without repeating captures")
     args = parser.parse_args()
     try:
         run(args)

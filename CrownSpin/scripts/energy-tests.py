@@ -279,7 +279,7 @@ def comparison_key(report):
     return (config["scenario"], config["pattern"], config["durationSeconds"],
             config["stepsPerSecond"] if config["scenario"].startswith("replay") else None,
             config["conditions"], *(meta.get(key, "unknown") for key in
-                ("hardwareModel", "watchOS", "ambientMode", "displayMode", "numberSystem", "menuHidden", "diagnosticVersion",
+                ("hardwareModel", "watchOS", "ambientMode", "displayMode", "blackDisplay", "numberSystem", "menuHidden", "diagnosticVersion",
                  "inputDriver", "crownInputProfile", "displayPolicy", "builtSDK", "xcodeBuild",
                  "wakeTapIntervalSeconds", "statusPollIntervalSeconds")),
             report["samples"][0]["thermalState"])

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from test_energy_tests import fixture
 
@@ -14,6 +15,16 @@ spec.loader.exec_module(runtime)
 
 
 class RuntimeComparisonTests(unittest.TestCase):
+    def test_cleanup_retry_does_not_repeat_runtime_slots(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            manifest = {"status": "restoration-failed", "captureStatus": "completed", "attempts": [], "restoreError": "first failure"}
+            (session / "comparison.json").write_text(json.dumps(manifest))
+            with patch.object(runtime.comparison, "restore_normal"), patch.object(runtime.comparison, "run_attempt") as capture:
+                runtime.run(session, restore_only=True)
+                capture.assert_not_called()
+            self.assertEqual(json.loads((session / "comparison.json").read_text())["status"], "completed")
+
     def prepare(self, directory):
         manifest = {"schedule": runtime.SCHEDULE, "attempts": [], "scenario": "replay", "pattern": "clicks",
                     "durationSeconds": 600, "stepsPerSecond": 2, "conditions": "fixture only",

@@ -114,6 +114,13 @@ class EnergyTests(unittest.TestCase):
         self.assertNotEqual(energy.comparison_key(ambient), energy.comparison_key(haptics_only))
         self.assertNotEqual(energy.comparison_key(ambient), energy.comparison_key(historical))
 
+    def test_revealed_and_black_haptics_only_start_states_do_not_pool(self):
+        black = fixture(); black["metadata"].update(displayMode="hapticsOnly", blackDisplay="true")
+        revealed = copy.deepcopy(black); revealed["metadata"]["blackDisplay"] = "false"
+        historical = copy.deepcopy(black); del historical["metadata"]["blackDisplay"]
+        self.assertNotEqual(energy.comparison_key(black), energy.comparison_key(revealed))
+        self.assertNotEqual(energy.comparison_key(black), energy.comparison_key(historical))
+
     def test_haptic_timing_captures_never_enter_battery_metrics(self):
         for configuration, purpose in ((True, "haptic-timing-only"), (True, None), (False, "haptic-timing-only")):
             data = fixture(scenario="manual")

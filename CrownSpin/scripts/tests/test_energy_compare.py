@@ -17,6 +17,33 @@ spec.loader.exec_module(pilot)
 
 
 class PilotTests(unittest.TestCase):
+    def test_failed_cleanup_is_durable_and_retried_without_captures(self):
+        for capture_status in ("completed", "stopped"):
+            with tempfile.TemporaryDirectory() as directory:
+                session = Path(directory); manifest = {"status": capture_status, "attempts": [{"fixture": True}], "error": "capture error"}
+                (session / "restore-launch.log").write_text("first failure")
+                with patch.object(pilot, "restore_normal", side_effect=ValueError("synthetic restore failure")):
+                    with self.assertRaisesRegex(ValueError, "synthetic restore failure"):
+                        pilot.restore_after_capture(session, manifest)
+                persisted = json.loads((session / "comparison.json").read_text())
+                self.assertEqual(persisted["status"], "restoration-failed")
+                self.assertEqual(persisted["captureStatus"], capture_status)
+                self.assertIn("synthetic restore failure", persisted["restoreError"])
+                self.assertEqual(persisted["error"], "capture error")
+                with patch.object(pilot, "restore_normal"), patch.object(pilot, "run_attempt") as captures:
+                    pilot.run(argparse.Namespace(session=session, restore_only=True))
+                    captures.assert_not_called()
+                after = json.loads((session / "comparison.json").read_text())
+                self.assertEqual(after["status"], capture_status)
+                self.assertNotIn("restoreError", after)
+                self.assertEqual(after["attempts"], [{"fixture": True}])
+                self.assertEqual(next(session.glob("restore-prior-*/restore-launch.log")).read_text(), "first failure")
+                # A later resumed capture must replace the previous stopped result.
+                after["status"] = "completed"
+                with patch.object(pilot, "restore_normal"):
+                    pilot.restore_after_capture(session, after)
+                self.assertEqual(after["status"], "completed")
+
     def manifest(self, directory):
         manifest = {"schedule": ["original", "optimized", "optimized", "original"],
                     "durationSeconds": 600, "stepsPerSecond": 2, "scenario": "replay",

@@ -69,9 +69,11 @@ def completed_prefix(manifest):
     return len(accepted)
 
 
-def run(session, resume=False):
+def run(session, resume=False, restore_only=False):
     path = session / "comparison.json"
     manifest = json.loads(path.read_text())
+    if restore_only:
+        return comparison.retry_restore(session, manifest)
     if manifest["schedule"] != SCHEDULE:
         raise ValueError("Use the balanced runtime schedule.")
     if resume:
@@ -109,13 +111,13 @@ def run(session, resume=False):
         manifest.update(status="stopped", error=str(error), stoppedAt=comparison.now())
         raise
     finally:
-        comparison.save(path, manifest)
-        comparison.restore_normal(session, manifest)
+        comparison.restore_after_capture(session, manifest)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--session", type=Path, required=True)
     parser.add_argument("--resume", action="store_true", help="Validate accepted prefix and continue a stopped frozen session")
+    parser.add_argument("--restore-only", action="store_true", help="Retry failed normal-app restoration without repeating captures")
     arguments = parser.parse_args()
-    run(arguments.session.resolve(), resume=arguments.resume)
+    run(arguments.session.resolve(), resume=arguments.resume, restore_only=arguments.restore_only)

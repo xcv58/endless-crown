@@ -5,6 +5,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import plistlib
 from pathlib import Path
 import tempfile
 import unittest
@@ -92,6 +93,32 @@ class ReportValidationTests(unittest.TestCase):
         self.assertTrue(comparison.validate(self.report, self.request))
 
 
+class PreparedProductsTests(unittest.TestCase):
+    def test_replaced_app_or_runner_is_rejected_before_device_work(self):
+        for changed in ("identity", "runner", "missing-record"):
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as directory:
+                session = Path(directory); build = session / "comparison-build"
+                app = build / "Build/Products/Release-watchos/CrownSpin Watch App.app"; app.mkdir(parents=True)
+                info = app / "Info.plist"
+                identity = {"EnergySourceFingerprint": "prepared", "CFBundleIdentifier": comparison.energy.BUNDLE_ID}
+                info.write_bytes(plistlib.dumps(identity))
+                runner = app.parent / "runner"; runner.write_text("prepared runner")
+                manifest = {"status": "ready", "attempts": [], "sourceFingerprint": "synthetic-source",
+                            "fixtureFingerprint": hashlib.sha256(comparison.FIXTURE.read_bytes()).hexdigest(),
+                            "build": str(build), "buildFingerprint": "prepared",
+                            "productsFingerprint": comparison.products_fingerprint(build)}
+                comparison.verify_products(manifest)
+                if changed == "identity":
+                    info.write_bytes(plistlib.dumps(dict(identity, EnergySourceFingerprint="other-variant")))
+                elif changed == "runner": runner.write_text("different fixture runner")
+                else: del manifest["productsFingerprint"]
+                (session / "system-comparison.json").write_text(json.dumps(manifest))
+                with patch.object(comparison.energy, "source_fingerprint", return_value="synthetic-source"), patch.object(comparison, "execute") as execute:
+                    with self.assertRaisesRegex(ValueError, "prepare a fresh comparison"):
+                        comparison.run(argparse.Namespace(session=session))
+                    execute.assert_not_called()
+
+
 class RestorationTests(unittest.TestCase):
     def run_with_restoration(self, *, grid_code=0, grid_error=None, normal_error=None, trial_error=None):
         with tempfile.TemporaryDirectory(prefix="crown-restore-tests-") as directory:
@@ -110,6 +137,7 @@ class RestorationTests(unittest.TestCase):
                 return 0, {"samples": [{"batteryLevel": .6}, {"batteryLevel": .6}], "gestures": []}
             failure = None
             with patch.object(comparison.energy, "source_fingerprint", return_value="synthetic-source"), \
+                    patch.object(comparison, "verify_products"), \
                     patch.object(comparison, "execute", side_effect=execute), \
                     patch.object(comparison, "validate", return_value=[]), \
                     patch.object(comparison.time, "sleep"), \

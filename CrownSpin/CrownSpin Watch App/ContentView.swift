@@ -433,6 +433,7 @@ struct ContentView: View {
             var context = [
                 "ambientMode": String(isAmbientMode),
                 "displayMode": displayModeState.mode.rawValue,
+                "blackDisplay": String(isBlackDisplay),
                 "numberSystem": numberSystem.rawValue,
                 "menuHidden": String(isMenuButtonHidden)
             ]
@@ -678,6 +679,9 @@ struct ContentView: View {
 
     private func revealHapticsOnlyControls() {
         guard isBlackDisplay else { return }
+        #if ENERGY_TESTING
+        energyTests.unexpectedInput()
+        #endif
         displayModeState.revealControls()
         revealMenuButton()
     }

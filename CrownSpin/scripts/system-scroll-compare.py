@@ -40,17 +40,38 @@ def environment(manifest):
     return result
 
 
+def products_fingerprint(build):
+    products = Path(build) / "Build/Products"
+    digest = hashlib.sha256()
+    paths = sorted(path for path in products.rglob("*") if path.is_file() or path.is_symlink())
+    if not paths:
+        raise ValueError("Prepared comparison products are missing.")
+    for path in paths:
+        value = str(path.readlink()).encode() if path.is_symlink() else path.read_bytes()
+        digest.update(str(path.relative_to(products)).encode() + b"\0" + value + b"\0")
+    return digest.hexdigest()
+
+
+def verify_products(manifest):
+    app = Path(manifest["build"]) / "Build/Products/Release-watchos/CrownSpin Watch App.app"
+    info = plistlib.loads((app / "Info.plist").read_bytes())
+    if info.get("EnergySourceFingerprint") != manifest["buildFingerprint"] or \
+            info.get("CFBundleIdentifier") != energy.BUNDLE_ID or \
+            products_fingerprint(manifest["build"]) != manifest.get("productsFingerprint"):
+        raise ValueError("Prepared app or test runner changed; prepare a fresh comparison.")
+
+
 def prepare(args):
     session = args.session.resolve()
     session.mkdir(parents=True, exist_ok=True)
     source = session / "comparison-source/CrownSpin"
     if source.exists() or (session / "system-comparison.json").exists():
         raise ValueError("Preparation requires a fresh comparison source directory.")
+    source_id = energy.source_fingerprint()
+    fixture_id = hashlib.sha256(FIXTURE.read_bytes()).hexdigest()
     shutil.copytree(energy.ROOT / "CrownSpin", source,
                     ignore=shutil.ignore_patterns("build", "DerivedData", ".build", "scripts", "xcuserdata"))
     shutil.copyfile(FIXTURE, source / "CrownSpinEnergyUITests/EnergyAutomationUITests.swift")
-    source_id = energy.source_fingerprint()
-    fixture_id = hashlib.sha256(FIXTURE.read_bytes()).hexdigest()
     identity = hashlib.sha256((source_id + fixture_id + "ordinary-release").encode()).hexdigest()
     manifest = {"status": "preparing", "device": args.device, "developerDir": args.developer_dir,
                 "sourceFingerprint": source_id, "fixtureFingerprint": fixture_id,
@@ -76,6 +97,10 @@ def prepare(args):
             subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True,
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         manifest["signatureVerified"] = True
+        if energy.source_fingerprint() != source_id or hashlib.sha256(FIXTURE.read_bytes()).hexdigest() != fixture_id:
+            raise ValueError("Sources changed during preparation; prepare a fresh comparison.")
+        manifest["productsFingerprint"] = products_fingerprint(manifest["build"])
+        verify_products(manifest)
     save(session / "system-comparison.json", manifest)
     print("Prepared ordinary Release app and common battery recorder:", session, flush=True)
     if result.returncode:
@@ -118,6 +143,7 @@ def configuration(session, manifest, request, name):
 
 
 def execute(session, manifest, request, name, method="testComparison"):
+    verify_products(manifest)
     path = configuration(session, manifest, request, name)
     seconds = request["seconds"] if request else 0
     command = ["xcodebuild", "test-without-building", "-xctestrun", str(path),
@@ -195,6 +221,7 @@ def run(args):
     if energy.source_fingerprint() != manifest["sourceFingerprint"] or \
             hashlib.sha256(FIXTURE.read_bytes()).hexdigest() != manifest["fixtureFingerprint"]:
         raise ValueError("Sources changed after preparation.")
+    verify_products(manifest)
     delta, velocity, period = args.delta, args.velocity, args.period
     manifest.update(status="running", mode=args.mode, durationSeconds=args.seconds,
                     crownDelta=delta, crownVelocity=velocity, crownPeriodSeconds=period,

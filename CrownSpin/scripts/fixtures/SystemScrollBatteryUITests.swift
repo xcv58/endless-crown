@@ -100,7 +100,7 @@ final class SystemScrollBatteryUITests: XCTestCase {
         }
         if issues.isEmpty { waitUntil(start + request.seconds) }
         sample()
-        let elapsed = ProcessInfo.processInfo.systemUptime - start
+        let elapsed = samples.last?["elapsedSeconds"] as? Double ?? 0
         attach("after-" + request.condition)
         let report: [String: Any] = ["runID": request.runID, "condition": request.condition,
             "mode": request.mode, "durationSeconds": request.seconds, "elapsedSeconds": elapsed,
@@ -135,6 +135,8 @@ final class SystemScrollBatteryUITests: XCTestCase {
         }
         XCTAssertTrue(grid.exists && grid.isHittable, "Could not reach Grid View restore control")
         tapRotated(grid, in: system)
+        XCTAssertTrue(system.buttons["List View"].waitForExistence(timeout: 8),
+                      "Launcher did not confirm Grid View after the restoration tap")
         attach("restored-grid")
         app.activate()
     }
