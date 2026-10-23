@@ -258,7 +258,16 @@ class CacheTests(unittest.TestCase):
             pairs = [json.loads(p.read_text()) for p in sessions]
             self.assertEqual({t['fingerprint'] for t in pairs[0]['trials']}, {t['fingerprint'] for t in pairs[1]['trials']})
             self.assertTrue(all(Path(t['app']).is_dir() and '/DerivedData/' not in t['app'] for m in pairs for t in m['trials']))
-            normal = self.root / 'normal.json'; normal.write_text(json.dumps({'sourceFingerprint':'fixture-source'}))
+            normal_app = self.root / 'accepted-normal.app'
+            normal_app.mkdir()
+            (normal_app / 'Info.plist').write_bytes(plistlib.dumps({'sourceFingerprint': 'fixture-source',
+                'EnergySourceFingerprint': 'fixture-source', 'CFBundleIdentifier': system.energy.BUNDLE_ID,
+                'CFBundleExecutable': 'CrownSpin'}))
+            (normal_app / 'CrownSpin').write_bytes(b'owned ordinary executable fixture')
+            normal = self.root / 'normal.json'
+            normal.write_text(json.dumps({'sourceFingerprint': 'fixture-source', 'app': str(normal_app),
+                                          'diagnosticMarkersAbsent': True}))
+            system.comparison.record_normal(normal)
             manifests=[]
             for name in ('system-one', 'system-two'):
                 system.prepare(argparse.Namespace(session=self.root / name, device='owned-fake-watch',
