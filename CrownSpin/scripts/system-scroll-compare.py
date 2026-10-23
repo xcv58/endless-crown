@@ -54,7 +54,7 @@ def verify_products(manifest):
 
 
 def prepare(args):
-    session = args.session.resolve()
+    session = energy.build_cache.validate_output(args.session)
     session.mkdir(parents=True, exist_ok=True)
     source = session / "comparison-source/CrownSpin"
     if source.exists() or (session / "system-comparison.json").exists():
@@ -80,23 +80,26 @@ def prepare(args):
                "ENERGY_SOURCE_REVISION=" + revision, "ENERGY_SOURCE_FINGERPRINT=" + identity,
                "build-for-testing"]
     with (session / "comparison-build.log").open("w") as log:
-        result = subprocess.run(command, env=environment(manifest), stdout=log, stderr=subprocess.STDOUT)
-    manifest["buildExitCode"] = result.returncode
-    manifest["status"] = "ready" if result.returncode == 0 else "build-failed"
-    if result.returncode == 0:
-        product = Path(manifest["build"]) / "Build/Products/Release-watchos"
-        for app in (product / "CrownSpin Watch App.app", product / "CrownSpinEnergyUITests-Runner.app"):
-            subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        manifest["signatureVerified"] = True
-        if energy.source_fingerprint() != source_id or hashlib.sha256(FIXTURE.read_bytes()).hexdigest() != fixture_id:
-            raise ValueError("Sources changed during preparation; prepare a fresh comparison.")
-        manifest["productsFingerprint"] = products_fingerprint(manifest["build"])
-        verify_products(manifest)
+        try:
+            retained = energy.build_cache.build_products(command, output=session / "products", env=environment(manifest),
+                log=log, fresh=getattr(args, "fresh_build", False), profile="system-scroll-" + fixture_id)
+        except BaseException as error:
+            manifest.update(status="build-failed", buildError=f"{type(error).__name__}: {error}")
+            save(session / "system-comparison.json", manifest)
+            raise
+    manifest.update(buildExitCode=0, build=str(retained))
+    product = Path(manifest["build"]) / "Build/Products/Release-watchos"
+    for app in (product / "CrownSpin Watch App.app", product / "CrownSpinEnergyUITests-Runner.app"):
+        subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    manifest["signatureVerified"] = True
+    if energy.source_fingerprint() != source_id or hashlib.sha256(FIXTURE.read_bytes()).hexdigest() != fixture_id:
+        raise ValueError("Sources changed during preparation; prepare a fresh comparison.")
+    manifest["productsFingerprint"] = products_fingerprint(manifest["build"])
+    verify_products(manifest)
+    manifest["status"] = "ready"
     save(session / "system-comparison.json", manifest)
     print("Prepared ordinary Release app and common battery recorder:", session, flush=True)
-    if result.returncode:
-        raise ValueError("Build failed; inspect comparison-build.log.")
 
 
 def configuration(session, manifest, request, name):
@@ -291,6 +294,7 @@ def main():
     p.add_argument("--device", required=True)
     p.add_argument("--developer-dir", required=True)
     p.add_argument("--restore-normal", type=Path, required=True)
+    p.add_argument("--fresh-build", action="store_true", help="Use a new internal compiler workspace")
     p.set_defaults(function=prepare)
     p = commands.add_parser("run")
     p.add_argument("--session", type=Path, required=True)

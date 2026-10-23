@@ -47,6 +47,9 @@ def environment(developer_dir):
 
 
 def prepare(args):
+    energy.build_cache.validate_output(args.output)
+    if args.rebuild_session:
+        energy.build_cache.validate_output(args.rebuild_session)
     order = args.variants.split(",")
     if len(order) != 2 or len(set(order)) != 2 or any(v not in VARIANTS for v in order):
         raise ValueError("Specify two distinct comparison variants.")
@@ -88,8 +91,8 @@ def prepare(args):
         if log_path.exists():
             shutil.copyfile(log_path, session / f"trial-{index}-build-prior-{uuid.uuid4()}.log")
         with log_path.open("w") as log:
-            subprocess.run(command, cwd=energy.ROOT, env=environment(args.developer_dir),
-                           stdout=log, stderr=subprocess.STDOUT, check=True)
+            build = energy.build_cache.build_products(command, output=session / "products", env=environment(args.developer_dir),
+                log=log, fresh=getattr(args, "fresh_build", False), profile="app")
         app = build / "Build/Products/Release-watchos/CrownSpin Watch App.app"
         info = plistlib.loads((app / "Info.plist").read_bytes())
         if info.get("EnergySourceFingerprint") != fingerprint:
@@ -233,6 +236,7 @@ def main():
     p.add_argument("--variants", default="before,overhead-only")
     p.add_argument("--output", type=Path, default=Path("energy-test-results/haptic-comparison"))
     p.add_argument("--rebuild-session", type=Path, help="Refresh unlaunched builds while retaining their masked order")
+    p.add_argument("--fresh-build", action="store_true", help="Use new internal compiler workspaces")
     p.set_defaults(function=prepare)
     p = commands.add_parser("install")
     p.add_argument("--session", required=True, type=Path)

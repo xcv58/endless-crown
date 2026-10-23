@@ -4,6 +4,7 @@ import argparse
 import base64
 import copy
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -18,6 +19,9 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT = ROOT / "CrownSpin/CrownSpin.xcodeproj"
+cache_spec = importlib.util.spec_from_file_location("crown_build_cache", Path(__file__).with_name("build_cache.py"))
+build_cache = importlib.util.module_from_spec(cache_spec)
+cache_spec.loader.exec_module(build_cache)
 BUNDLE_ID = "media.jenny.crownspin.watchapp"
 AUTOMATION_VARIANTS = {
     "legacy-unqualified": [],
@@ -80,12 +84,11 @@ def build(args):
     if args.allow_provisioning_updates:
         command.append("-allowProvisioningUpdates")
     command.append("build-for-testing" if automation else "build")
-    if automation:
-        mark_build_started(args.output)
-    subprocess.run(command, check=True, cwd=ROOT, env=clean_device_environment())
-    if automation:
-        automation_products(args.output, variant, record=True)
-    print(f"App: {args.output.resolve() / 'Build/Products/Release-watchos/CrownSpin Watch App.app'}")
+    retained = build_cache.build_products(command, output=args.output, env=clean_device_environment(),
+        fresh=getattr(args, "fresh_build", False), profile="automation" if automation else "app",
+        validate=(lambda output: automation_products(output, variant, record=True)) if automation else None)
+    print(f"Build products: {retained}")
+    print(f"App: {retained / 'Build/Products/Release-watchos/CrownSpin Watch App.app'}")
     if not args.device or args.unsigned:
         print("Compile-only unsigned app. Build for your Watch with --device before installing.")
 
@@ -323,11 +326,6 @@ def products_fingerprint(build):
     return digest.hexdigest()
 
 
-def mark_build_started(output):
-    output.mkdir(parents=True, exist_ok=True)
-    (output / "energy-build.json").write_text(json.dumps({"status": "building"}))
-
-
 def automation_products(output, variant=None, *, record=False):
     app = output / "Build/Products/Release-watchos/CrownSpin Watch App.app"
     info = plistlib.loads((app / "Info.plist").read_bytes())
@@ -348,6 +346,8 @@ def automation_products(output, variant=None, *, record=False):
 
 
 def automate(args):
+    if args.skip_build and getattr(args, "fresh_build", False):
+        raise ValueError("Use --fresh-build while building, or --skip-build with frozen products.")
     if not (15 <= args.seconds <= 900 and 1 <= args.repetitions <= 6 and 0 <= args.cooldown <= 600):
         raise ValueError("Use 15–900 seconds, 1–6 repetitions, and 0–600 seconds of cooldown.")
     cases = args.cases.split(",")
@@ -377,7 +377,6 @@ def automate(args):
     print(f"Automation session: {session}", flush=True)
     try:
         if not args.skip_build:
-            mark_build_started(args.build_output)
             print("Building signed Release app and UI-test runner…", flush=True)
             with (session / "build.log").open("w") as log:
                 revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
@@ -390,9 +389,13 @@ def automate(args):
                     f"ENERGY_SOURCE_FINGERPRINT={build_fingerprint(getattr(args, 'variant', None))}"]
                 if args.allow_provisioning_updates:
                     command.append("-allowProvisioningUpdates")
-                subprocess.run(command + ["build-for-testing"], cwd=ROOT, stdout=log,
-                               stderr=subprocess.STDOUT, check=True, env=clean_device_environment())
-            automation_products(args.build_output, getattr(args, "variant", None), record=True)
+                args.build_output = build_cache.build_products(command + ["build-for-testing"],
+                    output=args.build_output, env=clean_device_environment(), log=log,
+                    fresh=getattr(args, "fresh_build", False), profile="automation",
+                    validate=lambda output: automation_products(output, getattr(args, "variant", None), record=True))
+        else:
+            args.build_output = build_cache.retained_build(args.build_output)
+        manifest["build"] = str(args.build_output)
         app = args.build_output / "Build/Products/Release-watchos/CrownSpin Watch App.app"
         app_info = plistlib.loads((app / "Info.plist").read_bytes())
         fingerprint = app_info.get("EnergySourceFingerprint")
@@ -582,12 +585,14 @@ def main():
     p.add_argument("--variant", choices=AUTOMATION_VARIANTS, default=DEFAULT_VARIANT, help="Default: current normal app paths; legacy-unqualified is an explicit historical experiment")
     p.add_argument("--unsigned", action="store_true")
     p.add_argument("--allow-provisioning-updates", action="store_true")
+    p.add_argument("--fresh-build", action="store_true", help="Use a new internal compiler workspace")
     p.add_argument("--output", type=Path, default=Path("/tmp/CrownSpinEnergyBuild"))
     p.set_defaults(function=build)
     p = sub.add_parser("build-automation", help="Build the signed Release app and Watch UI-test runner")
     p.add_argument("--device", required=True)
     p.add_argument("--variant", choices=AUTOMATION_VARIANTS, default=DEFAULT_VARIANT)
     p.add_argument("--allow-provisioning-updates", action="store_true")
+    p.add_argument("--fresh-build", action="store_true", help="Use a new internal compiler workspace")
     p.add_argument("--output", type=Path, default=Path("/tmp/CrownSpinEnergyAutomation"))
     p.set_defaults(function=build, automation=True, unsigned=False)
     p = sub.add_parser("automate", help="Build, drive Crown input or timed replay, fetch and validate repeated trials")
@@ -606,6 +611,7 @@ def main():
     p.add_argument("--pause", type=float, default=.25)
     p.add_argument("--cooldown", type=float, default=60)
     p.add_argument("--skip-build", action="store_true")
+    p.add_argument("--fresh-build", action="store_true", help="Use a new internal compiler workspace")
     p.add_argument("--runtime-profile", action="store_true", help="Collect app CPU and handler wall time; exclude from battery comparisons")
     p.add_argument("--allow-provisioning-updates", action="store_true")
     p.add_argument("--build-output", type=Path, default=Path("/tmp/CrownSpinEnergyAutomation"))
