@@ -210,6 +210,13 @@ class CacheTests(unittest.TestCase):
         for name in cache.OUTPUT_SETTINGS:
             with self.assertRaises(ValueError): self.build(env=dict(self.env, **{name: '/unmanaged'}))
 
+    def test_automation_reports_reject_cache_external_and_source_roots_before_writes(self):
+        for output in (self.root / 'cache/reports', Path('/Volumes/External/reports'), self.checkout / 'CrownSpin/reports'):
+            args = argparse.Namespace(skip_build=True, fresh_build=False, seconds=15, repetitions=1, cooldown=0,
+                cases='idle', steps_per_second=2, crown_delta=.5, crown_velocity=1, pause=.25, output=output)
+            with self.subTest(output=output), patch.object(Path, 'mkdir', side_effect=AssertionError('unexpected output write')):
+                with self.assertRaises(ValueError): energy.automate(args)
+
     def test_product_symlink_cannot_retain_cache_dependency(self):
         source = self.root / "products"; source.mkdir()
         (source / "external").symlink_to(self.project / "project.pbxproj")

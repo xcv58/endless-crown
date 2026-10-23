@@ -359,7 +359,7 @@ def automate(args):
             not number(args.crown_velocity) or not .1 <= args.crown_velocity <= 5 or
             not number(args.pause) or not 0 <= args.pause <= 10):
         raise ValueError("Invalid automated Crown workload.")
-    args.output = args.output.resolve()
+    args.output = build_cache.validate_output(args.output)
     args.output.mkdir(parents=True, exist_ok=True)
     session = args.output / str(uuid.uuid4())
     session.mkdir()
