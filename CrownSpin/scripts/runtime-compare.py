@@ -87,6 +87,7 @@ def run(session, resume=False, restore_only=False):
     if not manifest.get("runtimeProfile") or manifest.get("batteryBaseline") is not False:
         raise ValueError("Runtime captures must be explicitly separated from battery trials.")
     comparison.verify_builds(manifest)
+    comparison.verified_normal(manifest)
     manifest.update(status="running", startedAt=comparison.now())
     comparison.save(path, manifest)
     try:

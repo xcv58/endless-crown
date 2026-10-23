@@ -59,6 +59,9 @@ def prepare(args):
     source = session / "comparison-source/CrownSpin"
     if source.exists() or (session / "system-comparison.json").exists():
         raise ValueError("Preparation requires a fresh comparison source directory.")
+    normal = json.loads(args.restore_normal.read_text())
+    comparison.verified_normal({"restoreNormalBuildManifest": str(args.restore_normal),
+                                "sourceFingerprint": normal["sourceFingerprint"]})
     source_id = energy.source_fingerprint()
     fixture_id = hashlib.sha256(FIXTURE.read_bytes()).hexdigest()
     shutil.copytree(energy.ROOT / "CrownSpin", source,
@@ -217,6 +220,7 @@ def run(args):
             hashlib.sha256(FIXTURE.read_bytes()).hexdigest() != manifest["fixtureFingerprint"]:
         raise ValueError("Sources changed after preparation.")
     verify_products(manifest)
+    comparison.verified_normal(manifest)
     delta, velocity, period = args.delta, args.velocity, args.period
     manifest.update(status="running", mode=args.mode, durationSeconds=args.seconds,
                     crownDelta=delta, crownVelocity=velocity, crownPeriodSeconds=period,

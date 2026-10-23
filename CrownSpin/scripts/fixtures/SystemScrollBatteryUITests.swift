@@ -86,6 +86,8 @@ final class SystemScrollBatteryUITests: XCTestCase {
                 Thread.sleep(forTimeInterval: min(1, max(0, start + request.seconds - ProcessInfo.processInfo.systemUptime)))
             }
             let elapsed = ProcessInfo.processInfo.systemUptime - start
+            // Capture the endpoint before optional UI work once the measurement is complete.
+            if elapsed >= request.seconds { break }
             // Long blocking rotations can straddle a 30-second sampling boundary.
             // Sample at every completed long command rather than allowing a 50+ second gap.
             if elapsed >= nextSample || (request.mode == "automated" && request.period >= 20) {

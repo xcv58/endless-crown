@@ -6,6 +6,8 @@ import importlib.util
 import io
 import json
 import plistlib
+import os
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -17,6 +19,54 @@ spec.loader.exec_module(comparison)
 
 
 class ReportValidationTests(unittest.TestCase):
+    def test_manual_deadline_samples_before_slow_optional_ui_work(self):
+        source = comparison.FIXTURE.read_text()
+        loop = source[source.index("        while issues.isEmpty &&"):
+                      source.index('        let elapsed = samples.last?')]
+        loop = loop.replace("ProcessInfo.processInfo.systemUptime", "clock.now")
+        loop = loop.replace("Thread.sleep(forTimeInterval:", "clock.sleep(forTimeInterval:")
+        # Execute the actual fixture control flow with virtual time and slow UI operations.
+        probe = '''typealias CGFloat = Double
+final class Clock {
+    var now = 599.0
+    func sleep(forTimeInterval seconds: Double) { now += seconds }
+}
+struct Request {
+    let mode = "manual", condition = "app"
+    let seconds = 600.0, period = 20.0, delta = 2.0, velocity = 0.25
+}
+struct XCUIGestureVelocity { let rawValue: CGFloat }
+struct XCUIDevice {
+    static let shared = XCUIDevice()
+    func rotateDigitalCrown(delta: CGFloat, velocity: XCUIGestureVelocity) {
+        fatalError("Manual measurement must not inject Crown input")
+    }
+}
+let clock = Clock(), request = Request()
+let watch = (batteryLevel: 0.5, unused: 0)
+let start = 0.0, count = 30
+var issues: [String] = [], gestures: [[String: Double]] = []
+var samples: [Double] = [], images: [String] = []
+var nextSample = 600.0, nextImage = 600.0
+func waitUntil(_ deadline: Double) { clock.now = max(clock.now, deadline) }
+func sample() { samples.append(clock.now); clock.now += 3 }
+func attach(_ name: String) { images.append(name); clock.now += 4 }
+''' + loop + '''
+if samples != [600] || !images.isEmpty {
+    print("Terminal reading followed optional UI work: samples=\\(samples), images=\\(images)")
+} else {
+    print("Endpoint captured before optional UI work")
+}
+'''
+        with tempfile.TemporaryDirectory(prefix="crown-deadline-") as directory:
+            root = Path(directory)
+            path = root / 'deadline.swift'
+            path.write_text(probe)
+            result = subprocess.run(['xcrun', 'swift', '-module-cache-path', str(root / 'modules'), str(path)],
+                cwd=root, env=dict(os.environ, TMPDIR=str(root)), text=True, capture_output=True, timeout=120)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(result.stdout.strip(), 'Endpoint captured before optional UI work')
+
     def setUp(self):
         self.request = {"runID": "sample", "condition": "app-list", "mode": "automated",
                         "seconds": 16, "delta": .5, "velocity": .5, "period": 8}
@@ -94,6 +144,18 @@ class ReportValidationTests(unittest.TestCase):
 
 
 class PreparedProductsTests(unittest.TestCase):
+    def test_missing_normal_restore_record_stops_before_device_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            manifest = {"status": "ready", "attempts": [], "sourceFingerprint": "synthetic-source",
+                        "fixtureFingerprint": hashlib.sha256(comparison.FIXTURE.read_bytes()).hexdigest()}
+            (session / 'system-comparison.json').write_text(json.dumps(manifest))
+            with patch.object(comparison.energy, 'source_fingerprint', return_value='synthetic-source'), \
+                    patch.object(comparison, 'verify_products'), patch.object(comparison, 'execute') as execute:
+                with self.assertRaisesRegex(ValueError, 'accepted normal restore product'):
+                    comparison.run(argparse.Namespace(session=session))
+                execute.assert_not_called()
+
     def test_replaced_app_or_runner_is_rejected_before_device_work(self):
         for changed in ("identity", "runner", "missing-record"):
             with self.subTest(changed=changed), tempfile.TemporaryDirectory() as directory:
@@ -138,6 +200,7 @@ class RestorationTests(unittest.TestCase):
             failure = None
             with patch.object(comparison.energy, "source_fingerprint", return_value="synthetic-source"), \
                     patch.object(comparison, "verify_products"), \
+                    patch.object(comparison.comparison, "verified_normal"), \
                     patch.object(comparison, "execute", side_effect=execute), \
                     patch.object(comparison, "validate", return_value=[]), \
                     patch.object(comparison.time, "sleep"), \

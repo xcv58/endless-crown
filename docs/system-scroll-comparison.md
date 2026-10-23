@@ -11,7 +11,7 @@ Choose an input mode before starting a full comparison:
 - `manual`: the user continuously rotates the physical Crown at a similar pace in both conditions, reversing before the list's endpoints. The recorder handles timing, battery readings, foreground/thermal/charging checks, and screenshots. Its ready message precedes a 30-second warm-up; begin scrolling at that message and continue through the measured window. Manual pace is not instrumented.
 - `automated`: XCTest sends the same alternating Crown commands in both conditions, half a rotation at 0.5 rotations/second every eight seconds. A 10-minute run has 75 commands, nominally 75 seconds of requested Crown rotation. Command settling and scheduled pauses occupy the rest of the window. Interpret this as a matched paced workload, not continuous-use battery drain.
 
-Prepare an isolated signed ordinary Release app and runner:
+First pin the accepted normal restore product with `energy-compare.py --record-normal` as described in [restoration recovery](energy-tests.md). Then prepare an isolated signed ordinary Release app and runner:
 
 ```sh
 python3 CrownSpin/scripts/system-scroll-compare.py prepare \
@@ -62,6 +62,6 @@ After alert dismissal and Do Not Disturb, both short validations passed. The fin
 
 Every trial showed a five-percentage-point reported decrease. This is a descriptive baseline for the matched phased workload, with no resolved difference between conditions. Coarse readings, two repetitions, automation overhead, and different rendering/haptics prevent treating it as equal energy consumption, isolated haptic cost, continuous fast-use drain, or an original-versus-optimized battery saving.
 
-Preparation records the app identity and a hash of the prepared product set, including its runner. Each execution verifies those products before device work; rebuild or missing identity records require fresh preparation. Grid restoration must expose the List View switch after selecting Grid View, rather than accepting the tap alone. Battery elapsed time comes from the final battery endpoint, excluding the final accessibility check. These UI assumptions still require the fresh physical acceptance described above.
+Preparation records the app identity and a hash of the prepared product set, including its runner. Each execution verifies those products before device work; rebuild or missing identity records require fresh preparation. Grid restoration must expose the List View switch after selecting Grid View, rather than accepting the tap alone. At the deadline, the runner takes its final battery endpoint before any due periodic screenshot or accessibility check. Battery elapsed time comes from that endpoint. These UI assumptions still require the fresh physical acceptance described above.
 
 Preparation uses the [internal compiler cache](energy-tests.md#internal-compiler-cache), with separate retained app/runner generations. Add `--fresh-build` for a new compiler workspace. Session paths, trial mappings, copied source, logs and reports remain separate from disposable DerivedData. Existing session artifacts are not migrated or deleted.

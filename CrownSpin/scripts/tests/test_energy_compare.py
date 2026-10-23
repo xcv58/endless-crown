@@ -17,6 +17,47 @@ spec.loader.exec_module(pilot)
 
 
 class PilotTests(unittest.TestCase):
+    def normal_build(self, session):
+        app = session / "Normal.app"
+        app.mkdir()
+        (app / "Info.plist").write_bytes(plistlib.dumps({"EnergySourceFingerprint": "synthetic-source",
+            "CFBundleIdentifier": pilot.energy.BUNDLE_ID, "CFBundleExecutable": "CrownSpin"}))
+        (app / "CrownSpin").write_bytes(b"synthetic ordinary executable")
+        normal = session / "normal.json"
+        normal.write_text(json.dumps({"app": str(app), "sourceFingerprint": "synthetic-source",
+                                     "diagnosticMarkersAbsent": True}))
+        pilot.record_normal(normal)
+        manifest = {"restoreNormalBuildManifest": str(normal), "sourceFingerprint": "synthetic-source",
+                    "developerDir": "/synthetic-Xcode", "device": "synthetic-watch"}
+        return app, normal, manifest
+
+    def test_restore_rejects_changed_product_and_legacy_diagnostic_identity(self):
+        for replacement in (b"different normal executable", b"synthetic EnergyTestController CROWN_START_DIAGNOSTICS"):
+            with self.subTest(replacement=replacement), tempfile.TemporaryDirectory() as directory:
+                session = Path(directory)
+                app, normal, manifest = self.normal_build(session)
+                with patch.object(pilot.energy, "source_fingerprint", return_value="synthetic-source"):
+                    self.assertEqual(pilot.energy.build_fingerprint("legacy-unqualified"), manifest["sourceFingerprint"])
+                (app / "CrownSpin").write_bytes(replacement)
+                with patch.object(pilot.subprocess, "run") as device:
+                    with self.assertRaisesRegex(ValueError, "restore product changed|exclude diagnostic"):
+                        pilot.restore_normal(session, manifest)
+                    device.assert_not_called()
+                with self.assertRaises(ValueError):
+                    pilot.record_normal(normal)
+
+    def test_restore_rejects_unrecorded_product_before_device_actions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            _, normal, manifest = self.normal_build(session)
+            value = json.loads(normal.read_text())
+            del value["restoreProductFingerprint"]
+            normal.write_text(json.dumps(value))
+            with patch.object(pilot.subprocess, "run") as device:
+                with self.assertRaisesRegex(ValueError, "unrecorded"):
+                    pilot.restore_normal(session, manifest)
+                device.assert_not_called()
+
     def test_failed_cleanup_is_durable_and_retried_without_captures(self):
         for capture_status in ("completed", "stopped"):
             with tempfile.TemporaryDirectory() as directory:
@@ -143,12 +184,8 @@ class PilotTests(unittest.TestCase):
     def test_restore_launch_failure_is_saved_and_propagated(self):
         for launch_code in (0, 9):
             with tempfile.TemporaryDirectory(prefix="crown-restore-launch-") as directory:
-                session = Path(directory); app = session / "Normal.app"; app.mkdir()
-                (app / "Info.plist").write_bytes(plistlib.dumps({"EnergySourceFingerprint": "synthetic-source",
-                                                               "CFBundleIdentifier": pilot.energy.BUNDLE_ID}))
-                normal = session / "normal.json"; normal.write_text(json.dumps({"app": str(app)}))
-                manifest = {"restoreNormalBuildManifest": str(normal), "sourceFingerprint": "synthetic-source",
-                            "developerDir": "/synthetic-Xcode", "device": "synthetic-watch"}
+                session = Path(directory)
+                _, normal, manifest = self.normal_build(session)
                 with patch.object(pilot.subprocess, "run", side_effect=[SimpleNamespace(returncode=0), SimpleNamespace(returncode=launch_code)]) as command:
                     if launch_code:
                         with self.assertRaisesRegex(ValueError, "could not be opened"):

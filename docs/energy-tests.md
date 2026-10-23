@@ -276,3 +276,23 @@ Each build holds a filesystem lock through the compiler process group's cleanup 
 `--output` / `--build-output` name a retained-output root. `latest-build.json` is only a convenience pointer; automation resolves it once and saved comparison manifests pin the actual generation. Use the printed generation for long-lived variant and normal-restore manifests. Legacy frozen output remains accepted only with its valid successful product record. Failed compilation or validation never replaces a successful pointer with partial products. A previously retained generation can still be used if it matches current source/variant identity.
 
 Pass `--fresh-build` to any building command for a new internal compiler workspace. It keeps old caches and reports. `automate --skip-build` consumes frozen products and cannot also request a fresh build. External volumes, eviction, automatic cleanup and migration of existing build trees are deferred. The output root must be internal, separate from caches, and outside `CrownSpin/` so copied source cannot include its own generated output. Native signing and opt-in device workflows are unchanged.
+
+
+Before starting a new pilot, runtime comparison or native-list comparison, pin
+its already accepted normal app locally:
+
+```sh
+python3 CrownSpin/scripts/energy-compare.py --record-normal PATH-TO-ACCEPTED-NORMAL-BUILD.json
+```
+
+The record must identify the app and source fingerprint and have
+`diagnosticMarkersAbsent: true` from normal-build acceptance. This command
+checks the current executable for diagnostic markers and records a fingerprint
+of the complete app bundle, including permissions and signature files. It does
+not install or launch anything and does not establish physical acceptance. A
+changed product cannot overwrite an existing fingerprint: accept the new normal
+build separately with a new record. Comparisons verify the recorded product
+before device work and again before restoration. Legacy records without a
+product fingerprint must be verified and recorded before reuse; source identity
+alone cannot distinguish the explicit legacy diagnostic variant from a normal
+app built from the same source.
