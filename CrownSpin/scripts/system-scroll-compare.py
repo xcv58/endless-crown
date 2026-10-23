@@ -234,17 +234,34 @@ def run(args):
             "Native reduced-luminance state is not independently sampled.",
             "App-list and app rendering and system haptics differ.",
             "Automated input contains settling gaps; manual Crown pace is not instrumented."]
-    except Exception as error:
-        manifest.update(status="stopped", error=str(error))
+    except BaseException as error:
+        manifest.update(status="stopped", error=f"{type(error).__name__}: {error}")
         raise
     finally:
-        save(session / "system-comparison.json", manifest)
         # The initial physical probe established that the user's launcher used Grid View.
-        code, _ = execute(session, manifest, None, "restore-grid", "testRestoreGrid")
-        manifest["gridRestoreTestExitCode"] = code
+        # Attempt both restorations even if one raises, and never report a
+        # successful comparison when required cleanup failed.
+        cleanup_errors = []
+        try:
+            code, _ = execute(session, manifest, None, "restore-grid", "testRestoreGrid")
+            manifest["gridRestoreTestExitCode"] = code
+            if code != 0:
+                raise ValueError(f"Grid restoration failed with exit code {code}.")
+        except BaseException as error:
+            cleanup_errors.append(error)
+            manifest["gridRestoreError"] = f"{type(error).__name__}: {error}"
+        try:
+            comparison.restore_normal(session, manifest)
+        except BaseException as error:
+            cleanup_errors.append(error)
+            manifest["normalRestoreError"] = f"{type(error).__name__}: {error}"
+        if cleanup_errors:
+            manifest.update(status="restoration-failed", restorationErrors=[f"{type(error).__name__}: {error}" for error in cleanup_errors])
         save(session / "system-comparison.json", manifest)
-        comparison.restore_normal(session, manifest)
-        save(session / "system-comparison.json", manifest)
+        if cleanup_errors:
+            if any(not isinstance(error, Exception) for error in cleanup_errors):
+                raise next(error for error in cleanup_errors if not isinstance(error, Exception))
+            raise ValueError("Required restoration failed; see system-comparison.json.") from cleanup_errors[0]
 
 
 def main():

@@ -4,6 +4,19 @@ This harness records a baseline before changing the app's energy behavior. It ca
 
 All harness code is behind `ENERGY_TESTING`. Normal builds have no test menu, logging, or replay timers. Two optional source-identification fields in the app's Info.plist are empty in normal builds.
 
+New build and automation commands default to the existing `optimized` variant,
+which retains the current ordinary app's statistics observation, timer reuse and
+batched persistence. `--variant legacy-unqualified` explicitly selects the old
+unqualified diagnostic experiment with narrowed statistics observation and its
+source-only fingerprint. Existing named variants and their flag-based identities
+remain unchanged; select the matching variant when consuming a frozen build.
+
+New reports record the full display mode, distinguishing Ambient from Haptics
+Only as well as normal display. Analysis separates historical reports without
+that field; their old ambient Boolean cannot establish the full current mode.
+Runtime-profile and haptic-timing-only captures are excluded from battery
+comparisons and remain available to their dedicated analyzers.
+
 ## What can be automated
 
 | Mode | Workload | Automation |

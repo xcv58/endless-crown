@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PROJECT = ROOT / "CrownSpin/CrownSpin.xcodeproj"
 BUNDLE_ID = "media.jenny.crownspin.watchapp"
 AUTOMATION_VARIANTS = {
+    "legacy-unqualified": [],
     "original": ["HAPTIC_LEGACY_STATS", "HAPTIC_LEGACY_TIMER",
                  "HAPTIC_LEGACY_MENU_TIMER", "HAPTIC_LEGACY_PERSISTENCE"],
     "timer-only": ["HAPTIC_LEGACY_STATS", "HAPTIC_LEGACY_PERSISTENCE"],
@@ -27,11 +28,11 @@ AUTOMATION_VARIANTS = {
                          "HAPTIC_LEGACY_MENU_TIMER"],
     "optimized": ["HAPTIC_LEGACY_STATS"],
 }
+DEFAULT_VARIANT = "optimized"  # The current ordinary app's observation/timer/persistence paths.
 
 
 def compilation_flags(variant=None):
-    if variant is None:
-        return ["ENERGY_TESTING"]
+    variant = variant or DEFAULT_VARIANT
     if variant not in AUTOMATION_VARIANTS:
         raise ValueError("Unknown automation build variant.")
     return ["ENERGY_TESTING", *AUTOMATION_VARIANTS[variant]]
@@ -39,8 +40,8 @@ def compilation_flags(variant=None):
 
 def build_fingerprint(variant=None):
     source = source_fingerprint()
-    # Preserve the identity of existing unqualified diagnostic builds.
-    return source if variant is None else hashlib.sha256(
+    # Existing source-only identities remain available by explicit selection.
+    return source if variant == "legacy-unqualified" else hashlib.sha256(
         (source + "\0" + " ".join(compilation_flags(variant))).encode()).hexdigest()
 
 
@@ -278,7 +279,7 @@ def comparison_key(report):
     return (config["scenario"], config["pattern"], config["durationSeconds"],
             config["stepsPerSecond"] if config["scenario"].startswith("replay") else None,
             config["conditions"], *(meta.get(key, "unknown") for key in
-                ("hardwareModel", "watchOS", "ambientMode", "numberSystem", "menuHidden", "diagnosticVersion",
+                ("hardwareModel", "watchOS", "ambientMode", "displayMode", "numberSystem", "menuHidden", "diagnosticVersion",
                  "inputDriver", "crownInputProfile", "displayPolicy", "builtSDK", "xcodeBuild",
                  "wakeTapIntervalSeconds", "statusPollIntervalSeconds")),
             report["samples"][0]["thermalState"])
@@ -325,7 +326,7 @@ def automate(args):
     drivers = sorted({"app-scroll-replay-v1" if case.startswith("replay") else
                       "app-idle-v1" if case == "idle" else "xcuitest-crown-v1" for case in cases})
     manifest = {"sessionID": session.name, "device": args.device, "label": args.label,
-                "variant": getattr(args, "variant", None),
+                "variant": getattr(args, "variant", None) or DEFAULT_VARIANT,
                 "inputDrivers": drivers, "runs": [], "status": "preparing"}
     manifest_path = session / "session.json"
 
@@ -461,7 +462,7 @@ def analyse(args):
     paths = set()
     for path in args.reports:
         paths.update(path.rglob("*.json") if path.is_dir() else [path])
-    groups, seen, profile_count = {}, set(), 0
+    groups, seen, excluded_count = {}, set(), 0
     for path in sorted(paths):
         try:
             report = json.loads(path.read_text())
@@ -475,7 +476,12 @@ def analyse(args):
             seen.add(run_id)
             if report["configuration"].get("captureRuntimeProfile") is True:
                 print(f"PROFILE {path.name}: excluded from battery comparison")
-                profile_count += 1
+                excluded_count += 1
+                continue
+            if report["configuration"].get("captureHapticTiming") is True or \
+                    report["metadata"].get("diagnosticPurpose") == "haptic-timing-only":
+                print(f"TIMING {path.name}: excluded from battery comparison")
+                excluded_count += 1
                 continue
             rate, activity, drop = metrics(report)
             config = report["configuration"]
@@ -487,7 +493,7 @@ def analyse(args):
             print(f"FLAGGED {path.name}: malformed report ({error})")
     if not groups:
         print("No valid physical Watch runs to compare.")
-        return 0 if profile_count else 1
+        return 0 if excluded_count else 1
     for key, labels in groups.items():
         print(f"\nMatched condition: {key[0]} / {key[1]} / {key[2]:g}s / {key[4]}")
         for label, runs in sorted(labels.items()):
@@ -534,20 +540,20 @@ def main():
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("build", help="Build a diagnostic Release app; no install or upload")
     p.add_argument("--device", help="Physical Watch UDID; omit for an unsigned compile check")
-    p.add_argument("--variant", choices=AUTOMATION_VARIANTS, help="Freeze original, isolated timer/persistence, or combined behavior")
+    p.add_argument("--variant", choices=AUTOMATION_VARIANTS, default=DEFAULT_VARIANT, help="Default: current normal app paths; legacy-unqualified is an explicit historical experiment")
     p.add_argument("--unsigned", action="store_true")
     p.add_argument("--allow-provisioning-updates", action="store_true")
     p.add_argument("--output", type=Path, default=Path("/tmp/CrownSpinEnergyBuild"))
     p.set_defaults(function=build)
     p = sub.add_parser("build-automation", help="Build the signed Release app and Watch UI-test runner")
     p.add_argument("--device", required=True)
-    p.add_argument("--variant", choices=AUTOMATION_VARIANTS)
+    p.add_argument("--variant", choices=AUTOMATION_VARIANTS, default=DEFAULT_VARIANT)
     p.add_argument("--allow-provisioning-updates", action="store_true")
     p.add_argument("--output", type=Path, default=Path("/tmp/CrownSpinEnergyAutomation"))
     p.set_defaults(function=build, automation=True, unsigned=False)
     p = sub.add_parser("automate", help="Build, drive Crown input or timed replay, fetch and validate repeated trials")
     p.add_argument("--device", required=True)
-    p.add_argument("--variant", choices=AUTOMATION_VARIANTS)
+    p.add_argument("--variant", choices=AUTOMATION_VARIANTS, default=DEFAULT_VARIANT)
     p.add_argument("--label", default="baseline")
     p.add_argument("--conditions", default="Same Watch and unchanged settings; battery health/display settings unverified; UI testing attached")
     p.add_argument("--seconds", type=float, default=300)

@@ -1,7 +1,14 @@
 import copy
+import argparse
+from contextlib import redirect_stdout
+import hashlib
 import importlib.util
+import io
+import json
 from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location("system_scroll", Path(__file__).parents[1] / "system-scroll-compare.py")
 comparison = importlib.util.module_from_spec(spec)
@@ -83,6 +90,75 @@ class ReportValidationTests(unittest.TestCase):
         self.assertEqual(comparison.validate(self.report, self.request), [])
         self.report["gestures"] = [{"plannedSeconds": 0, "startedSeconds": 0, "endedSeconds": 6, "delta": .5}]
         self.assertTrue(comparison.validate(self.report, self.request))
+
+
+class RestorationTests(unittest.TestCase):
+    def run_with_restoration(self, *, grid_code=0, grid_error=None, normal_error=None, trial_error=None):
+        with tempfile.TemporaryDirectory(prefix="crown-restore-tests-") as directory:
+            session = Path(directory)
+            manifest = {"status": "ready", "attempts": [], "sourceFingerprint": "synthetic-source",
+                        "fixtureFingerprint": hashlib.sha256(comparison.FIXTURE.read_bytes()).hexdigest()}
+            path = session / "system-comparison.json"; path.write_text(json.dumps(manifest))
+            def execute(session, manifest, request, name, test=None):
+                if name == "restore-grid":
+                    if grid_error:
+                        raise grid_error
+                    return grid_code, None
+                self.assertTrue(name.startswith("trial-"))
+                if trial_error:
+                    raise trial_error
+                return 0, {"samples": [{"batteryLevel": .6}, {"batteryLevel": .6}], "gestures": []}
+            failure = None
+            with patch.object(comparison.energy, "source_fingerprint", return_value="synthetic-source"), \
+                    patch.object(comparison, "execute", side_effect=execute), \
+                    patch.object(comparison, "validate", return_value=[]), \
+                    patch.object(comparison.time, "sleep"), \
+                    patch.object(comparison.comparison, "restore_normal", side_effect=normal_error) as normal, \
+                    redirect_stdout(io.StringIO()):
+                try:
+                    comparison.run(argparse.Namespace(session=session, mode="manual", seconds=30,
+                                                     delta=.5, velocity=.5, period=8))
+                except BaseException as error:
+                    failure = error
+                self.assertEqual(normal.call_count, 1)
+            return json.loads(path.read_text()), failure
+
+    def test_grid_failure_attempts_app_restore_and_cannot_complete(self):
+        manifest, error = self.run_with_restoration(grid_code=7)
+        self.assertIsInstance(error, ValueError)
+        self.assertEqual(manifest["status"], "restoration-failed")
+        self.assertEqual(manifest["gridRestoreTestExitCode"], 7)
+        self.assertEqual(len(manifest["attempts"]), 4)
+
+    def test_grid_exception_still_attempts_app_restore(self):
+        manifest, error = self.run_with_restoration(grid_error=TimeoutError("synthetic timeout"))
+        self.assertIsInstance(error, ValueError)
+        self.assertIn("TimeoutError", manifest["gridRestoreError"])
+        self.assertEqual(manifest["status"], "restoration-failed")
+
+    def test_grid_interrupt_attempts_app_restore_then_propagates(self):
+        manifest, error = self.run_with_restoration(grid_error=KeyboardInterrupt())
+        self.assertIsInstance(error, KeyboardInterrupt)
+        self.assertEqual(manifest["status"], "restoration-failed")
+
+    def test_app_restore_failure_cannot_complete(self):
+        manifest, error = self.run_with_restoration(normal_error=ValueError("synthetic restore refused"))
+        self.assertIsInstance(error, ValueError)
+        self.assertEqual(manifest["gridRestoreTestExitCode"], 0)
+        self.assertEqual(manifest["status"], "restoration-failed")
+        self.assertIn("restore refused", manifest["normalRestoreError"])
+
+    def test_trial_failure_restores_both_and_retains_original_failure(self):
+        manifest, error = self.run_with_restoration(trial_error=ValueError("synthetic trial failed"))
+        self.assertEqual(str(error), "synthetic trial failed")
+        self.assertEqual(manifest["gridRestoreTestExitCode"], 0)
+        self.assertEqual(manifest["status"], "stopped")
+
+    def test_success_requires_both_restorations(self):
+        manifest, error = self.run_with_restoration()
+        self.assertIsNone(error)
+        self.assertEqual(manifest["gridRestoreTestExitCode"], 0)
+        self.assertEqual(manifest["status"], "complete-needs-screenshot-review")
 
 
 if __name__ == "__main__":

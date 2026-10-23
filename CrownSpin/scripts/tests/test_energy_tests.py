@@ -68,12 +68,15 @@ class EnergyTests(unittest.TestCase):
 
     def test_variant_identities_separate_compile_flags_and_preserve_legacy_builds(self):
         with patch.object(energy, "source_fingerprint", return_value="frozen-source"):
-            self.assertEqual(energy.build_fingerprint(), "frozen-source")
+            self.assertEqual(energy.build_fingerprint("legacy-unqualified"), "frozen-source")
+            self.assertEqual(energy.build_fingerprint(), energy.build_fingerprint("optimized"))
+            self.assertNotEqual(energy.build_fingerprint(), "frozen-source")
             self.assertNotEqual(energy.build_fingerprint("original"), energy.build_fingerprint("optimized"))
             self.assertEqual(energy.build_fingerprint("optimized"), energy.build_fingerprint("optimized"))
             with self.assertRaises(ValueError):
                 energy.build_fingerprint("unknown")
         self.assertEqual(energy.compilation_flags("optimized"), ["ENERGY_TESTING", "HAPTIC_LEGACY_STATS"])
+        self.assertEqual(energy.compilation_flags("legacy-unqualified"), ["ENERGY_TESTING"])
         self.assertIn("HAPTIC_LEGACY_PERSISTENCE", energy.compilation_flags("original"))
         self.assertIn("HAPTIC_LEGACY_MENU_TIMER", energy.compilation_flags("original"))
 
@@ -87,7 +90,44 @@ class EnergyTests(unittest.TestCase):
         self.assertFalse(persistence - original)
         with patch.object(energy, "source_fingerprint", return_value="frozen-source"):
             identities = {energy.build_fingerprint(variant) for variant in energy.AUTOMATION_VARIANTS}
-            self.assertEqual(len(identities), 4)
+            self.assertEqual(len(identities), len(energy.AUTOMATION_VARIANTS))
+
+    def test_new_cli_builds_select_normal_observation_and_legacy_is_explicit(self):
+        for command, arguments, function in (("build", [], "build"),
+                ("build-automation", ["--device", "synthetic-watch"], "build"),
+                ("automate", ["--device", "synthetic-watch"], "automate")):
+            for extra, expected in (([], "optimized"), (["--variant", "legacy-unqualified"], "legacy-unqualified")):
+                selected = []
+                with patch.object(energy, function, side_effect=lambda args: selected.append(args.variant)), \
+                        patch.object(energy.sys, "argv", ["energy-tests.py", command, *arguments, *extra]):
+                    self.assertEqual(energy.main(), 0)
+                self.assertEqual(selected, [expected])
+        self.assertIn("HAPTIC_LEGACY_STATS", energy.compilation_flags())
+
+    def test_full_display_modes_and_historical_unknown_mode_do_not_pool(self):
+        ambient = fixture()
+        ambient["metadata"]["displayMode"] = "ambient"
+        haptics_only = copy.deepcopy(ambient)
+        haptics_only["metadata"]["displayMode"] = "hapticsOnly"
+        historical = copy.deepcopy(ambient)
+        del historical["metadata"]["displayMode"]
+        self.assertNotEqual(energy.comparison_key(ambient), energy.comparison_key(haptics_only))
+        self.assertNotEqual(energy.comparison_key(ambient), energy.comparison_key(historical))
+
+    def test_haptic_timing_captures_never_enter_battery_metrics(self):
+        for configuration, purpose in ((True, "haptic-timing-only"), (True, None), (False, "haptic-timing-only")):
+            data = fixture(scenario="manual")
+            data["configuration"]["captureHapticTiming"] = configuration
+            if purpose:
+                data["metadata"]["diagnosticPurpose"] = purpose
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "timing.json"; path.write_text(json.dumps(data))
+                output = io.StringIO()
+                with redirect_stdout(output):
+                    self.assertEqual(energy.analyse(argparse.Namespace(reports=[path], before="baseline", after="optimized")), 0)
+                self.assertIn("TIMING timing.json: excluded from battery comparison", output.getvalue())
+                self.assertNotIn("median=", output.getvalue())
+                self.assertNotIn("pp/hour", output.getvalue())
 
     def test_device_environment_removes_prior_automation_without_losing_xcode(self):
         with patch.dict(energy.os.environ, {"CROWN_ENERGY_REQUEST": "stale", "CROWN_HAPTIC_COMPARISON": "stale",

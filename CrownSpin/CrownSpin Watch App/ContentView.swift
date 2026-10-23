@@ -403,7 +403,7 @@ struct ContentView: View {
         .onChange(of: energyScenePhase) { _, _ in updateEnergyTestVisibility() }
         .onChange(of: energyLuminanceReduced) { _, _ in updateEnergyTestVisibility() }
         .onChange(of: numberSystem) { _, _ in energyTests.unexpectedInput() }
-        .onChange(of: isAmbientMode) { _, _ in energyTests.unexpectedInput() }
+        .onChange(of: displayModeState.mode) { _, _ in energyTests.unexpectedInput() }
         .onChange(of: showMenu) { _, open in if open { energyTests.unexpectedInput() } }
         .onChange(of: showPatternPicker) { _, open in if open { energyTests.unexpectedInput() } }
         .onChange(of: energyTests.isRunning) { _, running in
@@ -432,6 +432,7 @@ struct ContentView: View {
             updateEnergyTestVisibility()
             var context = [
                 "ambientMode": String(isAmbientMode),
+                "displayMode": displayModeState.mode.rawValue,
                 "numberSystem": numberSystem.rawValue,
                 "menuHidden": String(isMenuButtonHidden)
             ]
