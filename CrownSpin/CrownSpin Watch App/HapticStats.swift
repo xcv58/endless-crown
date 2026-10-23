@@ -24,8 +24,13 @@ class HapticStats: ObservableObject {
 
     @Published private(set) var totalHaptics: Int {
         didSet {
+            #if ENERGY_TESTING && HAPTIC_LEGACY_PERSISTENCE
+            defaults.set(totalHaptics, forKey: Keys.totalHaptics)
+            sharedDefaults?.set(totalHaptics, forKey: Keys.totalHaptics)
+            #else
             totalHapticsNeedsSave = true
             schedulePersistence()
+            #endif
         }
     }
 
@@ -47,8 +52,12 @@ class HapticStats: ObservableObject {
 
     @Published private(set) var peakSpeed: Double {
         didSet {
+            #if ENERGY_TESTING && HAPTIC_LEGACY_PERSISTENCE
+            defaults.set(peakSpeed, forKey: Keys.peakSpeed)
+            #else
             peakSpeedNeedsSave = true
             schedulePersistence()
+            #endif
         }
     }
 
@@ -100,8 +109,12 @@ class HapticStats: ObservableObject {
     }
 
     func recordItemNumber(_ number: Int) {
+        #if ENERGY_TESTING && HAPTIC_LEGACY_PERSISTENCE
+        sharedDefaults?.set(number, forKey: "currentItemNumber")
+        #else
         pendingItemNumber = number
         schedulePersistence()
+        #endif
     }
 
     /// Submit the latest batch to UserDefaults before idle, suspension, or a widget refresh.

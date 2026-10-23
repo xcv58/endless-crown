@@ -46,3 +46,8 @@ Thumbs.db
 .clawdbot/active-tasks.json
 .vercel/
 .env.local
+
+# Local battery-test tooling and exports
+__pycache__/
+*.py[cod]
+energy-test-results/

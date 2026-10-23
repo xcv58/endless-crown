@@ -62,6 +62,8 @@ Haptics Only hides the app's numbers and controls while preserving scrolling and
 
 The public app name is Endless Crown. The Xcode project, schemes, bundle IDs, and targets still use CrownSpin internally so existing signing and App Store provisioning profiles remain valid.
 
+For repeatable physical-Watch battery measurements, see [the energy-test harness](docs/energy-tests.md). Its controls and logging are enabled only in diagnostic builds with `ENERGY_TESTING`.
+
 ## Project Structure
 
 ```
