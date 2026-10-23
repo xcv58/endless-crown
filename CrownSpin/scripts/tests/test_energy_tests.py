@@ -5,6 +5,7 @@ import importlib.util
 import io
 import json
 from pathlib import Path
+import plistlib
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -33,6 +34,39 @@ def fixture(label="baseline", scenario="replay", drop=.03, activity=5):
 
 
 class EnergyTests(unittest.TestCase):
+    def prepared_automation(self, directory):
+        output = Path(directory); products = output / "Build/Products"
+        app = products / "Release-watchos/CrownSpin Watch App.app"; app.mkdir(parents=True)
+        (app / "Info.plist").write_bytes(plistlib.dumps({"EnergySourceFingerprint": "current-source"}))
+        (products / "runner").write_text("prepared workload")
+        (products / "automation.xctestrun").write_bytes(plistlib.dumps({"TestTargets": [
+            {"BlueprintName": "CrownSpinEnergyUITests", "IsUITestBundle": True}]}))
+        return output
+
+    def test_matching_app_with_stale_runner_or_configuration_is_rejected(self):
+        for changed in ("runner", "automation.xctestrun", "missing-record"):
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as directory, \
+                    patch.object(energy, "build_fingerprint", return_value="current-source"):
+                output = self.prepared_automation(directory)
+                if changed != "missing-record":
+                    energy.automation_products(output, record=True)
+                    energy.automation_products(output)
+                    path = output / "Build/Products" / changed
+                    if changed == "runner": path.write_text("older workload")
+                    else:
+                        value = plistlib.loads(path.read_bytes()); value["changed"] = True
+                        path.write_bytes(plistlib.dumps(value))
+                with self.assertRaisesRegex(ValueError, "successful build record"):
+                    energy.automation_products(output)
+
+    def test_failed_rebuild_invalidates_old_success_record(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(energy, "build_fingerprint", return_value="current-source"):
+            output = self.prepared_automation(directory)
+            energy.automation_products(output, record=True)
+            energy.mark_build_started(output)
+            with self.assertRaisesRegex(ValueError, "successful build record"):
+                energy.automation_products(output)
+
     def test_runtime_profile_captures_are_excluded_from_battery_comparisons(self):
         data = fixture()
         data["configuration"]["captureRuntimeProfile"] = True

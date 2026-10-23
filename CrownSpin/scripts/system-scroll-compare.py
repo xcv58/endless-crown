@@ -41,15 +41,7 @@ def environment(manifest):
 
 
 def products_fingerprint(build):
-    products = Path(build) / "Build/Products"
-    digest = hashlib.sha256()
-    paths = sorted(path for path in products.rglob("*") if path.is_file() or path.is_symlink())
-    if not paths:
-        raise ValueError("Prepared comparison products are missing.")
-    for path in paths:
-        value = str(path.readlink()).encode() if path.is_symlink() else path.read_bytes()
-        digest.update(str(path.relative_to(products)).encode() + b"\0" + value + b"\0")
-    return digest.hexdigest()
+    return energy.products_fingerprint(build)
 
 
 def verify_products(manifest):

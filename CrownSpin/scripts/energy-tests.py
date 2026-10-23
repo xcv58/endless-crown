@@ -80,7 +80,11 @@ def build(args):
     if args.allow_provisioning_updates:
         command.append("-allowProvisioningUpdates")
     command.append("build-for-testing" if automation else "build")
+    if automation:
+        mark_build_started(args.output)
     subprocess.run(command, check=True, cwd=ROOT, env=clean_device_environment())
+    if automation:
+        automation_products(args.output, variant, record=True)
     print(f"App: {args.output.resolve() / 'Build/Products/Release-watchos/CrownSpin Watch App.app'}")
     if not args.device or args.unsigned:
         print("Compile-only unsigned app. Build for your Watch with --device before installing.")
@@ -307,6 +311,42 @@ def automation_test_targets(value):
     return result
 
 
+def products_fingerprint(build):
+    products = Path(build) / "Build/Products"
+    digest = hashlib.sha256()
+    paths = sorted(path for path in products.rglob("*") if path.is_file() or path.is_symlink())
+    if not paths:
+        raise ValueError("Prepared comparison products are missing.")
+    for path in paths:
+        value = str(path.readlink()).encode() if path.is_symlink() else path.read_bytes()
+        digest.update(str(path.relative_to(products)).encode() + b"\0" + value + b"\0")
+    return digest.hexdigest()
+
+
+def mark_build_started(output):
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "energy-build.json").write_text(json.dumps({"status": "building"}))
+
+
+def automation_products(output, variant=None, *, record=False):
+    app = output / "Build/Products/Release-watchos/CrownSpin Watch App.app"
+    info = plistlib.loads((app / "Info.plist").read_bytes())
+    fingerprint = build_fingerprint(variant)
+    if info.get("EnergySourceFingerprint") != fingerprint:
+        raise ValueError("Built app does not match current sources. Rebuild before measuring.")
+    files = list((output / "Build/Products").glob("*.xctestrun"))
+    if len(files) != 1 or len(automation_test_targets(plistlib.loads(files[0].read_bytes()))) != 1:
+        raise ValueError("Expected one built CrownSpinEnergyUITests configuration. Rebuild in a fresh output directory.")
+    identity = {"status": "ready", "sourceFingerprint": fingerprint,
+                "productsFingerprint": products_fingerprint(output)}
+    path = output / "energy-build.json"
+    if record:
+        path.write_text(json.dumps(identity, indent=2) + "\n")
+    elif not path.is_file() or json.loads(path.read_text()) != identity:
+        raise ValueError("App or runner lacks a matching successful build record. Rebuild before measuring.")
+    return files[0]
+
+
 def automate(args):
     if not (15 <= args.seconds <= 900 and 1 <= args.repetitions <= 6 and 0 <= args.cooldown <= 600):
         raise ValueError("Use 15–900 seconds, 1–6 repetitions, and 0–600 seconds of cooldown.")
@@ -337,6 +377,7 @@ def automate(args):
     print(f"Automation session: {session}", flush=True)
     try:
         if not args.skip_build:
+            mark_build_started(args.build_output)
             print("Building signed Release app and UI-test runner…", flush=True)
             with (session / "build.log").open("w") as log:
                 revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
@@ -351,17 +392,15 @@ def automate(args):
                     command.append("-allowProvisioningUpdates")
                 subprocess.run(command + ["build-for-testing"], cwd=ROOT, stdout=log,
                                stderr=subprocess.STDOUT, check=True, env=clean_device_environment())
+            automation_products(args.build_output, getattr(args, "variant", None), record=True)
         app = args.build_output / "Build/Products/Release-watchos/CrownSpin Watch App.app"
         app_info = plistlib.loads((app / "Info.plist").read_bytes())
         fingerprint = app_info.get("EnergySourceFingerprint")
         if not fingerprint or fingerprint != build_fingerprint(getattr(args, "variant", None)):
             raise ValueError("Built app does not match current sources. Rebuild before measuring.")
         manifest["sourceFingerprint"] = fingerprint
-        test_files = sorted((args.build_output / "Build/Products").glob("*.xctestrun"),
-                            key=lambda path: path.stat().st_mtime, reverse=True)
-        if not test_files:
-            raise ValueError("No built UI test configuration found.")
-        original = plistlib.loads(test_files[0].read_bytes())
+        test_file = automation_products(args.build_output, getattr(args, "variant", None))
+        original = plistlib.loads(test_file.read_bytes())
         if len(automation_test_targets(original)) != 1:
             raise ValueError("Expected exactly one CrownSpinEnergyUITests target.")
         reports_directory = session / "reports"
@@ -400,7 +439,7 @@ def automate(args):
             test_path = session / f"{index + 1:02d}-{case}.xctestrun"
             test_path.write_bytes(plistlib.dumps(configuration))
             # __TESTROOT__ paths are relative to the xctestrun file; preserve the built products root.
-            root = str(test_files[0].parent.resolve())
+            root = str(test_file.parent.resolve())
             def resolve_paths(value):
                 if isinstance(value, dict):
                     return {key: resolve_paths(child) for key, child in value.items()}
