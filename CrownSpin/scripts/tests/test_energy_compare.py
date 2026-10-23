@@ -2,9 +2,13 @@
 import copy
 import importlib.util
 import json
+import argparse
 from pathlib import Path
+import plistlib
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 from test_energy_tests import fixture
 
 spec = importlib.util.spec_from_file_location("pilot", Path(__file__).parents[1] / "energy-compare.py")
@@ -74,6 +78,59 @@ class PilotTests(unittest.TestCase):
             result = pilot.summarize(m)
             self.assertFalse(result["recordedConditionsMatched"])
             self.assertIsNone(result["descriptiveMediansPercentagePointsPerHour"])
+
+    def test_battery_runner_rejects_profile_session_before_build_or_device_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            (session / "comparison.json").write_text(json.dumps({"status": "ready", "attempts": [], "runtimeProfile": True}))
+            with patch.object(pilot, "verify_builds") as verify, patch.object(pilot, "run_attempt") as run:
+                with self.assertRaisesRegex(ValueError, "runtime-compare.py"):
+                    pilot.run(argparse.Namespace(session=session))
+                verify.assert_not_called(); run.assert_not_called()
+
+    def test_battery_summary_rejects_valid_profiling_and_timing_reports(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manifest = self.manifest(directory)
+            with self.assertRaisesRegex(ValueError, "Runtime profiles"):
+                pilot.summarize(dict(manifest, runtimeProfile=True))
+            for purpose in ("runtime-profile-v1", "haptic-timing-only"):
+                manifest = self.manifest(directory)
+                path = Path(manifest["attempts"][0]["report"])
+                report = json.loads(path.read_text())
+                report["metadata"]["diagnosticPurpose"] = purpose
+                if purpose == "runtime-profile-v1":
+                    report["configuration"]["captureRuntimeProfile"] = True
+                    report["runtimeProfile"] = {"samples": [
+                        {"elapsedSeconds": sample["elapsedSeconds"],
+                         "userCPUSeconds": sample["elapsedSeconds"] * .1,
+                         "systemCPUSeconds": sample["elapsedSeconds"] * .01,
+                         "contentViewBodyUpdates": sample["scrollEvents"], "work": {}}
+                        for sample in report["samples"]]}
+                else:
+                    report["configuration"]["captureHapticTiming"] = True
+                self.assertEqual(pilot.energy.validate(report), [])
+                path.write_text(json.dumps(report))
+                with self.assertRaisesRegex(ValueError, "not battery observations"):
+                    pilot.summarize(manifest)
+
+    def test_restore_launch_failure_is_saved_and_propagated(self):
+        for launch_code in (0, 9):
+            with tempfile.TemporaryDirectory(prefix="crown-restore-launch-") as directory:
+                session = Path(directory); app = session / "Normal.app"; app.mkdir()
+                (app / "Info.plist").write_bytes(plistlib.dumps({"EnergySourceFingerprint": "synthetic-source",
+                                                               "CFBundleIdentifier": pilot.energy.BUNDLE_ID}))
+                normal = session / "normal.json"; normal.write_text(json.dumps({"app": str(app)}))
+                manifest = {"restoreNormalBuildManifest": str(normal), "sourceFingerprint": "synthetic-source",
+                            "developerDir": "/synthetic-Xcode", "device": "synthetic-watch"}
+                with patch.object(pilot.subprocess, "run", side_effect=[SimpleNamespace(returncode=0), SimpleNamespace(returncode=launch_code)]) as command:
+                    if launch_code:
+                        with self.assertRaisesRegex(ValueError, "could not be opened"):
+                            pilot.restore_normal(session, manifest)
+                    else:
+                        pilot.restore_normal(session, manifest)
+                    self.assertEqual(command.call_count, 2)
+                self.assertEqual(json.loads((session / "comparison.json").read_text())["normalRestore"]["launchExitCode"], launch_code)
+                self.assertEqual(json.loads(normal.read_text())["lastRestoreLaunchExit"], launch_code)
 
 
 if __name__ == "__main__":

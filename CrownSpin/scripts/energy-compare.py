@@ -100,6 +100,8 @@ def run_attempt(session, manifest, variant, duration, phase, slot, retry=0):
 
 
 def summarize(manifest):
+    if manifest.get("runtimeProfile"):
+        raise ValueError("Runtime profiles belong in the runtime analyzer, not a battery summary.")
     accepted = [e for e in manifest["attempts"] if e["phase"] == "battery" and e["status"] == "completed"]
     if len(accepted) != len(manifest["schedule"]) or \
             [(e["slot"], e["variant"]) for e in accepted] != list(enumerate(manifest["schedule"], 1)):
@@ -107,6 +109,10 @@ def summarize(manifest):
     seen, rows, keys = set(), [], set()
     for entry in accepted:
         report = json.loads(Path(entry["report"]).read_text())
+        config, metadata = report.get("configuration", {}), report.get("metadata", {})
+        if config.get("captureRuntimeProfile") is True or config.get("captureHapticTiming") is True or \
+                metadata.get("diagnosticPurpose") in {"runtime-profile-v1", "haptic-timing-only"}:
+            raise ValueError("Profiling and haptic-timing captures are not battery observations.")
         if energy.validate(report) or report_identity_issues(report, manifest, entry["variant"],
                                                            manifest["durationSeconds"]) or report["runID"] in seen:
             raise ValueError("Invalid or duplicate accepted report.")
@@ -166,7 +172,9 @@ def restore_normal(session, manifest):
                   lastRestoreLaunchExit=launched.returncode)
     save(normal_path, normal)
     save(session / "comparison.json", manifest)
-    print("Normal optimized app restored" + (" and opened." if launched.returncode == 0 else "; open it manually."), flush=True)
+    if launched.returncode:
+        raise ValueError("Normal app was installed but could not be opened; see restore-launch.log.")
+    print("Normal optimized app restored and opened.", flush=True)
 
 
 def run(args):
@@ -174,6 +182,8 @@ def run(args):
     manifest = json.loads((session / "comparison.json").read_text())
     if manifest["status"] != "ready" or manifest["attempts"]:
         raise ValueError("Run only a fresh prepared session.")
+    if manifest.get("runtimeProfile"):
+        raise ValueError("Use runtime-compare.py for the prepared runtime-profile session.")
     verify_builds(manifest)
     manifest.update(status="running", startedAt=now())
     save(session / "comparison.json", manifest)

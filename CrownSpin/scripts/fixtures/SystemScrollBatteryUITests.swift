@@ -171,14 +171,18 @@ final class SystemScrollBatteryUITests: XCTestCase {
             }
             return false
         }
-        let marker = app.staticTexts["Clicks"]
+        // The effect label fades out while the Crown is moving. Keep checking
+        // the ordinary main screen without requiring that idle-only control.
+        let marker = app.descendants(matching: .any).matching(identifier: "Numbers").firstMatch
         return marker.exists && marker.isHittable && !app.images["Six-Sided Die Showing One Pip"].exists
     }
 
     @MainActor
     private func selectClicks(in app: XCUIApplication) throws {
         for _ in 0..<16 {
-            if comparisonScreenPresent(app, condition: "app") { return }
+            // Verify the fixed effect before warm-up, while the idle label is visible.
+            let marker = app.staticTexts["Clicks"]
+            if marker.exists && marker.isHittable && !app.images["Six-Sided Die Showing One Pip"].exists { return }
             // Normal app behavior: a single tap on the number advances the effect.
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
             Thread.sleep(forTimeInterval: 0.6)

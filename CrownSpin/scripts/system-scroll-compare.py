@@ -205,7 +205,7 @@ def run(args):
         for slot, condition in enumerate(manifest["schedule"], 1):
             request = {"runID": str(uuid.uuid4()), "condition": condition, "mode": args.mode,
                        "seconds": args.seconds, "delta": delta, "velocity": velocity, "period": period,
-                       "screenValidation": "hittable-list-row-or-clicks-label-v2"}
+                       "screenValidation": "hittable-list-row-or-main-screen-v3"}
             name = f"trial-{slot}-{condition}"
             print(f"Trial {slot}/4: {condition}, {args.seconds:g} seconds, {args.mode}", flush=True)
             code, report = execute(session, manifest, request, name)

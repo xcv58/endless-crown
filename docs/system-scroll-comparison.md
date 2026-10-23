@@ -32,6 +32,14 @@ python3 CrownSpin/scripts/system-scroll-compare.py run \
 
 The schedule is app list, app, app, app list, with 60-second gaps between accepted runs. Both conditions capture battery at approximately 30-second intervals and screenshots approximately every minute. Long commands are sampled after each command to avoid crossing a sampling boundary without a reading. The Watch must stay unlocked on the wrist, off its charger, and nominal in thermal state. An invalid run stops the comparison. Do not touch the Watch in automated mode. The runner selects fixed Clicks through the ordinary app's single-tap effect cycle before either condition. It verifies the Clicks label and absence of the Random dice icon.
 
+New `hittable-list-row-or-main-screen-v3` sessions verify Clicks before warm-up,
+then use the ordinary Numbers scroll-view marker during measurement. The effect
+label normally fades while scrolling, so it cannot serve as a continuous-input
+visibility check. Keep the selected effect unchanged and inspect screenshots;
+this guard checks main-screen presence, not motor output. Existing sessions
+retain their recorded earlier validation policy. The v3 guard still needs a
+fresh physical manual-scrolling acceptance run before using it for measurements.
+
 The initial Ultra 2 protocol restores Grid View and the previously accepted normal app at the end, including after a failed run. Before reusing it on another Watch or with another launcher layout, repeat the capability probe and adapt the restoration policy to that device's original setting. Inspect the native screenshots before accepting a comparison: foreground state alone does not prove the app list remained visible, and native reduced-luminance state is not independently recorded.
 
 Keep runs equal in duration. If percentage changes are too coarse, extend both conditions equally and reverse the order again. Two runs per condition are descriptive. Differences include display content, rendering, animations, system haptics, and app-requested haptics; this is not a direct measurement of haptic motor energy or an optimization saving.
