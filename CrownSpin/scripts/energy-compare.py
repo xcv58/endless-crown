@@ -34,6 +34,7 @@ def verify_builds(manifest):
     if energy.source_fingerprint() != manifest["sourceFingerprint"]:
         raise ValueError("App sources changed after preparation; do not mix builds.")
     for variant, build in manifest["variants"].items():
+        build["build"] = str(energy.build_cache.retained_build(build["build"]))
         energy.automation_products(Path(build["build"]), variant)
         info = plistlib.loads((Path(build["build"]) / "Build/Products/Release-watchos/CrownSpin Watch App.app/Info.plist").read_bytes())
         if info.get("EnergySourceFingerprint") != build["fingerprint"] or \

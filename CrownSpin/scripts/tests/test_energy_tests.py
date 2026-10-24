@@ -59,14 +59,6 @@ class EnergyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "successful build record"):
                     energy.automation_products(output)
 
-    def test_failed_rebuild_invalidates_old_success_record(self):
-        with tempfile.TemporaryDirectory() as directory, patch.object(energy, "build_fingerprint", return_value="current-source"):
-            output = self.prepared_automation(directory)
-            energy.automation_products(output, record=True)
-            energy.mark_build_started(output)
-            with self.assertRaisesRegex(ValueError, "successful build record"):
-                energy.automation_products(output)
-
     def test_runtime_profile_captures_are_excluded_from_battery_comparisons(self):
         data = fixture()
         data["configuration"]["captureRuntimeProfile"] = True

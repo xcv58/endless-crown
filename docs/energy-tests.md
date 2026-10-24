@@ -217,10 +217,10 @@ python3 CrownSpin/scripts/energy-tests.py build --device WATCH_UDID --output /tm
 
 The project keeps its configured signing team. If provisioning needs refreshing, explicitly add `--allow-provisioning-updates`. The script stamps the Git revision and a fingerprint of the actual source, assets, and project so uncommitted baseline and optimized builds remain distinguishable. Freeze a build while collecting its repetitions.
 
-The signed app is `/tmp/CrownSpinEnergyBaseline/Build/Products/Release-watchos/CrownSpin Watch App.app`. Install through the connected Watch's Xcode tooling. If the Watch is exposed to CoreDevice, this command can install the built app:
+The command prints the retained generation and app path. The output root's `latest-build.json` points to that generation. Use the printed app path with the connected Watch's Xcode tooling. If the Watch is exposed to CoreDevice, this command can install it:
 
 ```sh
-xcrun devicectl device install app --device WATCH_UDID '/tmp/CrownSpinEnergyBaseline/Build/Products/Release-watchos/CrownSpin Watch App.app'
+xcrun devicectl device install app --device WATCH_UDID 'PRINTED_BUILD_GENERATION/Build/Products/Release-watchos/CrownSpin Watch App.app'
 ```
 
 If the command-line installer drops the connection, use Xcode → Open Developer Tool → Device Hub, select the Watch, and open Info → Apps. Click Add and select the signed app bundle. This path successfully installed the baseline on the Ultra 2 after two command-line attempts failed with a remote connection error. Apple describes the [Device Hub Apps inspector](https://developer.apple.com/documentation/xcode/managing-apps-on-devices); its documented distribution format is an `.ipa`, while this local development `.app` was also accepted.
@@ -265,7 +265,17 @@ Restoration is part of completing a pilot or runtime comparison. A failed instal
 
 Haptics Only captures record whether the display started black or with controls revealed; these states and older reports with unknown state stay separate. Revealing controls during a capture flags that run. Ordinary scroll-to-black behavior remains part of the selected workload.
 
-A failed automation rebuild invalidates its success record before compilation. `--skip-build` refuses old or changed app/runner/configuration products, including directories prepared before product records were introduced. Rebuild those in a fresh output directory; existing evidence is retained.
+A failed managed rebuild keeps the previous successful retained generation intact; compiler products are never used directly. `--skip-build` refuses unrecorded or changed app/runner/configuration products, including directories prepared before product records were introduced. Rebuild those with the managed builder; existing evidence is retained.
+
+## Internal compiler cache
+
+Build, build-automation, automate, haptic preparation, and system-scroll preparation reuse compatible DerivedData under `~/Library/Caches/EndlessCrown/Builds`. Keys include the checkout, selected Xcode/SDK, scheme, configuration, destination/architecture, signing settings, compile flags, project settings and probe identity. Source edits rebuild incrementally; dates and output/report locations do not create new compiler trees. Compiler output overrides are rejected so they cannot bypass the managed workspace.
+
+Each build holds a filesystem lock through the compiler process group's cleanup and copying its products. Reports retain unique `build-<id>/Build/Products` generations, logs and build metadata; no compiler intermediates are copied. Test configurations refer to retained products rather than DerivedData. Generations are treated as frozen inputs. Do not edit them. They remain usable after compiler caches are removed, while copied system-comparison source remains separate evidence.
+
+`--output` / `--build-output` name a retained-output root. `latest-build.json` is only a convenience pointer; automation resolves it once and saved comparison manifests pin the actual generation. Use the printed generation for long-lived variant and normal-restore manifests. Legacy frozen output remains accepted only with its valid successful product record. Failed compilation or validation never replaces a successful pointer with partial products. A previously retained generation can still be used if it matches current source/variant identity.
+
+Pass `--fresh-build` to any building command for a new internal compiler workspace. It keeps old caches and reports. `automate --skip-build` consumes frozen products and cannot also request a fresh build. External volumes, eviction, automatic cleanup and migration of existing build trees are deferred. The output root must be internal, separate from caches, and outside `CrownSpin/` so copied source cannot include its own generated output. Native signing and opt-in device workflows are unchanged.
 
 
 Before starting a new pilot, runtime comparison or native-list comparison, pin
