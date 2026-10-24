@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EAE100010000000000000001 /* EnergyTestReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE100020000000000000001 /* EnergyTestReport.swift */; };
+		EAE100010000000000000002 /* EnergyTestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE100020000000000000002 /* EnergyTestController.swift */; };
+		EAE100010000000000000003 /* EnergyTestReport.swift in Test Sources */ = {isa = PBXBuildFile; fileRef = EAE100020000000000000001 /* EnergyTestReport.swift */; };
+		EAE100010000000000000004 /* EnergyTestReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE100020000000000000003 /* EnergyTestReportTests.swift */; };
 		AABB00010000000000000001 /* HapticPatternTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00020000000000000001 /* HapticPatternTests.swift */; };
 		AABB00010000000000000002 /* HapticStatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00020000000000000002 /* HapticStatsTests.swift */; };
 		AABB00010000000000000003 /* CrownSpinComplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00020000000000000003 /* CrownSpinComplicationTests.swift */; };
@@ -31,6 +35,8 @@
 		D15000010000000000000001 /* DisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15000020000000000000001 /* DisplayMode.swift */; };
 		D15000010000000000000002 /* DisplayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15000020000000000000001 /* DisplayMode.swift */; };
 		D15000010000000000000003 /* DisplayModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15000020000000000000002 /* DisplayModeTests.swift */; };
+		EAE200010000000000000001 /* EnergyAutomationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE200020000000000000001; };
+		EAE200010000000000000002 /* EnergyTestReport.swift in UI Tests */ = {isa = PBXBuildFile; fileRef = EAE100020000000000000001; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +82,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EAE100020000000000000001 /* EnergyTestReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyTestReport.swift; sourceTree = "<group>"; };
+		EAE100020000000000000002 /* EnergyTestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyTestController.swift; sourceTree = "<group>"; };
+		EAE100020000000000000003 /* EnergyTestReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyTestReportTests.swift; sourceTree = "<group>"; };
 		AABB00020000000000000001 /* HapticPatternTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticPatternTests.swift; sourceTree = "<group>"; };
 		AABB00020000000000000002 /* HapticStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticStatsTests.swift; sourceTree = "<group>"; };
 		AABB00020000000000000003 /* CrownSpinComplicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrownSpinComplicationTests.swift; sourceTree = "<group>"; };
@@ -101,6 +110,8 @@
 		DFF9BB532F3589000041DFEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D15000020000000000000001 /* DisplayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayMode.swift; sourceTree = "<group>"; };
 		D15000020000000000000002 /* DisplayModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayModeTests.swift; sourceTree = "<group>"; };
+		EAE200020000000000000001 /* EnergyAutomationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyAutomationUITests.swift; sourceTree = "<group>"; };
+		EAE200020000000000000002 /* CrownSpinEnergyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CrownSpinEnergyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +136,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EAE200040000000000000001 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -132,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				D15000020000000000000002 /* DisplayModeTests.swift */,
+				EAE100020000000000000003 /* EnergyTestReportTests.swift */,
 				AABB00020000000000000001 /* HapticPatternTests.swift */,
 				AABB00020000000000000002 /* HapticStatsTests.swift */,
 				AABB00020000000000000003 /* CrownSpinComplicationTests.swift */,
@@ -142,6 +155,7 @@
 		C01234540000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				EAE200030000000000000001 /* CrownSpinEnergyUITests */,
 				C01234540000000000000002 /* CrownSpin Watch App */,
 				DFF9BB592F3589000041DFEE /* CrownSpin Complication */,
 				AABB00040000000000000001 /* CrownSpinTests */,
@@ -152,6 +166,8 @@
 		C01234540000000000000002 /* CrownSpin Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				EAE100020000000000000001 /* EnergyTestReport.swift */,
+				EAE100020000000000000002 /* EnergyTestController.swift */,
 				AABB00020000000000000020 /* CrownSpin Watch App.entitlements */,
 				DFF9BB3C2F3588300041DFEE /* CrownSpinComplication.swift */,
 				DFF9BB3D2F3588300041DFEE /* HapticStats.swift */,
@@ -174,6 +190,7 @@
 				BEEF00040000000000000001 /* CrownSpin.app */,
 				C01234550000000000000010 /* CrownSpin Watch App.app */,
 				DFF9BB522F3589000041DFEE /* CrownSpin Complication.appex */,
+				EAE200020000000000000002 /* CrownSpinEnergyUITests.xctest */,
 				AABB00020000000000000010 /* CrownSpinTests.xctest */,
 			);
 			name = Products;
@@ -191,6 +208,7 @@
 			path = "CrownSpin Complication";
 			sourceTree = "<group>";
 		};
+		EAE200030000000000000001 /* CrownSpinEnergyUITests */ = {isa = PBXGroup; children = (EAE200020000000000000001, ); path = CrownSpinEnergyUITests; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -263,6 +281,13 @@
 			productReference = DFF9BB522F3589000041DFEE /* CrownSpin Complication.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		EAE200050000000000000001 /* CrownSpinEnergyUITests */ = {
+			isa = PBXNativeTarget; buildConfigurationList = EAE200070000000000000001;
+			buildPhases = (EAE200040000000000000002, EAE200040000000000000001, );
+			buildRules = (); dependencies = (EAE200080000000000000001, );
+			name = CrownSpinEnergyUITests; productName = CrownSpinEnergyUITests;
+			productReference = EAE200020000000000000002; productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -303,6 +328,7 @@
 				BEEF00060000000000000001 /* CrownSpin */,
 				C01234570000000000000001 /* CrownSpin Watch App */,
 				DFF9BB602F3589000041DFEE /* CrownSpin Complication */,
+				EAE200050000000000000001 /* CrownSpinEnergyUITests */,
 				AABB00050000000000000001 /* CrownSpinTests */,
 			);
 		};
@@ -341,6 +367,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE100010000000000000003 /* EnergyTestReport.swift in Test Sources */,
+				EAE100010000000000000004 /* EnergyTestReportTests.swift in Sources */,
 				AABB00010000000000000004 /* HapticPattern.swift in Sources */,
 				AABB00010000000000000005 /* HapticStats.swift in Sources */,
 				AABB00010000000000000006 /* CrownSpinComplication.swift in Sources */,
@@ -357,6 +385,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D15000010000000000000001 /* DisplayMode.swift in Sources */,
+				EAE100010000000000000001 /* EnergyTestReport.swift in Sources */,
+				EAE100010000000000000002 /* EnergyTestController.swift in Sources */,
 				C01234560000000000000001 /* CrownSpinApp.swift in Sources */,
 				C01234560000000000000002 /* ContentView.swift in Sources */,
 				DFF9BB402F3588300041DFEE /* PatternPicker.swift in Sources */,
@@ -376,6 +406,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EAE200040000000000000002 /* UI Test Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (EAE200010000000000000001, EAE200010000000000000002, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -389,6 +420,7 @@
 			target = DFF9BB602F3589000041DFEE /* CrownSpin Complication */;
 			targetProxy = DFF9BB5E2F3589000041DFEE /* PBXContainerItemProxy */;
 		};
+		EAE200080000000000000001 /* App for UI tests */ = {isa = PBXTargetDependency; target = C01234570000000000000001; };
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -697,6 +729,16 @@
 			};
 			name = Release;
 		};
+		EAE200060000000000000001 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 14; DEVELOPMENT_TEAM = 5736QK4NZX;
+                GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = media.jenny.crownspin.watchapp.energyuitests;
+                PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = watchos; SWIFT_VERSION = 5.0;
+                TARGETED_DEVICE_FAMILY = 4; WATCHOS_DEPLOYMENT_TARGET = 10.0;
+                TEST_TARGET_NAME = "CrownSpin Watch App"; SWIFT_EMIT_LOC_STRINGS = NO;}; name = Debug; };
+		EAE200060000000000000002 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 14; DEVELOPMENT_TEAM = 5736QK4NZX;
+                GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = media.jenny.crownspin.watchapp.energyuitests;
+                PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = watchos; SWIFT_VERSION = 5.0;
+                TARGETED_DEVICE_FAMILY = 4; WATCHOS_DEPLOYMENT_TARGET = 10.0;
+                TEST_TARGET_NAME = "CrownSpin Watch App"; SWIFT_EMIT_LOC_STRINGS = NO;}; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -745,6 +787,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		EAE200070000000000000001 /* UI test configurations */ = {isa = XCConfigurationList; buildConfigurations = (EAE200060000000000000001, EAE200060000000000000002, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 	};
 	rootObject = C01234530000000000000001 /* Project object */;

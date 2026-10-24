@@ -51,7 +51,24 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     // Stats
+    #if !ENERGY_TESTING || HAPTIC_LEGACY_STATS
     @StateObject private var stats = HapticStats.shared
+    #else
+    // Diagnostic candidate only: physical comparisons favor the original observation.
+    private let stats = HapticStats.shared
+    #endif
+
+    #if ENERGY_TESTING
+    @StateObject private var energyTests = EnergyTestController()
+    @State private var showEnergyTests = false
+    @State private var patternBeforeEnergyTest: HapticPattern?
+    @State private var didStartEnergyAutomation = false
+    private let energyAutomation = try? EnergyAutomationRequest.fromEnvironment()
+    private static let hapticComparisonRequest = try? HapticComparisonRequest.fromEnvironment()
+    private let hapticComparison = Self.hapticComparisonRequest
+    @Environment(\.scenePhase) private var energyScenePhase
+    @Environment(\.isLuminanceReduced) private var energyLuminanceReduced
+    #endif
 
     private var isAmbientMode: Bool { displayModeState.mode.usesDimmedAppearance }
     private var isBlackDisplay: Bool { displayModeState.showsBlackDisplay }
@@ -62,6 +79,9 @@ struct ContentView: View {
 
     // MARK: - Body
     var body: some View {
+        #if ENERGY_TESTING
+        let _ = energyTests.recordBodyUpdate()
+        #endif
         ZStack {
             Color.black.ignoresSafeArea()
 
@@ -149,6 +169,76 @@ struct ContentView: View {
                     controlLabel
                 }
             }
+            #if ENERGY_TESTING
+            if let comparison = hapticComparison {
+                VStack {
+                    HStack {
+                        Spacer()
+                        if energyTests.isRunning {
+                            Text("\(comparison.trialLabel): Scroll fast")
+                                .font(.system(size: 12))
+                        } else {
+                            Button {
+                                var configuration = EnergyTestConfiguration()
+                                configuration.scenario = .manual
+                                configuration.durationSeconds = comparison.durationSeconds
+                                configuration.pattern = comparison.pattern
+                                configuration.label = comparison.trialLabel
+                                configuration.conditions = "Physical Crown; same Watch, effect, and usual fast scrolling; no UI testing"
+                                configuration.captureHapticTiming = true
+                                startEnergyTest(configuration)
+                            } label: {
+                                Text(energyTests.lastReport == nil ? "Start \(comparison.trialLabel)" :
+                                    (energyTests.automationStatus == "completed" ? "Saved · Repeat" : "Interrupted · Retry"))
+                                    .font(.system(size: 12))
+                            }
+                            .disabled(!hasInitialized)
+                            .accessibilityIdentifier("haptic-comparison-start")
+                        }
+                        Spacer()
+                    }
+                    if !energyTests.isRunning, !energyTests.message.isEmpty,
+                       energyTests.automationStatus != "completed" {
+                        Text(energyTests.message)
+                            .font(.system(size: 11))
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 10)
+                            .accessibilityIdentifier("haptic-comparison-start-error")
+                            .allowsHitTesting(false)
+                    }
+                    Spacer()
+                }
+            }
+            if energyAutomation != nil {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Text(energyTests.automationStatus)
+                            .font(.system(size: 9))
+                            .accessibilityIdentifier("energy-automation-status")
+                            .allowsHitTesting(false)
+                    }
+                    Spacer()
+                }
+                .allowsHitTesting(false)
+            }
+            #endif
+
+            #if ENERGY_TESTING
+            if energyAutomation?.usesNeutralWake == true {
+                // A centered target also works when the Watch's interface is rotated.
+                // Keep this above the normal row gestures and leave the numbers visible.
+                Button { energyTests.recordAutomationWakeTap() } label: {
+                    Color.clear
+                        .frame(width: 120, height: 120)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Wake")
+                .accessibilityValue(String(energyTests.automationWakeTaps))
+                .accessibilityIdentifier("energy-automation-wake")
+            }
+            #endif
         }
         .persistentSystemOverlays(isBlackDisplay ? .hidden : .automatic)
         .sheet(isPresented: $showPatternPicker) {
@@ -171,6 +261,13 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showMenu) {
             List {
+                #if ENERGY_TESTING
+                Button {
+                    dismissMenuThen { showEnergyTests = true }
+                } label: {
+                    Label("Energy Tests", systemImage: "battery.100percent")
+                }
+                #endif
                 Button {
                     dismissMenuThen {
                         showPatternPicker = true
@@ -271,6 +368,9 @@ struct ContentView: View {
             }
         }
         .onDisappear {
+            #if ENERGY_TESTING
+            energyTests.finish(status: "interrupted")
+            #endif
             scrollTimer?.invalidate()
             menuButtonTimer?.invalidate()
             stats.endSession()
@@ -280,7 +380,83 @@ struct ContentView: View {
                 stats.flushPendingPersistence()
             }
         }
+        #if ENERGY_TESTING
+        .sheet(isPresented: $showEnergyTests) {
+            EnergyTestSetupView(controller: energyTests, start: { startEnergyTest($0) })
+        }
+        .onAppear {
+            updateEnergyTestVisibility()
+            if ProcessInfo.processInfo.environment["CROWN_START_DIAGNOSTICS"] == "1" {
+                energyTests.prepareBatteryMonitoring()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    updateEnergyTestVisibility()
+                    energyTests.recordStartDiagnostic(event: "launch-readiness")
+                }
+            }
+            if let request = energyAutomation, !didStartEnergyAutomation {
+                didStartEnergyAutomation = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    startEnergyTest(request.configuration, automation: request)
+                }
+            }
+        }
+        .onChange(of: energyScenePhase) { _, _ in updateEnergyTestVisibility() }
+        .onChange(of: energyLuminanceReduced) { _, _ in updateEnergyTestVisibility() }
+        .onChange(of: numberSystem) { _, _ in energyTests.unexpectedInput() }
+        .onChange(of: displayModeState.mode) { _, _ in energyTests.unexpectedInput() }
+        .onChange(of: showMenu) { _, open in if open { energyTests.unexpectedInput() } }
+        .onChange(of: showPatternPicker) { _, open in if open { energyTests.unexpectedInput() } }
+        .onChange(of: energyTests.isRunning) { _, running in
+            if !running, let previous = patternBeforeEnergyTest {
+                currentPattern = previous
+                patternBeforeEnergyTest = nil
+            }
+        }
+        #endif
     }
+
+    #if ENERGY_TESTING
+    private func updateEnergyTestVisibility() {
+        energyTests.updateVisibility(phase: energyScenePhase, luminanceReduced: energyLuminanceReduced)
+    }
+
+    private func startEnergyTest(_ configuration: EnergyTestConfiguration, automation: EnergyAutomationRequest? = nil) {
+        guard configuration.validationIssues.isEmpty,
+              let pattern = HapticPattern(rawValue: configuration.pattern), pattern != .random else { return }
+        patternBeforeEnergyTest = currentPattern
+        energyTests.prepareBatteryMonitoring()
+        showEnergyTests = false
+        // Dismiss setup and let initial positioning settle before measuring.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            currentPattern = pattern
+            updateEnergyTestVisibility()
+            var context = [
+                "ambientMode": String(isAmbientMode),
+                "displayMode": displayModeState.mode.rawValue,
+                "blackDisplay": String(isBlackDisplay),
+                "numberSystem": numberSystem.rawValue,
+                "menuHidden": String(isMenuButtonHidden)
+            ]
+            if let automation { context.merge(automation.metadata) { _, new in new } }
+            if let comparison = hapticComparison, configuration.captureHapticTiming == true {
+                context["inputDriver"] = "manual-crown-haptic-timing-v1"
+                context["diagnosticPurpose"] = "haptic-timing-only"
+                context["comparisonTrial"] = comparison.trialLabel
+                context["displayPolicy"] = "user-keeps-watch-active-by-crown-input"
+            }
+            energyTests.start(configuration, context: context, runID: automation?.runID) {
+                // Drive the same scroll-position binding and onChange path as normal use.
+                // This is a repeatable programmatic workload, not physical Crown rotation.
+                scrollPosition = (scrollPosition ?? Constants.windowCenter) + 1
+            }
+            if !energyTests.isRunning, let previous = patternBeforeEnergyTest {
+                energyTests.cancelPreparation()
+                currentPattern = previous
+                patternBeforeEnergyTest = nil
+            }
+        }
+    }
+    #endif
 
     // MARK: - Subviews
 
@@ -378,6 +554,10 @@ struct ContentView: View {
     }
 
     private func handleScrollChange(from oldValue: Int?, to newValue: Int?) {
+        #if ENERGY_TESTING
+        let runtimeStart = energyTests.beginWork()
+        defer { energyTests.endWork("scrollHandler", since: runtimeStart) }
+        #endif
         guard let newPos = newValue, newPos != lastPosition else { return }
         lastPosition = newPos
 
@@ -385,6 +565,9 @@ struct ContentView: View {
             if displayModeState.mode == .hapticsOnly && !isBlackDisplay {
                 displayModeState.didScroll()
             }
+            #if ENERGY_TESTING
+            energyTests.recordScrollCallback(from: oldValue, to: newPos)
+            #endif
             revealMenuButton()
             triggerHaptic()
             startScrolling()
@@ -395,12 +578,20 @@ struct ContentView: View {
     }
 
     private func startScrolling() {
+        #if ENERGY_TESTING
+        let runtimeStart = energyTests.beginWork()
+        defer { energyTests.endWork("idleTimer", since: runtimeStart) }
+        #endif
         isScrolling = true
+        #if ENERGY_TESTING && HAPTIC_LEGACY_TIMER
+        scrollTimer?.invalidate()
+        #else
         if let timer = scrollTimer, timer.isValid {
             // Keep one timer throughout a scrolling burst, with the same idle deadline.
             timer.fireDate = Date(timeIntervalSinceNow: Constants.idleDelay)
             return
         }
+        #endif
         scrollTimer = Timer.scheduledTimer(withTimeInterval: Constants.idleDelay, repeats: false) { _ in
             DispatchQueue.main.async {
                 isScrolling = false
@@ -432,6 +623,9 @@ struct ContentView: View {
     }
 
     private func onPatternChanged(to pattern: HapticPattern) {
+        #if ENERGY_TESTING
+        energyTests.unexpectedInput()
+        #endif
         resetRandomState()
         // Play preview haptic
         if pattern == .random {
@@ -449,6 +643,10 @@ struct ContentView: View {
     }
 
     private func triggerHaptic() {
+        #if ENERGY_TESTING
+        let runtimeStart = energyTests.beginWork()
+        defer { energyTests.endWork("hapticAndStats", since: runtimeStart) }
+        #endif
         stats.recordHaptic()
 
         if currentPattern == .random {
@@ -458,8 +656,14 @@ struct ContentView: View {
                 randomChangeCounter = 0
                 randomChangeThreshold = Int.random(in: 3...5)
             }
+            #if ENERGY_TESTING
+            guard energyTests.recordScroll(pattern: currentRandomPattern.rawValue) else { return }
+            #endif
             WKInterfaceDevice.current().play(currentRandomPattern.primaryHaptic)
         } else {
+            #if ENERGY_TESTING
+            guard energyTests.recordScroll(pattern: currentPattern.rawValue) else { return }
+            #endif
             WKInterfaceDevice.current().play(currentPattern.primaryHaptic)
         }
     }
@@ -475,6 +679,9 @@ struct ContentView: View {
 
     private func revealHapticsOnlyControls() {
         guard isBlackDisplay else { return }
+        #if ENERGY_TESTING
+        energyTests.unexpectedInput()
+        #endif
         displayModeState.revealControls()
         revealMenuButton()
     }
@@ -541,6 +748,10 @@ struct ContentView: View {
     }
 
     private func revealMenuButton() {
+        #if ENERGY_TESTING
+        let runtimeStart = energyTests.beginWork()
+        defer { energyTests.endWork("menuTimer", since: runtimeStart) }
+        #endif
         guard !isBlackDisplay else {
             menuButtonTimer?.invalidate()
             return
@@ -561,10 +772,14 @@ struct ContentView: View {
             menuButtonTimer?.invalidate()
             return
         }
+        #if ENERGY_TESTING && HAPTIC_LEGACY_MENU_TIMER
+        menuButtonTimer?.invalidate()
+        #else
         if let timer = menuButtonTimer, timer.isValid {
             timer.fireDate = Date(timeIntervalSinceNow: Constants.menuAutoHideDelay)
             return
         }
+        #endif
         menuButtonTimer = Timer.scheduledTimer(withTimeInterval: Constants.menuAutoHideDelay, repeats: false) { _ in
             DispatchQueue.main.async {
                 guard !showMenu else { return }
