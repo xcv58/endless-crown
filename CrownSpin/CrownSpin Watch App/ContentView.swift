@@ -8,7 +8,6 @@ struct ContentView: View {
     // MARK: - Constants
     private enum Constants {
         static let patternKey = "selectedHapticPattern"
-        static let baseOffsetKey = "baseOffset"
         static let guideSeenKey = "hasSeenInteractionGuide"
         static let menuButtonHiddenKey = "menuButtonHidden"
         static let numberSystemKey = "numberSystem"
@@ -363,11 +362,14 @@ struct ContentView: View {
             revealMenuButton()
             showFirstRunGuideHint()
             stats.startSession()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                hasInitialized = true
-            }
+        }
+        .task {
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled else { return }
+            hasInitialized = true
         }
         .onDisappear {
+            hasInitialized = false
             #if ENERGY_TESTING
             energyTests.finish(status: "interrupted")
             #endif
@@ -571,9 +573,9 @@ struct ContentView: View {
             revealMenuButton()
             triggerHaptic()
             startScrolling()
-            checkAndRebalance(newPos)
-            let displayNumber = (scrollPosition ?? Constants.windowCenter) - Constants.windowCenter + baseOffset
-            stats.recordItemNumber(displayNumber)
+            let itemNumber = newPos - Constants.windowCenter + baseOffset
+            checkAndRebalance(newPos, itemNumber: itemNumber)
+            stats.recordItemNumber(itemNumber)
         }
     }
 
@@ -603,14 +605,16 @@ struct ContentView: View {
         }
     }
 
-    private func checkAndRebalance(_ position: Int) {
+    private func checkAndRebalance(_ position: Int, itemNumber: Int) {
         if position < Constants.rebalanceThreshold || position > Constants.windowSize - Constants.rebalanceThreshold {
-            let offsetFromCenter = position - Constants.windowCenter
-            baseOffset += offsetFromCenter
-            UserDefaults.standard.set(baseOffset, forKey: Constants.baseOffsetKey)
-            lastPosition = Constants.windowCenter
-            scrollPosition = Constants.windowCenter
+            centerScrollWindow(on: itemNumber)
         }
+    }
+
+    private func centerScrollWindow(on itemNumber: Int) {
+        baseOffset = itemNumber
+        lastPosition = Constants.windowCenter
+        scrollPosition = Constants.windowCenter
     }
 
     private func nextPattern() {
@@ -726,13 +730,13 @@ struct ContentView: View {
     }
 
     private func resetCounter() {
-        baseOffset = 0
-        UserDefaults.standard.set(0, forKey: Constants.baseOffsetKey)
-        lastPosition = Constants.windowCenter
-        scrollPosition = Constants.windowCenter
+        centerScrollWindow(on: 0)
         // Replace any staged pre-reset number before the next batch is saved.
         stats.recordItemNumber(0)
         stats.flushPendingPersistence()
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
         revealMenuButton()
     }
 
@@ -806,7 +810,7 @@ struct ContentView: View {
            let system = NumberSystem(rawValue: savedSystem) {
             numberSystem = system
         }
-        baseOffset = UserDefaults.standard.integer(forKey: Constants.baseOffsetKey)
+        centerScrollWindow(on: stats.restoreItemNumber())
         // Sync current pattern to shared defaults for the complication
         Self.sharedDefaults?.set(currentPattern.rawValue, forKey: Constants.patternKey)
         Self.sharedDefaults?.set(numberSystem.rawValue, forKey: Constants.numberSystemKey)

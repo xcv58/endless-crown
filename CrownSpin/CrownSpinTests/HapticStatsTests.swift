@@ -268,6 +268,7 @@ final class HapticStatsTests: XCTestCase {
     }
 
     func testRecreatedStatisticsLoadTheLatestSavedBatch() {
+        defaults.set(-400, forKey: "baseOffset")
         for number in 1...37 {
             stats.recordHaptic()
             stats.recordItemNumber(-number)
@@ -276,7 +277,14 @@ final class HapticStatsTests: XCTestCase {
         let reloaded = HapticStats(defaults: defaults, sharedDefaults: sharedDefaults)
         XCTAssertEqual(reloaded.totalHaptics, 37)
         XCTAssertEqual(reloaded.peakSpeed, stats.peakSpeed)
+        XCTAssertEqual(reloaded.restoreItemNumber(), -37)
         XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), -37)
+    }
+
+    func testRestoreMigratesLegacyOffsetWhenThereIsNoAbsolutePosition() {
+        defaults.set(417, forKey: "baseOffset")
+        XCTAssertEqual(stats.restoreItemNumber(), 417)
+        XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), 417)
     }
 
     func testSessionEndSavesPendingCountersAndComplicationNumber() {
@@ -299,12 +307,15 @@ final class HapticStatsTests: XCTestCase {
     }
 
     func testCounterResetReplacesThePendingComplicationNumber() {
+        defaults.set(400, forKey: "baseOffset")
+        sharedDefaults.set(421, forKey: "currentItemNumber")
         stats.recordItemNumber(124)
         stats.recordItemNumber(0)
         stats.flushPendingPersistence()
         XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), 0)
         stats.flushPendingPersistence()
         XCTAssertEqual(sharedDefaults.integer(forKey: "currentItemNumber"), 0)
+        XCTAssertEqual(HapticStats(defaults: defaults, sharedDefaults: sharedDefaults).restoreItemNumber(), 0)
     }
 
     func testSavingWorksWithoutAnAppGroupStore() {
@@ -313,6 +324,7 @@ final class HapticStatsTests: XCTestCase {
         stats.recordItemNumber(-6)
         stats.flushPendingPersistence()
         XCTAssertEqual(defaults.integer(forKey: "stats.totalHaptics"), 1)
+        XCTAssertEqual(HapticStats(defaults: defaults, sharedDefaults: nil).restoreItemNumber(), -6)
     }
 
     func testTotalHapticsPersistsToUserDefaults() {

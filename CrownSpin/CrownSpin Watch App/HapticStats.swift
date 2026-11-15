@@ -20,6 +20,8 @@ class HapticStats: ObservableObject {
         static let peakSpeed = "stats.peakSpeed"
         static let currentStreak = "stats.currentStreak"
         static let totalSpinTime = "stats.totalSpinTime"
+        static let currentItemNumber = "currentItemNumber"
+        static let legacyBaseOffset = "baseOffset"
     }
 
     @Published private(set) var totalHaptics: Int {
@@ -108,9 +110,26 @@ class HapticStats: ObservableObject {
         persistenceTimer?.invalidate()
     }
 
+    private var itemNumberDefaults: UserDefaults { sharedDefaults ?? defaults }
+
+    func restoreItemNumber() -> Int {
+        if let pendingItemNumber { return pendingItemNumber }
+        let store = itemNumberDefaults
+        if let number = store.object(forKey: Keys.currentItemNumber) as? Int {
+            return number
+        }
+
+        // Older versions saved the recenter offset locally. Seed the widget's
+        // absolute number only when no absolute position was saved.
+        let number = defaults.object(forKey: Keys.currentItemNumber) as? Int
+            ?? defaults.integer(forKey: Keys.legacyBaseOffset)
+        store.set(number, forKey: Keys.currentItemNumber)
+        return number
+    }
+
     func recordItemNumber(_ number: Int) {
         #if ENERGY_TESTING && HAPTIC_LEGACY_PERSISTENCE
-        sharedDefaults?.set(number, forKey: "currentItemNumber")
+        itemNumberDefaults.set(number, forKey: Keys.currentItemNumber)
         #else
         pendingItemNumber = number
         schedulePersistence()
@@ -132,7 +151,7 @@ class HapticStats: ObservableObject {
             peakSpeedNeedsSave = false
         }
         if let number = pendingItemNumber {
-            sharedDefaults?.set(number, forKey: "currentItemNumber")
+            itemNumberDefaults.set(number, forKey: Keys.currentItemNumber)
             pendingItemNumber = nil
         }
     }
