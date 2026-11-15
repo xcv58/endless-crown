@@ -60,7 +60,6 @@ struct ContentView: View {
     #if ENERGY_TESTING
     @StateObject private var energyTests = EnergyTestController()
     @State private var showEnergyTests = false
-    @State private var patternBeforeEnergyTest: HapticPattern?
     @State private var didStartEnergyAutomation = false
     private let energyAutomation = try? EnergyAutomationRequest.fromEnvironment()
     private static let hapticComparisonRequest = try? HapticComparisonRequest.fromEnvironment()
@@ -173,7 +172,10 @@ struct ContentView: View {
                 VStack {
                     HStack {
                         Spacer()
-                        if energyTests.isRunning {
+                        if energyTests.isPreparing {
+                            Text("Preparing \(comparison.trialLabel)…")
+                                .font(.system(size: 12))
+                        } else if energyTests.isBusy {
                             Text("\(comparison.trialLabel): Scroll fast")
                                 .font(.system(size: 12))
                         } else {
@@ -196,7 +198,7 @@ struct ContentView: View {
                         }
                         Spacer()
                     }
-                    if !energyTests.isRunning, !energyTests.message.isEmpty,
+                    if !energyTests.isBusy, !energyTests.message.isEmpty,
                        energyTests.automationStatus != "completed" {
                         Text(energyTests.message)
                             .font(.system(size: 11))
@@ -371,7 +373,7 @@ struct ContentView: View {
         .onDisappear {
             hasInitialized = false
             #if ENERGY_TESTING
-            energyTests.finish(status: "interrupted")
+            energyTests.viewDidDisappear()
             #endif
             scrollTimer?.invalidate()
             menuButtonTimer?.invalidate()
@@ -388,18 +390,10 @@ struct ContentView: View {
         }
         .onAppear {
             updateEnergyTestVisibility()
-            if ProcessInfo.processInfo.environment["CROWN_START_DIAGNOSTICS"] == "1" {
-                energyTests.prepareBatteryMonitoring()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    updateEnergyTestVisibility()
-                    energyTests.recordStartDiagnostic(event: "launch-readiness")
-                }
-            }
+            energyTests.scheduleLaunchDiagnostic()
             if let request = energyAutomation, !didStartEnergyAutomation {
                 didStartEnergyAutomation = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    startEnergyTest(request.configuration, automation: request)
-                }
+                startEnergyTest(request.configuration, automation: request)
             }
         }
         .onChange(of: energyScenePhase) { _, _ in updateEnergyTestVisibility() }
@@ -408,12 +402,6 @@ struct ContentView: View {
         .onChange(of: displayModeState.mode) { _, _ in energyTests.unexpectedInput() }
         .onChange(of: showMenu) { _, open in if open { energyTests.unexpectedInput() } }
         .onChange(of: showPatternPicker) { _, open in if open { energyTests.unexpectedInput() } }
-        .onChange(of: energyTests.isRunning) { _, running in
-            if !running, let previous = patternBeforeEnergyTest {
-                currentPattern = previous
-                patternBeforeEnergyTest = nil
-            }
-        }
         #endif
     }
 
@@ -423,14 +411,12 @@ struct ContentView: View {
     }
 
     private func startEnergyTest(_ configuration: EnergyTestConfiguration, automation: EnergyAutomationRequest? = nil) {
-        guard configuration.validationIssues.isEmpty,
-              let pattern = HapticPattern(rawValue: configuration.pattern), pattern != .random else { return }
-        patternBeforeEnergyTest = currentPattern
-        energyTests.prepareBatteryMonitoring()
-        showEnergyTests = false
-        // Dismiss setup and let initial positioning settle before measuring.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            currentPattern = pattern
+        guard let pattern = HapticPattern(rawValue: configuration.pattern), pattern != .random else { return }
+        let effectSelection = $currentPattern
+        let replayPosition = $scrollPosition
+        // Give automatic launches time to settle initial positioning. Manual starts wait for setup to dismiss.
+        let accepted = energyTests.prepareRun(configuration, runID: automation?.runID,
+                                              delay: .seconds(automation == nil ? 1 : 2)) {
             updateEnergyTestVisibility()
             var context = [
                 "ambientMode": String(isAmbientMode),
@@ -446,16 +432,17 @@ struct ContentView: View {
                 context["comparisonTrial"] = comparison.trialLabel
                 context["displayPolicy"] = "user-keeps-watch-active-by-crown-input"
             }
-            energyTests.start(configuration, context: context, runID: automation?.runID) {
-                // Drive the same scroll-position binding and onChange path as normal use.
-                // This is a repeatable programmatic workload, not physical Crown rotation.
-                scrollPosition = (scrollPosition ?? Constants.windowCenter) + 1
-            }
-            if !energyTests.isRunning, let previous = patternBeforeEnergyTest {
-                energyTests.cancelPreparation()
-                currentPattern = previous
-                patternBeforeEnergyTest = nil
-            }
+            return context
+        } applyEffect: {
+            let previous = effectSelection.wrappedValue
+            effectSelection.wrappedValue = pattern
+            return { effectSelection.wrappedValue = previous }
+        } replayStep: {
+            // Drive the same selection binding and scroll handler as ordinary use.
+            replayPosition.wrappedValue = (replayPosition.wrappedValue ?? Constants.windowCenter) + 1
+        }
+        if accepted {
+            showEnergyTests = false
         }
     }
     #endif
