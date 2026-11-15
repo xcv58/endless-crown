@@ -6,18 +6,35 @@ import Darwin
 /// Low-frequency battery logging, with an optional synthetic workload. No keep-awake session.
 @MainActor
 final class EnergyTestController: ObservableObject {
-    @Published private(set) var isRunning = false
+    enum EndReason: String {
+        case completed
+        case interrupted
+        case cancelled
+    }
+
+    @Published private var lifecycle = EnergyTestLifecycle()
     @Published private(set) var lastReport: EnergyTestReport?
     @Published private(set) var message = ""
     @Published private(set) var automationWakeTaps = 0
 
+    var isBusy: Bool { lifecycle.isBusy }
+    var isPreparing: Bool {
+        if case .preparing = lifecycle.phase { return true }
+        return false
+    }
+    private var isRunning: Bool {
+        if case .running = lifecycle.phase { return true }
+        return false
+    }
+
     var automationStatus: String {
-        if isRunning { return "running" }
-        if let report = lastReport {
-            return report.issues.isEmpty && message == "Saved battery report." ? "completed" :
-                "failed: " + report.issues.joined(separator: " ") + " " + message
+        switch lifecycle.phase {
+        case .idle, .preparing: return "waiting"
+        case .running, .finishing: return "running"
+        case .finished(.saved): return "completed"
+        case .finished(.failed):
+            return "failed: " + ((lastReport?.issues ?? []) + [message]).joined(separator: " ")
         }
-        return message.isEmpty ? "waiting" : "failed: " + message
     }
 
     private var configuration = EnergyTestConfiguration()
@@ -35,8 +52,10 @@ final class EnergyTestController: ObservableObject {
     private var sampleTimer: Timer?
     private var replayTimer: Timer?
     private var finishTimer: Timer?
-    private var previousBatteryMonitoring = false
-    private var monitoringPrepared = false
+    private var preparationTask: Task<Void, Never>?
+    private var launchDiagnosticTask: Task<Void, Never>?
+    private var previousBatteryMonitoring: Bool?
+    private var restoreEffect: (@MainActor () -> Void)?
     // Unpublished buffers: collecting a request must not invalidate the view being measured.
     private var hapticTimings: [HapticRequestTiming] = []
     private var pendingScrollCallback: (elapsed: TimeInterval, oldPosition: Int?, newPosition: Int)?
@@ -70,43 +89,82 @@ final class EnergyTestController: ObservableObject {
                 Double(usage.ru_stime.tv_sec) + Double(usage.ru_stime.tv_usec) / 1_000_000)
     }
 
-    func prepareBatteryMonitoring() {
-        guard !monitoringPrepared else { return }
+    private func prepareBatteryMonitoring() {
+        guard previousBatteryMonitoring == nil else { return }
         let device = WKInterfaceDevice.current()
         previousBatteryMonitoring = device.isBatteryMonitoringEnabled
         device.isBatteryMonitoringEnabled = true
-        monitoringPrepared = true
     }
 
-    func cancelPreparation() {
-        guard !isRunning, monitoringPrepared else { return }
+    private func releaseBatteryMonitoring() {
+        guard let previousBatteryMonitoring else { return }
         WKInterfaceDevice.current().isBatteryMonitoringEnabled = previousBatteryMonitoring
-        monitoringPrepared = false
+        self.previousBatteryMonitoring = nil
     }
 
-    func start(_ configuration: EnergyTestConfiguration, context: [String: String], runID requestedRunID: String? = nil,
-               replayStep: @escaping () -> Void) {
-        defer { recordStartDiagnostic(event: "start-attempt") }
-        guard !isRunning else { return }
-        guard configuration.validationIssues.isEmpty else {
-            message = configuration.validationIssues.joined(separator: "\n")
-            return
+    func scheduleLaunchDiagnostic() {
+        guard ProcessInfo.processInfo.environment["CROWN_START_DIAGNOSTICS"] == "1",
+              launchDiagnosticTask == nil else { return }
+        prepareBatteryMonitoring()
+        launchDiagnosticTask = Task { [weak self] in
+            do { try await Task.sleep(for: .seconds(2)) } catch { return }
+            guard let self, !Task.isCancelled else { return }
+            launchDiagnosticTask = nil
+            recordStartDiagnostic(event: "launch-readiness")
         }
+    }
+
+    func viewDidDisappear() {
+        launchDiagnosticTask?.cancel()
+        launchDiagnosticTask = nil
+        if isBusy {
+            finish(.interrupted)
+        } else {
+            releaseBatteryMonitoring()
+        }
+    }
+
+    func prepareRun(_ configuration: EnergyTestConfiguration, runID requestedRunID: String?,
+                    delay: Duration, context: @escaping @MainActor () -> [String: String],
+                    applyEffect: @escaping @MainActor () -> (@MainActor () -> Void),
+                    replayStep: @escaping @MainActor () -> Void) -> Bool {
+        guard let id = lifecycle.prepare() else { return false }
+        lastReport = nil
+        message = "Preparing \(configuration.scenario.title)."
+        guard configuration.validationIssues.isEmpty else {
+            rejectPreparation(configuration.validationIssues.joined(separator: "\n"))
+            return false
+        }
+        prepareBatteryMonitoring()
+        preparationTask = Task { [weak self] in
+            do { try await Task.sleep(for: delay) } catch { return }
+            guard let self, !Task.isCancelled, lifecycle.phase == .preparing(id) else { return }
+            preparationTask = nil
+            startPreparedRun(id, configuration: configuration, context: context(), runID: requestedRunID,
+                             applyEffect: applyEffect, replayStep: replayStep)
+        }
+        return true
+    }
+
+    private func startPreparedRun(_ id: UUID, configuration: EnergyTestConfiguration,
+                                  context: [String: String], runID requestedRunID: String?,
+                                  applyEffect: @MainActor () -> (@MainActor () -> Void),
+                                  replayStep: @escaping @MainActor () -> Void) {
         guard phase == .active, !luminanceReduced else {
-            message = "Raise your wrist and keep the app active before starting."
+            rejectPreparation("Raise your wrist and keep the app active before starting.")
             return
         }
         let device = WKInterfaceDevice.current()
-        prepareBatteryMonitoring()
         if !Self.isSimulator && (device.batteryState != .unplugged || !(0...1).contains(device.batteryLevel)) {
-            message = "Unplug the Watch and wait for a battery reading, then retry."
+            rejectPreparation("Unplug the Watch and wait for a battery reading, then retry.")
             return
         }
         if context["inputDriver"] != nil && (device.batteryLevel < 0.2 || ProcessInfo.processInfo.thermalState.rawValue >= 2) {
-            message = "Automation stopped: charge must be at least 20% and the Watch must be cool."
+            rejectPreparation("Automation stopped: charge must be at least 20% and the Watch must be cool.")
             return
         }
-        // The first reading may still be unknown; preserve it as unknown rather than inventing a value.
+        restoreEffect = applyEffect()
+        defer { recordStartDiagnostic(event: "start-attempt") }
         self.configuration = configuration
         self.metadata = context.merging([
             "watchOS": device.systemVersion,
@@ -140,26 +198,27 @@ final class EnergyTestController: ObservableObject {
         startedAt = Date()
         startUptime = ProcessInfo.processInfo.systemUptime
         runID = requestedRunID ?? UUID().uuidString
-        lastReport = nil
         message = "Running \(configuration.scenario.title)."
-        isRunning = true
+        guard lifecycle.start(id) else { return }
         captureSample()
 
         sampleTimer = timer(interval: 30, repeats: true) { [weak self] in
-            self?.captureSample()
+            guard let self, self.lifecycle.phase == .running(id) else { return }
+            self.captureSample()
         }
         finishTimer = timer(interval: configuration.durationSeconds, repeats: false) { [weak self] in
-            self?.finish(status: "completed")
+            guard let self, self.lifecycle.phase == .running(id) else { return }
+            self.finish(.completed)
         }
         if configuration.scenario.usesReplay {
             replayTimer = timer(interval: 1 / configuration.stepsPerSecond, repeats: true) { [weak self] in
-                guard let self, self.isRunning else { return }
+                guard let self, self.lifecycle.phase == .running(id) else { return }
                 if self.elapsed >= self.configuration.durationSeconds {
-                    self.finish(status: "completed")
+                    self.finish(.completed)
                     return
                 }
                 guard self.phase == .active, !self.luminanceReduced else {
-                    self.finish(status: "interrupted")
+                    self.finish(.interrupted)
                     return
                 }
                 self.replaySteps += 1
@@ -169,7 +228,7 @@ final class EnergyTestController: ObservableObject {
     }
 
     /// Explicit troubleshooting only; these writes never run in comparison captures.
-    func recordStartDiagnostic(event: String) {
+    private func recordStartDiagnostic(event: String) {
         guard ProcessInfo.processInfo.environment["CROWN_START_DIAGNOSTICS"] == "1" else { return }
         let device = WKInterfaceDevice.current()
         let snapshot: [String: String] = [
@@ -193,7 +252,7 @@ final class EnergyTestController: ObservableObject {
             let data = try JSONEncoder().encode(snapshot)
             try data.write(to: directory.appendingPathComponent("latest.json"), options: .atomic)
         } catch {
-            message = "Could not save start diagnostic: \(error.localizedDescription)"
+            print("Could not save start diagnostic: \(error.localizedDescription)")
         }
     }
 
@@ -238,17 +297,30 @@ final class EnergyTestController: ObservableObject {
         guard isRunning else { return }
         let requiresActiveDisplay = configuration.scenario != .idle || metadata["inputDriver"] == "app-idle-v1"
         if requiresActiveDisplay && (phase != .active || luminanceReduced) {
-            finish(status: "interrupted")
+            finish(.interrupted)
         } else if elapsed >= configuration.durationSeconds {
             // Idle runs may be suspended by watchOS; report the real elapsed time on return.
-            finish(status: "completed")
+            finish(.completed)
         } else {
             captureSample()
         }
     }
 
-    func finish(status: String = "cancelled") {
-        guard isRunning else { return }
+    private func rejectPreparation(_ reason: String) {
+        guard let id = lifecycle.beginFinishing() else { return }
+        message = reason
+        recordStartDiagnostic(event: "start-attempt")
+        complete(id, outcome: .failed)
+    }
+
+    func finish(_ reason: EndReason = .cancelled) {
+        let wasRunning = isRunning
+        guard let id = lifecycle.beginFinishing() else { return }
+        guard wasRunning else {
+            message = reason == .interrupted ? "Start interrupted." : "Start cancelled."
+            complete(id, outcome: .failed)
+            return
+        }
         replayTimer?.invalidate()
         sampleTimer?.invalidate()
         finishTimer?.invalidate()
@@ -261,13 +333,10 @@ final class EnergyTestController: ObservableObject {
         }
         var report = EnergyTestReport(schemaVersion: 1, runID: runID, startedAt: startedAt,
                                       finishedAt: Date(), configuration: configuration,
-                                      metadata: metadata, status: status, issues: issues, samples: samples)
+                                      metadata: metadata, status: reason.rawValue, issues: issues, samples: samples)
         if configuration.captureHapticTiming == true { report.hapticTimings = hapticTimings }
         if configuration.captureRuntimeProfile == true { report.runtimeProfile = EnergyRuntimeProfile(samples: runtimeSamples) }
         report.issues = report.validationIssues
-        WKInterfaceDevice.current().isBatteryMonitoringEnabled = previousBatteryMonitoring
-        monitoringPrepared = false
-        isRunning = false
         lastReport = report
         do {
             let directory = try Self.reportsDirectory()
@@ -276,9 +345,20 @@ final class EnergyTestController: ObservableObject {
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             try encoder.encode(report).write(to: directory.appendingPathComponent("\(runID).json"), options: .atomic)
             message = report.issues.isEmpty ? "Saved battery report." : "Saved flagged report."
+            complete(id, outcome: report.issues.isEmpty ? .saved : .failed)
         } catch {
             message = "Could not save report: \(error.localizedDescription)"
+            complete(id, outcome: .failed)
         }
+    }
+
+    private func complete(_ id: UUID, outcome: EnergyTestLifecycle.Outcome) {
+        preparationTask?.cancel()
+        preparationTask = nil
+        restoreEffect?()
+        restoreEffect = nil
+        releaseBatteryMonitoring()
+        lifecycle.finish(id, outcome: outcome)
     }
 
     private var elapsed: TimeInterval { ProcessInfo.processInfo.systemUptime - startUptime }
@@ -362,9 +442,9 @@ struct EnergyTestSetupView: View {
 
     var body: some View {
         List {
-            if controller.isRunning {
-                Text("Run in progress. Keep the app visible for active-use tests.")
-                Button("Stop and save", role: .destructive) { controller.finish() }
+            if controller.isBusy {
+                Text(controller.isPreparing ? "Preparing the run." : "Run in progress. Keep the app visible for active-use tests.")
+                Button(controller.isPreparing ? "Cancel start" : "Stop and save", role: .destructive) { controller.finish() }
             } else {
                 Picker("Test", selection: $configuration.scenario) {
                     ForEach(EnergyTestScenario.menuCases) { Text($0.title).tag($0) }

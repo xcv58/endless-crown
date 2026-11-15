@@ -36,7 +36,10 @@ struct CrownSpinProvider: TimelineProvider {
         let totalHaptics = defaults?.integer(forKey: "stats.totalHaptics") ?? 0
         let patternRaw = defaults?.string(forKey: "selectedHapticPattern") ?? "clicks"
         let pattern = HapticPattern(rawValue: patternRaw) ?? .clicks
-        let currentItemNumber = defaults?.integer(forKey: "currentItemNumber") ?? 0
+        // Only the app can migrate its local offset; keep displaying the mirror until then.
+        let currentItemNumber = (defaults?.object(forKey: CrownPositionKeys.saved) as? Int)
+            ?? defaults?.integer(forKey: CrownPositionKeys.legacyComplication)
+            ?? 0
         let numberSystemRaw = defaults?.string(forKey: "numberSystem") ?? NumberSystem.decimal.rawValue
         let numberSystem = NumberSystem(rawValue: numberSystemRaw) ?? .decimal
 

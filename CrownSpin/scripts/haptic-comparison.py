@@ -118,13 +118,17 @@ def install(args):
     with (session / f"trial-{args.trial}-install.log").open("w") as log:
         subprocess.run(["xcrun", "devicectl", "device", "install", "app", "--device", manifest["device"],
                         trial["app"], "--timeout", "120"], env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
-    trial.update(pattern=args.pattern, launchedAt=datetime.now(timezone.utc).isoformat(), status="installed")
+    trial.update(pattern=args.pattern, status="installed")
+    trial.pop("launchedAt", None)
     save(session, manifest)
     launch = ["xcrun", "devicectl", "device", "process", "launch", "--device", manifest["device"],
               "--terminate-existing", "--activate", "--environment-variables", json.dumps(launch_environment),
               "--json-output", str(session / f"trial-{args.trial}-launch.json"), energy.BUNDLE_ID]
+    launched_at = datetime.now(timezone.utc).isoformat()
     with (session / f"trial-{args.trial}-launch.log").open("w") as log:
         subprocess.run(launch, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
+    trial.update(launchedAt=launched_at, status="launched")
+    save(session, manifest)
     print(f"Ready: tap Start {trial['label']} on the Watch; wait for Scroll fast, then use the Crown until Saved appears.")
 
 

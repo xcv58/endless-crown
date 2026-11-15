@@ -42,6 +42,14 @@ fresh physical manual-scrolling acceptance run before using it for measurements.
 
 The initial Ultra 2 protocol restores Grid View and the previously accepted normal app at the end, including after a failed run. Before reusing it on another Watch or with another launcher layout, repeat the capability probe and adapt the restoration policy to that device's original setting. Inspect the native screenshots before accepting a comparison: foreground state alone does not prove the app list remained visible, and native reduced-luminance state is not independently recorded.
 
+If restoration fails or is interrupted, use the same session to retry cleanup:
+
+```sh
+python3 CrownSpin/scripts/system-scroll-compare.py restore-only --session PATH-TO-SESSION
+```
+
+The command keeps the captured trials and prior restoration evidence. It retries Grid View only when that step is unfinished. Any Grid View retry is followed by installation and launch of the accepted normal app because the Grid test launches the comparison app.
+
 Keep runs equal in duration. If percentage changes are too coarse, extend both conditions equally and reverse the order again. Two runs per condition are descriptive. Differences include display content, rendering, animations, system haptics, and app-requested haptics; this is not a direct measurement of haptic motor energy or an optimization saving.
 
 The initial physical capability and short cadence evidence are saved under `energy-test-results/system-scroll-compare/8dd63745-3352-4020-8a2f-b63481885046/`. The completed longer-phase comparison is saved in the October 3 session below.

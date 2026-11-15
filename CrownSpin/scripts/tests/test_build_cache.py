@@ -249,6 +249,10 @@ class CacheTests(unittest.TestCase):
                 label='synthetic', pattern='clicks', conditions='fixture only', allow_provisioning_updates=False)
             with patch.object(subprocess, 'run', side_effect=native_boundary):
                 with self.assertRaisesRegex(RuntimeError, 'owned native boundary'): energy.automate(args)
+            run_manifest = json.loads(next(args.output.glob("*/session.json")).read_text())
+            self.assertEqual(run_manifest["status"], "stopped")
+            self.assertEqual(run_manifest["runs"][0]["status"], "failed")
+            self.assertIn("owned native boundary", run_manifest["runs"][0]["error"])
             self.assertTrue((args.build_output / 'energy-build.json').is_file())
             self.assertEqual(self.metadata(second)['workspace'], self.metadata(args.build_output)['workspace'])
             haptic_args = argparse.Namespace(device="owned-fake-watch", developer_dir=self.root / 'Developer', seconds=15,

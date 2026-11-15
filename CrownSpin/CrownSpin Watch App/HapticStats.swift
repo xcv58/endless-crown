@@ -20,6 +20,7 @@ class HapticStats: ObservableObject {
         static let peakSpeed = "stats.peakSpeed"
         static let currentStreak = "stats.currentStreak"
         static let totalSpinTime = "stats.totalSpinTime"
+        static let legacyBaseOffset = "baseOffset"
     }
 
     @Published private(set) var totalHaptics: Int {
@@ -108,9 +109,30 @@ class HapticStats: ObservableObject {
         persistenceTimer?.invalidate()
     }
 
+    private var itemNumberDefaults: UserDefaults { sharedDefaults ?? defaults }
+
+    func restoreItemNumber() -> Int {
+        if let pendingItemNumber { return pendingItemNumber }
+        let store = itemNumberDefaults
+        if let number = store.object(forKey: CrownPositionKeys.saved) as? Int {
+            return number
+        }
+
+        // A legacy reset could leave the complication's mirror stale.
+        // Prefer the offset the old app would have restored, including zero.
+        let number = (defaults.object(forKey: Keys.legacyBaseOffset) as? Int)
+            ?? (store.object(forKey: CrownPositionKeys.legacyComplication) as? Int)
+            ?? 0
+        store.set(number, forKey: CrownPositionKeys.saved)
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
+        return number
+    }
+
     func recordItemNumber(_ number: Int) {
         #if ENERGY_TESTING && HAPTIC_LEGACY_PERSISTENCE
-        sharedDefaults?.set(number, forKey: "currentItemNumber")
+        itemNumberDefaults.set(number, forKey: CrownPositionKeys.saved)
         #else
         pendingItemNumber = number
         schedulePersistence()
@@ -132,7 +154,7 @@ class HapticStats: ObservableObject {
             peakSpeedNeedsSave = false
         }
         if let number = pendingItemNumber {
-            sharedDefaults?.set(number, forKey: "currentItemNumber")
+            itemNumberDefaults.set(number, forKey: CrownPositionKeys.saved)
             pendingItemNumber = nil
         }
     }

@@ -1,6 +1,50 @@
 #if ENERGY_TESTING
 import XCTest
 
+final class EnergyTestLifecycleTests: XCTestCase {
+    func testOnlyOneRunOwnsPreparationCaptureAndFinishing() throws {
+        var lifecycle = EnergyTestLifecycle()
+        XCTAssertEqual(lifecycle.phase, .idle)
+        XCTAssertNil(lifecycle.beginFinishing())
+
+        let id = try XCTUnwrap(lifecycle.prepare())
+        XCTAssertEqual(lifecycle.phase, .preparing(id))
+        XCTAssertNil(lifecycle.prepare())
+        XCTAssertTrue(lifecycle.start(id))
+        XCTAssertEqual(lifecycle.phase, .running(id))
+        XCTAssertFalse(lifecycle.start(id))
+        XCTAssertNil(lifecycle.prepare())
+
+        XCTAssertEqual(lifecycle.beginFinishing(), id)
+        XCTAssertEqual(lifecycle.phase, .finishing(id))
+        XCTAssertNil(lifecycle.beginFinishing())
+        XCTAssertNil(lifecycle.prepare())
+        lifecycle.finish(id, outcome: .saved)
+        XCTAssertEqual(lifecycle.phase, .finished(.saved))
+        XCTAssertNotNil(lifecycle.prepare())
+    }
+
+    func testCancelledPreparationCannotStartOrFinishTheNextRun() throws {
+        var lifecycle = EnergyTestLifecycle()
+        let cancelled = try XCTUnwrap(lifecycle.prepare())
+        XCTAssertEqual(lifecycle.beginFinishing(), cancelled)
+        XCTAssertFalse(lifecycle.start(cancelled))
+        lifecycle.finish(cancelled, outcome: .failed)
+        XCTAssertEqual(lifecycle.phase, .finished(.failed))
+
+        let retry = try XCTUnwrap(lifecycle.prepare())
+        XCTAssertNotEqual(cancelled, retry)
+        XCTAssertFalse(lifecycle.start(cancelled))
+        XCTAssertEqual(lifecycle.phase, .preparing(retry))
+        XCTAssertTrue(lifecycle.start(retry))
+        XCTAssertEqual(lifecycle.beginFinishing(), retry)
+        lifecycle.finish(cancelled, outcome: .saved)
+        XCTAssertEqual(lifecycle.phase, .finishing(retry))
+        lifecycle.finish(retry, outcome: .failed)
+        XCTAssertEqual(lifecycle.phase, .finished(.failed))
+    }
+}
+
 final class EnergyTestReportTests: XCTestCase {
     func testRuntimeProfilesRejectMissingAndDecreasingCounters() {
         let first = EnergyRuntimeSample(elapsedSeconds: 0, userCPUSeconds: 0, systemCPUSeconds: 0,

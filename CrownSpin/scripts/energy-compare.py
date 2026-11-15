@@ -78,30 +78,37 @@ def run_attempt(session, manifest, variant, duration, phase, slot, retry=0):
                "--build-output", manifest["variants"][variant]["build"], "--output", str(output)]
     if manifest.get("runtimeProfile"):
         command.append("--runtime-profile")
-    with log_path.open("w") as log:
-        result = subprocess.run(command, cwd=energy.ROOT, env=energy.clean_device_environment(),
-                                stdout=log, stderr=subprocess.STDOUT)
-    entry.update(exitCode=result.returncode, endedAt=now(), status="failed")
-    child_manifests = list(output.glob("*/session.json"))
-    if len(child_manifests) == 1:
-        child = json.loads(child_manifests[0].read_text())
-        entry["automationSession"] = str(child_manifests[0])
-        if len(child.get("runs", [])) == 1:
-            run = child["runs"][0]
-            entry.update(runID=run["runID"], issues=run.get("issues", []))
-            if run.get("report"):
-                report_path = Path(run["report"])
-                report = json.loads(report_path.read_text())
-                entry.update(report=str(report_path), reportStatus=report.get("status"))
-                issues = energy.validate(report)
-                issues.extend(report_identity_issues(report, manifest, variant, duration))
-                entry["issues"] = issues
-                if result.returncode == 0 and run.get("status") == "completed" and not issues:
-                    entry["status"] = "completed"
-                    rate, activity, drop = energy.metrics(report)
-                    entry.update(dropPercentagePoints=drop, ratePercentagePointsPerHour=rate,
-                                 handledChangesPerSecond=activity)
-    save(session / "comparison.json", manifest)
+    try:
+        with log_path.open("w") as log:
+            result = subprocess.run(command, cwd=energy.ROOT, env=energy.clean_device_environment(),
+                                    stdout=log, stderr=subprocess.STDOUT)
+        entry.update(exitCode=result.returncode, status="failed")
+        child_manifests = list(output.glob("*/session.json"))
+        if len(child_manifests) == 1:
+            child = json.loads(child_manifests[0].read_text())
+            entry["automationSession"] = str(child_manifests[0])
+            if len(child.get("runs", [])) == 1:
+                run = child["runs"][0]
+                entry.update(runID=run["runID"], issues=run.get("issues", []))
+                if run.get("report"):
+                    report_path = Path(run["report"])
+                    report = json.loads(report_path.read_text())
+                    entry.update(report=str(report_path), reportStatus=report.get("status"))
+                    issues = energy.validate(report)
+                    issues.extend(report_identity_issues(report, manifest, variant, duration))
+                    entry["issues"] = issues
+                    if result.returncode == 0 and run.get("status") == "completed" and not issues:
+                        entry["status"] = "completed"
+                        rate, activity, drop = energy.metrics(report)
+                        entry.update(dropPercentagePoints=drop, ratePercentagePointsPerHour=rate,
+                                     handledChangesPerSecond=activity)
+    except BaseException as error:
+        entry.update(status="failed", error=f"{type(error).__name__}: {error}")
+        raise
+    finally:
+        entry["endedAt"] = now()
+        manifest.pop("currentAttempt", None)
+        save(session / "comparison.json", manifest)
     return entry
 
 
@@ -198,30 +205,45 @@ def verified_normal(manifest):
     return normal_path, normal, app
 
 
-def restore_normal(session, manifest):
+def restore_normal(session, manifest, *, manifest_name="comparison.json"):
     normal_path, normal, app = verified_normal(manifest)
     env = energy.clean_device_environment()
     env["DEVELOPER_DIR"] = manifest["developerDir"]
-    command = ["xcrun", "devicectl", "device", "install", "app", "--device", manifest["device"],
-               str(app), "--timeout", "120", "--json-output", str(session / "restore-install.json")]
-    with (session / "restore-install.log").open("w") as log:
-        result = subprocess.run(command, env=env, stdout=log, stderr=subprocess.STDOUT)
-    manifest["normalRestore"] = {"installExitCode": result.returncode, "app": str(app), "attemptedAt": now()}
-    save(session / "comparison.json", manifest)
-    if result.returncode:
-        raise ValueError("Normal app could not be restored; see restore-install.log.")
-    with (session / "restore-launch.log").open("w") as log:
-        launched = subprocess.run(["xcrun", "devicectl", "device", "process", "launch", "--device", manifest["device"],
-            "--terminate-existing", "--activate", "--timeout", "20", "--json-output", str(session / "restore-launch.json"),
-            energy.BUNDLE_ID], env=env, stdout=log, stderr=subprocess.STDOUT)
-    manifest["normalRestore"].update(installed=True, launchExitCode=launched.returncode,
-                                     automationLaunchVariablesAbsent=True)
-    normal.update(installed=True, lastRestoredAt=now(), lastRestoreSession=str(session),
-                  lastRestoreLaunchExit=launched.returncode)
-    save(normal_path, normal)
-    save(session / "comparison.json", manifest)
-    if launched.returncode:
-        raise ValueError("Normal app was installed but could not be opened; see restore-launch.log.")
+    path = session / manifest_name
+    restoration = {"status": "installing", "app": str(app), "attemptedAt": now()}
+    manifest["normalRestore"] = restoration
+    save(path, manifest)
+    stage = "install"
+    try:
+        command = ["xcrun", "devicectl", "device", "install", "app", "--device", manifest["device"],
+                   str(app), "--timeout", "120", "--json-output", str(session / "restore-install.json")]
+        with (session / "restore-install.log").open("w") as log:
+            result = subprocess.run(command, env=env, stdout=log, stderr=subprocess.STDOUT)
+        restoration["installExitCode"] = result.returncode
+        if result.returncode:
+            raise ValueError("Normal app could not be restored; see restore-install.log.")
+        restoration.update(status="installed", installed=True)
+        save(path, manifest)
+
+        stage = "launch"
+        with (session / "restore-launch.log").open("w") as log:
+            launched = subprocess.run(["xcrun", "devicectl", "device", "process", "launch", "--device", manifest["device"],
+                "--terminate-existing", "--activate", "--timeout", "20", "--json-output", str(session / "restore-launch.json"),
+                energy.BUNDLE_ID], env=env, stdout=log, stderr=subprocess.STDOUT)
+        restoration.update(status="launch-failed" if launched.returncode else "launched",
+                           launchExitCode=launched.returncode, automationLaunchVariablesAbsent=True)
+        normal.update(installed=True, lastRestoredAt=now(), lastRestoreSession=str(session),
+                      lastRestoreLaunchExit=launched.returncode)
+        save(normal_path, normal)
+        if launched.returncode:
+            raise ValueError("Normal app was installed but could not be opened; see restore-launch.log.")
+    except BaseException as error:
+        if restoration["status"] in {"installing", "installed"}:
+            restoration["status"] = f"{stage}-failed"
+        restoration["error"] = f"{type(error).__name__}: {error}"
+        raise
+    finally:
+        save(path, manifest)
     print("Normal optimized app restored and opened.", flush=True)
 
 

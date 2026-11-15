@@ -1,6 +1,59 @@
 #if ENERGY_TESTING
 import Foundation
 
+/// The identifier belongs to a single start attempt, independently of its exported run ID.
+struct EnergyTestLifecycle {
+    enum Outcome: Equatable {
+        case saved
+        case failed
+    }
+
+    enum Phase: Equatable {
+        case idle
+        case preparing(UUID)
+        case running(UUID)
+        case finishing(UUID)
+        case finished(Outcome)
+    }
+
+    private(set) var phase: Phase = .idle
+
+    var isBusy: Bool {
+        switch phase {
+        case .preparing, .running, .finishing: return true
+        case .idle, .finished: return false
+        }
+    }
+
+    mutating func prepare() -> UUID? {
+        guard !isBusy else { return nil }
+        let id = UUID()
+        phase = .preparing(id)
+        return id
+    }
+
+    mutating func start(_ id: UUID) -> Bool {
+        guard phase == .preparing(id) else { return false }
+        phase = .running(id)
+        return true
+    }
+
+    mutating func beginFinishing() -> UUID? {
+        switch phase {
+        case .preparing(let id), .running(let id):
+            phase = .finishing(id)
+            return id
+        case .idle, .finishing, .finished:
+            return nil
+        }
+    }
+
+    mutating func finish(_ id: UUID, outcome: Outcome) {
+        guard phase == .finishing(id) else { return }
+        phase = .finished(outcome)
+    }
+}
+
 enum EnergyTestScenario: String, Codable, CaseIterable, Identifiable {
     case idle
     case manual

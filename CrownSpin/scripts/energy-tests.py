@@ -122,6 +122,11 @@ let package = Package(name: "EnergyTestModel", platforms: [.macOS(.v14)], target
         (tests / "EnergyTestReportTests.swift").write_text(
             "@testable import EnergyTestModel\n" +
             (ROOT / "CrownSpin/CrownSpinTests/EnergyTestReportTests.swift").read_text())
+        for filename in ("WatchPresentation.swift", "CrownScrollState.swift", "CrownPositionKeys.swift"):
+            (sources / filename).write_text((ROOT / "CrownSpin/CrownSpin Watch App" / filename).read_text())
+        (tests / "WatchInteractionTests.swift").write_text(
+            "@testable import EnergyTestModel\n" +
+            (ROOT / "CrownSpin/CrownSpinTests/WatchInteractionTests.swift").read_text())
         (sources / "HapticStats.swift").write_text(
             (ROOT / "CrownSpin/CrownSpin Watch App/HapticStats.swift").read_text())
         # Keep the actual number helpers; only the WatchKit effect enum is omitted on macOS.
@@ -371,7 +376,7 @@ def automate(args):
     manifest_path = session / "session.json"
 
     def save_manifest():
-        manifest_path.write_text(json.dumps(manifest, indent=2))
+        build_cache.save(manifest_path, manifest)
 
     save_manifest()
     print(f"Automation session: {session}", flush=True)
@@ -495,7 +500,10 @@ def automate(args):
         save_manifest()
         return analyse(argparse.Namespace(reports=[reports_directory], before=args.label, after="optimized"))
     except BaseException as error:
-        manifest.update(status="stopped", error=str(error))
+        detail = f"{type(error).__name__}: {error}"
+        if manifest["runs"] and manifest["runs"][-1]["status"] == "running":
+            manifest["runs"][-1].update(status="failed", error=detail)
+        manifest.update(status="stopped", error=detail)
         save_manifest()
         raise
 
