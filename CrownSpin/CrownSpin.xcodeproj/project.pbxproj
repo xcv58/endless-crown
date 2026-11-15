@@ -90,6 +90,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BEEF00040000000000000002 /* CrownSpin-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CrownSpin-Info.plist"; sourceTree = "<group>"; };
 		EAE100020000000000000001 /* EnergyTestReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyTestReport.swift; sourceTree = "<group>"; };
 		EAE100020000000000000002 /* EnergyTestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyTestController.swift; sourceTree = "<group>"; };
 		EAE100020000000000000003 /* EnergyTestReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyTestReportTests.swift; sourceTree = "<group>"; };
@@ -168,6 +169,7 @@
 		C01234540000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				BEEF00040000000000000002 /* CrownSpin-Info.plist */,
 				EAE200030000000000000001 /* CrownSpinEnergyUITests */,
 				C01234540000000000000002 /* CrownSpin Watch App */,
 				DFF9BB592F3589000041DFEE /* CrownSpin Complication */,
@@ -455,6 +457,7 @@
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CrownSpin-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Endless Crown";
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = media.jenny.crownspin;
@@ -470,6 +473,7 @@
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 5736QK4NZX;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CrownSpin-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Endless Crown";
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = media.jenny.crownspin;

@@ -6,6 +6,8 @@
 	<string>$(ENERGY_SOURCE_REVISION)</string>
 	<key>EnergySourceFingerprint</key>
 	<string>$(ENERGY_SOURCE_FINGERPRINT)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>WKApplication</key>
 	<true/>
 </dict>
