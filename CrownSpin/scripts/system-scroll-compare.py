@@ -2,6 +2,7 @@
 """Compare the native Watch app list and ordinary Endless Crown using one battery reader."""
 import argparse
 import base64
+import fcntl
 import hashlib
 import importlib.util
 import json
@@ -15,6 +16,7 @@ import uuid
 
 SCRIPTS = Path(__file__).resolve().parent
 FIXTURE = SCRIPTS / "fixtures/SystemScrollBatteryUITests.swift"
+MANIFEST = "system-comparison.json"
 
 
 def module(name, filename):
@@ -150,15 +152,24 @@ def execute(session, manifest, request, name, method="testComparison"):
                "-resultBundlePath", str(session / (name + ".xcresult")),
                "-only-testing:CrownSpinEnergyUITests/SystemScrollBatteryUITests/" + method,
                "-test-timeouts-enabled", "YES", "-maximum-test-execution-time-allowance", str(int(seconds + 180))]
-    with (session / (name + ".log")).open("w") as log:
-        process = subprocess.Popen(command, env=environment(manifest), stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT, text=True)
-        for line in process.stdout:
-            log.write(line)
-            log.flush()
-            if line.startswith("SYSTEM_SCROLL_") and not line.startswith("SYSTEM_SCROLL_REPORT "):
-                print(line.strip(), flush=True)
-        code = process.wait()
+    with (session / (name + ".log")).open("w") as log, subprocess.Popen(
+            command, env=environment(manifest), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:
+        try:
+            for line in process.stdout:
+                log.write(line)
+                log.flush()
+                if line.startswith("SYSTEM_SCROLL_") and not line.startswith("SYSTEM_SCROLL_REPORT "):
+                    print(line.strip(), flush=True)
+            code = process.wait()
+        except BaseException:
+            # Let the owned test process exit before starting restoration.
+            process.terminate()
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+            raise
     records = [line.split(" ", 1)[1] for line in (session / (name + ".log")).read_text().splitlines()
                if line.startswith("SYSTEM_SCROLL_REPORT ")]
     report = json.loads(base64.b64decode(records[0])) if len(records) == 1 else None
@@ -211,9 +222,22 @@ def validate(report, request):
     return issues
 
 
+def with_session_lock(args):
+    session = args.session.resolve()
+    with (session / ".session.lock").open("a") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise ValueError("A run or restoration is already using this session.") from None
+        if args.command == "restore-only":
+            retry_restore(args)
+        else:
+            run(args)
+
+
 def run(args):
     session = args.session.resolve()
-    manifest = json.loads((session / "system-comparison.json").read_text())
+    manifest = json.loads((session / MANIFEST).read_text())
     if manifest["status"] != "ready" or manifest["attempts"]:
         raise ValueError("Use a fresh prepared session.")
     if energy.source_fingerprint() != manifest["sourceFingerprint"] or \
@@ -226,7 +250,7 @@ def run(args):
                     crownDelta=delta, crownVelocity=velocity, crownPeriodSeconds=period,
                     nominalRotationSecondsPerCommand=delta / velocity,
                     schedule=["app-list", "app", "app", "app-list"])
-    save(session / "system-comparison.json", manifest)
+    save(session / MANIFEST, manifest)
     try:
         for slot, condition in enumerate(manifest["schedule"], 1):
             request = {"runID": str(uuid.uuid4()), "condition": condition, "mode": args.mode,
@@ -234,17 +258,18 @@ def run(args):
                        "screenValidation": "hittable-list-row-or-main-screen-v3"}
             name = f"trial-{slot}-{condition}"
             print(f"Trial {slot}/4: {condition}, {args.seconds:g} seconds, {args.mode}", flush=True)
+            entry = {"request": request, "status": "running"}
+            manifest["attempts"].append(entry)
+            save(session / MANIFEST, manifest)
             code, report = execute(session, manifest, request, name)
             issues = validate(report, request)
-            entry = {"request": request, "testExitCode": code, "issues": issues,
-                     "report": str(session / (name + ".json")),
-                     "status": "accepted" if code == 0 and not issues else "excluded"}
+            entry.update(testExitCode=code, issues=issues, report=str(session / (name + ".json")),
+                         status="accepted" if code == 0 and not issues else "excluded")
             if report:
                 entry["nominalRequestedRotationSeconds"] = len(report["gestures"]) * delta / velocity
                 entry["totalCrownCallSeconds"] = sum(g["endedSeconds"] - g["startedSeconds"]
                                                      for g in report["gestures"])
-            manifest["attempts"].append(entry)
-            save(session / "system-comparison.json", manifest)
+            save(session / MANIFEST, manifest)
             if entry["status"] != "accepted":
                 raise ValueError("Trial invalid; comparison stopped. See trial log and report.")
             first, last = report["samples"][0], report["samples"][-1]
@@ -261,33 +286,93 @@ def run(args):
             "App-list and app rendering and system haptics differ.",
             "Automated input contains settling gaps; manual Crown pace is not instrumented."]
     except BaseException as error:
-        manifest.update(status="stopped", error=f"{type(error).__name__}: {error}")
+        detail = f"{type(error).__name__}: {error}"
+        if manifest["attempts"] and manifest["attempts"][-1]["status"] == "running":
+            manifest["attempts"][-1].update(status="failed", error=detail)
+        manifest.update(status="stopped", error=detail)
         raise
     finally:
-        # The initial physical probe established that the user's launcher used Grid View.
-        # Attempt both restorations even if one raises, and never report a
-        # successful comparison when required cleanup failed.
-        cleanup_errors = []
+        restore_after_capture(session, manifest)
+
+
+def restore_after_capture(session, manifest, grid_name="restore-grid"):
+    capture_status = manifest.setdefault("captureStatus", manifest["status"])
+    restoration = manifest.setdefault("restoration", {"grid": "pending", "app": "pending"})
+    manifest["status"] = "restoring"
+    save(session / MANIFEST, manifest)
+    cleanup_errors = []
+
+    if restoration["grid"] != "restored":
+        # The Grid test launches the prepared comparison app, so restore the normal app after it.
+        restoration.update(grid="restoring", app="pending")
+        save(session / MANIFEST, manifest)
         try:
-            code, _ = execute(session, manifest, None, "restore-grid", "testRestoreGrid")
+            code, _ = execute(session, manifest, None, grid_name, "testRestoreGrid")
             manifest["gridRestoreTestExitCode"] = code
             if code != 0:
                 raise ValueError(f"Grid restoration failed with exit code {code}.")
         except BaseException as error:
             cleanup_errors.append(error)
+            restoration["grid"] = "failed"
             manifest["gridRestoreError"] = f"{type(error).__name__}: {error}"
+        else:
+            restoration["grid"] = "restored"
+            manifest.pop("gridRestoreError", None)
+        save(session / MANIFEST, manifest)
+
+    if restoration["app"] != "restored":
+        restoration["app"] = "restoring"
+        save(session / MANIFEST, manifest)
         try:
-            comparison.restore_normal(session, manifest)
+            comparison.restore_normal(session, manifest, manifest_name=MANIFEST)
         except BaseException as error:
             cleanup_errors.append(error)
+            restoration["app"] = "failed"
             manifest["normalRestoreError"] = f"{type(error).__name__}: {error}"
-        if cleanup_errors:
-            manifest.update(status="restoration-failed", restorationErrors=[f"{type(error).__name__}: {error}" for error in cleanup_errors])
-        save(session / "system-comparison.json", manifest)
-        if cleanup_errors:
-            if any(not isinstance(error, Exception) for error in cleanup_errors):
-                raise next(error for error in cleanup_errors if not isinstance(error, Exception))
-            raise ValueError("Required restoration failed; see system-comparison.json.") from cleanup_errors[0]
+        else:
+            restoration["app"] = "restored"
+            manifest.pop("normalRestoreError", None)
+
+    if cleanup_errors:
+        manifest.update(status="restoration-failed",
+                        restorationErrors=[f"{type(error).__name__}: {error}" for error in cleanup_errors])
+    else:
+        manifest["status"] = capture_status
+        manifest.pop("restorationErrors", None)
+    save(session / MANIFEST, manifest)
+    if cleanup_errors:
+        if any(not isinstance(error, Exception) for error in cleanup_errors):
+            raise next(error for error in cleanup_errors if not isinstance(error, Exception))
+        raise ValueError("Required restoration failed; see system-comparison.json.") from cleanup_errors[0]
+
+
+def retry_restore(args):
+    session = args.session.resolve()
+    manifest = json.loads((session / MANIFEST).read_text())
+    if manifest["status"] not in {"restoration-failed", "restoring"}:
+        raise ValueError("Retry only a session with unfinished restoration.")
+    comparison.verified_normal(manifest)
+    restoration = manifest.get("restoration")
+    grid_is_restored = (restoration["grid"] == "restored" if restoration else
+                        manifest.get("gridRestoreTestExitCode") == 0 and not manifest.get("gridRestoreError"))
+    if not grid_is_restored:
+        verify_products(manifest)
+
+    attempt = uuid.uuid4().hex
+    previous = session / f"restore-prior-{attempt}"
+    previous.mkdir()
+    for path in session.glob("restore-*"):
+        if path.is_file() and not path.name.startswith("restore-grid"):
+            shutil.copy2(path, previous / path.name)
+    save(previous / MANIFEST, manifest)
+    if "captureStatus" not in manifest:
+        # Older manifests only recorded the final combined status.
+        accepted = [entry for entry in manifest["attempts"] if entry.get("status") == "accepted"]
+        manifest["captureStatus"] = ("complete-needs-screenshot-review"
+                                     if len(accepted) == 4 and "error" not in manifest else "stopped")
+    if restoration is None:
+        manifest["restoration"] = {"grid": "restored" if grid_is_restored else "pending", "app": "pending"}
+    restore_after_capture(session, manifest, grid_name=f"restore-grid-{attempt}")
 
 
 def main():
@@ -307,7 +392,10 @@ def main():
     p.add_argument("--delta", type=float, default=.5, help="Rotations in each alternating Crown command")
     p.add_argument("--velocity", type=float, default=.5, help="Requested Crown rotations per second")
     p.add_argument("--period", type=float, default=8, help="Seconds allocated to each Crown command, including settling")
-    p.set_defaults(function=run)
+    p.set_defaults(function=with_session_lock)
+    p = commands.add_parser("restore-only", help="Retry unfinished restoration without repeating trials")
+    p.add_argument("--session", type=Path, required=True)
+    p.set_defaults(function=with_session_lock)
     args = parser.parse_args()
     if args.command == "run" and (not math.isfinite(args.seconds) or not 16 <= args.seconds <= 1800):
         parser.error("Use 16–1800 seconds.")

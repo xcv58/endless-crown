@@ -244,12 +244,58 @@ class RestorationTests(unittest.TestCase):
         self.assertEqual(str(error), "synthetic trial failed")
         self.assertEqual(manifest["gridRestoreTestExitCode"], 0)
         self.assertEqual(manifest["status"], "stopped")
+        self.assertEqual(manifest["attempts"][0]["status"], "failed")
+        self.assertIn("synthetic trial failed", manifest["attempts"][0]["error"])
 
     def test_success_requires_both_restorations(self):
         manifest, error = self.run_with_restoration()
         self.assertIsNone(error)
         self.assertEqual(manifest["gridRestoreTestExitCode"], 0)
         self.assertEqual(manifest["status"], "complete-needs-screenshot-review")
+
+    def test_legacy_restore_only_skips_grid_when_only_app_failed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            path = session / comparison.MANIFEST
+            attempts = [{"status": "accepted"}] * 4
+            path.write_text(json.dumps({"status": "restoration-failed", "attempts": attempts,
+                                        "gridRestoreTestExitCode": 0, "normalRestoreError": "launch failed"}))
+            (session / "restore-launch.log").write_text("first failure")
+            with patch.object(comparison.comparison, "verified_normal"), \
+                    patch.object(comparison, "verify_products") as verify, \
+                    patch.object(comparison, "execute") as execute, \
+                    patch.object(comparison.comparison, "restore_normal") as normal:
+                comparison.retry_restore(argparse.Namespace(session=session))
+            verify.assert_not_called()
+            execute.assert_not_called()
+            self.assertEqual(normal.call_args.kwargs["manifest_name"], comparison.MANIFEST)
+            after = json.loads(path.read_text())
+            self.assertEqual(after["status"], "complete-needs-screenshot-review")
+            self.assertEqual(after["attempts"], attempts)
+            self.assertEqual(after["restoration"], {"grid": "restored", "app": "restored"})
+            self.assertEqual(next(session.glob("restore-prior-*/restore-launch.log")).read_text(), "first failure")
+
+    def test_grid_retry_restores_the_normal_app_again(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            path = session / comparison.MANIFEST
+            attempts = [{"status": "excluded"}]
+            path.write_text(json.dumps({"status": "restoring", "captureStatus": "stopped",
+                                        "attempts": attempts, "error": "trial failed",
+                                        "restoration": {"grid": "failed", "app": "restored"}}))
+            with patch.object(comparison.comparison, "verified_normal"), \
+                    patch.object(comparison, "verify_products"), \
+                    patch.object(comparison, "execute", return_value=(0, None)) as execute, \
+                    patch.object(comparison.comparison, "restore_normal") as normal:
+                comparison.retry_restore(argparse.Namespace(session=session))
+            self.assertIsNone(execute.call_args.args[2])
+            self.assertTrue(execute.call_args.args[3].startswith("restore-grid-"))
+            self.assertEqual(execute.call_args.args[4], "testRestoreGrid")
+            normal.assert_called_once()
+            after = json.loads(path.read_text())
+            self.assertEqual(after["status"], "stopped")
+            self.assertEqual(after["attempts"], attempts)
+            self.assertEqual(after["error"], "trial failed")
 
 
 if __name__ == "__main__":

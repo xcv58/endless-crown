@@ -5,6 +5,7 @@ import json
 import argparse
 from pathlib import Path
 import plistlib
+import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -17,6 +18,23 @@ spec.loader.exec_module(pilot)
 
 
 class PilotTests(unittest.TestCase):
+    def test_attempt_timeout_is_terminal_in_the_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            manifest = {"attempts": [], "device": "fixture", "developerDir": "/fixture",
+                        "scenario": "replay", "stepsPerSecond": 2, "pattern": "clicks",
+                        "conditions": "fixture", "variants": {"original": {"build": "/frozen"}}}
+            with patch.object(pilot, "verify_builds"), patch.object(
+                    pilot.subprocess, "run", side_effect=subprocess.TimeoutExpired("fixture", 15)):
+                with self.assertRaises(subprocess.TimeoutExpired):
+                    pilot.run_attempt(session, manifest, "original", 15, "smoke", 1)
+            persisted = json.loads((session / "comparison.json").read_text())
+            self.assertNotIn("currentAttempt", persisted)
+            entry, = persisted["attempts"]
+            self.assertEqual(entry["status"], "failed")
+            self.assertIn("TimeoutExpired", entry["error"])
+            self.assertIn("endedAt", entry)
+
     def normal_build(self, session):
         app = session / "Normal.app"
         app.mkdir()

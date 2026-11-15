@@ -1,8 +1,13 @@
 """Synthetic fixtures for contract checks; never physical Watch measurements."""
 import copy
+import argparse
 import importlib.util
+import json
 from pathlib import Path
+import subprocess
+import tempfile
 import unittest
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location("comparison", Path(__file__).parents[1] / "haptic-comparison.py")
 comparison = importlib.util.module_from_spec(spec)
@@ -25,6 +30,26 @@ def fixture():
 
 
 class HapticComparisonTests(unittest.TestCase):
+    def test_trial_only_records_launch_after_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            path = session / "comparison.json"
+            path.write_text(json.dumps({"developerDir": "/fixture", "device": "fixture", "durationSeconds": 30,
+                                        "trials": [{"label": "Trial 1", "app": "/fixture.app"}]}))
+            args = argparse.Namespace(session=session, trial=1, pattern="clicks")
+            with patch.object(comparison.subprocess, "run",
+                              side_effect=[None, subprocess.CalledProcessError(7, "launch")]):
+                with self.assertRaises(subprocess.CalledProcessError):
+                    comparison.install(args)
+            trial, = json.loads(path.read_text())["trials"]
+            self.assertEqual(trial["status"], "installed")
+            self.assertNotIn("launchedAt", trial)
+            with patch.object(comparison.subprocess, "run"):
+                comparison.install(args)
+            trial, = json.loads(path.read_text())["trials"]
+            self.assertEqual(trial["status"], "launched")
+            self.assertIn("launchedAt", trial)
+
     def test_intervals_exclude_startup_and_do_not_claim_motor_delivery(self):
         result = comparison.timing_metrics(fixture())
         self.assertEqual(result["hapticRequests"], 4)
