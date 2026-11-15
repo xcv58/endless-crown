@@ -21,10 +21,8 @@ struct ContentView: View {
     // MARK: - State
     @State private var currentPattern: HapticPattern = .clicks
     @State private var scrollPosition: Int? = Constants.windowCenter
-    @State private var lastPosition: Int = Constants.windowCenter
-    @State private var isScrolling: Bool = false
+    @State private var scrollState = CrownScrollState(center: Constants.windowCenter)
     @State private var scrollTimer: Timer?
-    @State private var hasInitialized: Bool = false
 
     // Random mode state
     @State private var randomChangeCounter: Int = 0
@@ -35,12 +33,7 @@ struct ContentView: View {
     @State private var baseOffset: Int = 0
 
     // UI state
-    @State private var showPatternPicker: Bool = false
-    @State private var showStats: Bool = false
-    @State private var showResetConfirmation: Bool = false
-    @State private var showMenu: Bool = false
-    @State private var showGuide: Bool = false
-    @State private var showNumberSystemPicker: Bool = false
+    @State private var presentation = WatchPresentation()
     @State private var showGestureHint: Bool = false
     @State private var showMenuButton: Bool = true
     @State private var isMenuButtonHidden: Bool = false
@@ -59,7 +52,6 @@ struct ContentView: View {
 
     #if ENERGY_TESTING
     @StateObject private var energyTests = EnergyTestController()
-    @State private var showEnergyTests = false
     @State private var didStartEnergyAutomation = false
     private let energyAutomation = try? EnergyAutomationRequest.fromEnvironment()
     private static let hapticComparisonRequest = try? HapticComparisonRequest.fromEnvironment()
@@ -193,7 +185,7 @@ struct ContentView: View {
                                     (energyTests.automationStatus == "completed" ? "Saved · Repeat" : "Interrupted · Retry"))
                                     .font(.system(size: 12))
                             }
-                            .disabled(!hasInitialized)
+                            .disabled(!scrollState.acceptsInput)
                             .accessibilityIdentifier("haptic-comparison-start")
                         }
                         Spacer()
@@ -242,101 +234,28 @@ struct ContentView: View {
             #endif
         }
         .persistentSystemOverlays(isBlackDisplay ? .hidden : .automatic)
-        .sheet(isPresented: $showPatternPicker) {
-            PatternPicker(selectedPattern: $currentPattern)
-                .onChange(of: currentPattern) { _, newPattern in
-                    onPatternChanged(to: newPattern)
-                }
-        }
-        .sheet(isPresented: $showStats) {
-            StatsView(stats: stats)
-        }
-        .sheet(isPresented: $showGuide) {
-            InteractionGuideView()
-        }
-        .sheet(isPresented: $showNumberSystemPicker) {
-            NumberSystemPicker(selectedSystem: $numberSystem)
-                .onChange(of: numberSystem) { _, newSystem in
-                    onNumberSystemChanged(to: newSystem)
-                }
-        }
-        .sheet(isPresented: $showMenu) {
-            List {
-                #if ENERGY_TESTING
-                Button {
-                    dismissMenuThen { showEnergyTests = true }
-                } label: {
-                    Label("Energy Tests", systemImage: "battery.100percent")
-                }
-                #endif
-                Button {
-                    dismissMenuThen {
-                        showPatternPicker = true
+        .sheet(item: presentedSheet, onDismiss: { presentation.sheetDidDismiss() }) { sheet in
+            switch sheet {
+            case .menu:
+                menu
+            case .effects:
+                PatternPicker(selectedPattern: $currentPattern)
+                    .onChange(of: currentPattern) { _, newPattern in
+                        onPatternChanged(to: newPattern)
                     }
-                } label: {
-                    Label("Effects", systemImage: "waveform")
-                }
-                Button {
-                    dismissMenuThen {
-                        showNumberSystemPicker = true
+            case .statistics:
+                StatsView(stats: stats)
+            case .guide:
+                InteractionGuideView()
+            case .numbers:
+                NumberSystemPicker(selectedSystem: $numberSystem)
+                    .onChange(of: numberSystem) { _, newSystem in
+                        onNumberSystemChanged(to: newSystem)
                     }
-                } label: {
-                    HStack {
-                        Label("Numbers", systemImage: numberSystem.icon)
-                        Spacer()
-                        Text(numberSystem.displayName)
-                            .font(.system(size: 12))
-                            .foregroundColor(.secondary)
-                    }
-                }
-                Button {
-                    dismissMenuThen {
-                        showStats = true
-                    }
-                } label: {
-                    Label("Statistics", systemImage: "chart.bar")
-                }
-                Button {
-                    dismissMenuThen {
-                        showGuide = true
-                    }
-                } label: {
-                    Label("Guide", systemImage: "questionmark.circle")
-                }
-                Button {
-                    toggleMenuIconVisibility()
-                    showMenu = false
-                } label: {
-                    Label(isMenuButtonHidden ? "Show Menu Icon" : "Hide Menu Icon", systemImage: isMenuButtonHidden ? "ellipsis.circle" : "eye.slash")
-                }
-                Button(role: .destructive) {
-                    dismissMenuThen {
-                        showResetConfirmation = true
-                    }
-                } label: {
-                    Label("Reset Counter", systemImage: "arrow.counterclockwise")
-                }
-                Picker(selection: modeSelection) {
-                    ForEach(DisplayMode.allCases) { mode in
-                        VStack(alignment: .leading, spacing: 2) {
-                            HStack(spacing: 6) {
-                                Image(systemName: mode.icon)
-                                    .frame(width: 20)
-                                    .accessibilityHidden(true)
-                                Text(mode.displayName)
-                                    .lineLimit(1)
-                            }
-                            Text(mode.detail)
-                                .lineLimit(1)
-                                .foregroundStyle(.secondary)
-                        }
-                        .font(.body)
-                        .tag(mode)
-                    }
-                } label: {
-                    Text("Mode")
-                }
-                .accessibilityIdentifier("displayModePicker")
+            #if ENERGY_TESTING
+            case .energyTests:
+                EnergyTestSetupView(controller: energyTests, start: { startEnergyTest($0) })
+            #endif
             }
         }
         .onChange(of: showMenu) { _, isPresented in
@@ -346,7 +265,7 @@ struct ContentView: View {
                 revealMenuButton()
             }
         }
-        .confirmationDialog("Reset count?", isPresented: $showResetConfirmation) {
+        .confirmationDialog("Reset count?", isPresented: resetConfirmation) {
             Button(resetButtonTitle, role: .destructive) {
                 resetCounter()
             }
@@ -368,14 +287,15 @@ struct ContentView: View {
         .task {
             try? await Task.sleep(for: .milliseconds(500))
             guard !Task.isCancelled else { return }
-            hasInitialized = true
+            scrollState.initialPositionDidSettle()
         }
         .onDisappear {
-            hasInitialized = false
+            scrollState.leftScreen()
             #if ENERGY_TESTING
             energyTests.viewDidDisappear()
             #endif
             scrollTimer?.invalidate()
+            scrollTimer = nil
             menuButtonTimer?.invalidate()
             stats.endSession()
         }
@@ -385,9 +305,6 @@ struct ContentView: View {
             }
         }
         #if ENERGY_TESTING
-        .sheet(isPresented: $showEnergyTests) {
-            EnergyTestSetupView(controller: energyTests, start: { startEnergyTest($0) })
-        }
         .onAppear {
             updateEnergyTestVisibility()
             energyTests.scheduleLaunchDiagnostic()
@@ -400,8 +317,9 @@ struct ContentView: View {
         .onChange(of: energyLuminanceReduced) { _, _ in updateEnergyTestVisibility() }
         .onChange(of: numberSystem) { _, _ in energyTests.unexpectedInput() }
         .onChange(of: displayModeState.mode) { _, _ in energyTests.unexpectedInput() }
-        .onChange(of: showMenu) { _, open in if open { energyTests.unexpectedInput() } }
-        .onChange(of: showPatternPicker) { _, open in if open { energyTests.unexpectedInput() } }
+        .onChange(of: presentation.sheet) { _, sheet in
+            if sheet == .menu || sheet == .effects { energyTests.unexpectedInput() }
+        }
         #endif
     }
 
@@ -441,11 +359,97 @@ struct ContentView: View {
             // Drive the same selection binding and scroll handler as ordinary use.
             replayPosition.wrappedValue = (replayPosition.wrappedValue ?? Constants.windowCenter) + 1
         }
-        if accepted {
-            showEnergyTests = false
+        if accepted, presentation.sheet == .energyTests {
+            presentation.dismissSheet()
         }
     }
     #endif
+
+    private var showMenu: Bool { presentation.sheet == .menu }
+    private var isScrolling: Bool { scrollState.isScrolling }
+
+    private var presentedSheet: Binding<WatchPresentation.Sheet?> {
+        let sheet = presentation.sheet
+        return Binding(get: { presentation.sheet }, set: { value in
+            if value == nil, presentation.sheet == sheet { presentation.dismissSheet() }
+        })
+    }
+
+    private var resetConfirmation: Binding<Bool> {
+        Binding(get: { presentation.isConfirmingReset }, set: { isPresented in
+            if !isPresented { presentation.dismissReset() }
+        })
+    }
+
+    private var menu: some View {
+        List {
+            #if ENERGY_TESTING
+            Button {
+                presentation.selectMenuDestination(.sheet(.energyTests))
+            } label: {
+                Label("Energy Tests", systemImage: "battery.100percent")
+            }
+            #endif
+            Button {
+                presentation.selectMenuDestination(.sheet(.effects))
+            } label: {
+                Label("Effects", systemImage: "waveform")
+            }
+            Button {
+                presentation.selectMenuDestination(.sheet(.numbers))
+            } label: {
+                HStack {
+                    Label("Numbers", systemImage: numberSystem.icon)
+                    Spacer()
+                    Text(numberSystem.displayName)
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+            }
+            Button {
+                presentation.selectMenuDestination(.sheet(.statistics))
+            } label: {
+                Label("Statistics", systemImage: "chart.bar")
+            }
+            Button {
+                presentation.selectMenuDestination(.sheet(.guide))
+            } label: {
+                Label("Guide", systemImage: "questionmark.circle")
+            }
+            Button {
+                toggleMenuIconVisibility()
+                presentation.dismissSheet()
+            } label: {
+                Label(isMenuButtonHidden ? "Show Menu Icon" : "Hide Menu Icon", systemImage: isMenuButtonHidden ? "ellipsis.circle" : "eye.slash")
+            }
+            Button(role: .destructive) {
+                presentation.selectMenuDestination(.resetCounter)
+            } label: {
+                Label("Reset Counter", systemImage: "arrow.counterclockwise")
+            }
+            Picker(selection: modeSelection) {
+                ForEach(DisplayMode.allCases) { mode in
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 6) {
+                            Image(systemName: mode.icon)
+                                .frame(width: 20)
+                                .accessibilityHidden(true)
+                            Text(mode.displayName)
+                                .lineLimit(1)
+                        }
+                        Text(mode.detail)
+                            .lineLimit(1)
+                            .foregroundStyle(.secondary)
+                    }
+                    .font(.body)
+                    .tag(mode)
+                }
+            } label: {
+                Text("Mode")
+            }
+            .accessibilityIdentifier("displayModePicker")
+        }
+    }
 
     // MARK: - Subviews
 
@@ -547,23 +551,19 @@ struct ContentView: View {
         let runtimeStart = energyTests.beginWork()
         defer { energyTests.endWork("scrollHandler", since: runtimeStart) }
         #endif
-        guard let newPos = newValue, newPos != lastPosition else { return }
-        lastPosition = newPos
-
-        if hasInitialized {
-            if displayModeState.mode == .hapticsOnly && !isBlackDisplay {
-                displayModeState.didScroll()
-            }
-            #if ENERGY_TESTING
-            energyTests.recordScrollCallback(from: oldValue, to: newPos)
-            #endif
-            revealMenuButton()
-            triggerHaptic()
-            startScrolling()
-            let itemNumber = newPos - Constants.windowCenter + baseOffset
-            checkAndRebalance(newPos, itemNumber: itemNumber)
-            stats.recordItemNumber(itemNumber)
+        guard let newPos = scrollState.receivedPosition(newValue) else { return }
+        if displayModeState.mode == .hapticsOnly && !isBlackDisplay {
+            displayModeState.didScroll()
         }
+        #if ENERGY_TESTING
+        energyTests.recordScrollCallback(from: oldValue, to: newPos)
+        #endif
+        revealMenuButton()
+        triggerHaptic()
+        startScrolling()
+        let itemNumber = newPos - Constants.windowCenter + baseOffset
+        checkAndRebalance(newPos, itemNumber: itemNumber)
+        stats.recordItemNumber(itemNumber)
     }
 
     private func startScrolling() {
@@ -571,7 +571,7 @@ struct ContentView: View {
         let runtimeStart = energyTests.beginWork()
         defer { energyTests.endWork("idleTimer", since: runtimeStart) }
         #endif
-        isScrolling = true
+        if !isScrolling { scrollState.beganScrolling() }
         #if ENERGY_TESTING && HAPTIC_LEGACY_TIMER
         scrollTimer?.invalidate()
         #else
@@ -581,9 +581,11 @@ struct ContentView: View {
             return
         }
         #endif
-        scrollTimer = Timer.scheduledTimer(withTimeInterval: Constants.idleDelay, repeats: false) { _ in
+        scrollTimer = Timer.scheduledTimer(withTimeInterval: Constants.idleDelay, repeats: false) { timer in
             DispatchQueue.main.async {
-                isScrolling = false
+                guard scrollTimer === timer else { return }
+                scrollTimer = nil
+                scrollState.becameIdle()
                 stats.flushPendingPersistence()
                 #if canImport(WidgetKit)
                 WidgetCenter.shared.reloadAllTimelines()
@@ -600,7 +602,7 @@ struct ContentView: View {
 
     private func centerScrollWindow(on itemNumber: Int) {
         baseOffset = itemNumber
-        lastPosition = Constants.windowCenter
+        scrollState.recentered(at: Constants.windowCenter)
         scrollPosition = Constants.windowCenter
     }
 
@@ -664,7 +666,7 @@ struct ContentView: View {
         displayModeState.select(mode)
         mode.save()
         WKInterfaceDevice.current().play(.click)
-        showMenu = false
+        presentation.dismissSheet()
         revealMenuButton()
     }
 
@@ -693,12 +695,13 @@ struct ContentView: View {
     }
 
     private func openEffectsPicker() {
+        guard presentation.present(.effects) else { return }
         revealMenuButton()
         WKInterfaceDevice.current().play(.click)
-        showPatternPicker = true
     }
 
     private func openMenu() {
+        guard presentation.present(.menu) else { return }
         menuButtonTimer?.invalidate()
         if !isMenuButtonHidden {
             withAnimation(.easeInOut(duration: 0.2)) {
@@ -706,14 +709,6 @@ struct ContentView: View {
             }
         }
         WKInterfaceDevice.current().play(.click)
-        showMenu = true
-    }
-
-    private func dismissMenuThen(_ action: @escaping () -> Void) {
-        showMenu = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-            action()
-        }
     }
 
     private func resetCounter() {
