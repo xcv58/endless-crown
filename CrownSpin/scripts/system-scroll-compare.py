@@ -352,12 +352,6 @@ def retry_restore(args):
     if manifest["status"] not in {"restoration-failed", "restoring"}:
         raise ValueError("Retry only a session with unfinished restoration.")
     comparison.verified_normal(manifest)
-    restoration = manifest.get("restoration")
-    grid_is_restored = (restoration["grid"] == "restored" if restoration else
-                        manifest.get("gridRestoreTestExitCode") == 0 and not manifest.get("gridRestoreError"))
-    if not grid_is_restored:
-        verify_products(manifest)
-
     attempt = uuid.uuid4().hex
     previous = session / f"restore-prior-{attempt}"
     previous.mkdir()
@@ -370,7 +364,8 @@ def retry_restore(args):
         accepted = [entry for entry in manifest["attempts"] if entry.get("status") == "accepted"]
         manifest["captureStatus"] = ("complete-needs-screenshot-review"
                                      if len(accepted) == 4 and "error" not in manifest else "stopped")
-    if restoration is None:
+    if "restoration" not in manifest:
+        grid_is_restored = manifest.get("gridRestoreTestExitCode") == 0 and not manifest.get("gridRestoreError")
         manifest["restoration"] = {"grid": "restored" if grid_is_restored else "pending", "app": "pending"}
     restore_after_capture(session, manifest, grid_name=f"restore-grid-{attempt}")
 

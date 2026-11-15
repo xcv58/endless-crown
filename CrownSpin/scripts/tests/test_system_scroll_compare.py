@@ -297,6 +297,22 @@ class RestorationTests(unittest.TestCase):
             self.assertEqual(after["attempts"], attempts)
             self.assertEqual(after["error"], "trial failed")
 
+    def test_unusable_grid_runner_does_not_block_normal_app_restoration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session = Path(directory)
+            path = session / comparison.MANIFEST
+            path.write_text(json.dumps({"status": "restoration-failed", "captureStatus": "stopped",
+                                        "attempts": [], "restoration": {"grid": "failed", "app": "failed"}}))
+            with patch.object(comparison.comparison, "verified_normal"), \
+                    patch.object(comparison, "verify_products", side_effect=ValueError("unusable runner")), \
+                    patch.object(comparison.comparison, "restore_normal") as normal:
+                with self.assertRaisesRegex(ValueError, "Required restoration failed"):
+                    comparison.retry_restore(argparse.Namespace(session=session))
+            normal.assert_called_once()
+            after = json.loads(path.read_text())
+            self.assertEqual(after["restoration"], {"grid": "failed", "app": "restored"})
+            self.assertIn("unusable runner", after["gridRestoreError"])
+
 
 if __name__ == "__main__":
     unittest.main()
