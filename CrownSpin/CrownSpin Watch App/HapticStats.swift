@@ -20,7 +20,6 @@ class HapticStats: ObservableObject {
         static let peakSpeed = "stats.peakSpeed"
         static let currentStreak = "stats.currentStreak"
         static let totalSpinTime = "stats.totalSpinTime"
-        static let currentItemNumber = "currentItemNumber"
         static let legacyBaseOffset = "baseOffset"
     }
 
@@ -115,21 +114,25 @@ class HapticStats: ObservableObject {
     func restoreItemNumber() -> Int {
         if let pendingItemNumber { return pendingItemNumber }
         let store = itemNumberDefaults
-        if let number = store.object(forKey: Keys.currentItemNumber) as? Int {
+        if let number = store.object(forKey: CrownPositionKeys.saved) as? Int {
             return number
         }
 
-        // Older versions saved the recenter offset locally. Seed the widget's
-        // absolute number only when no absolute position was saved.
-        let number = defaults.object(forKey: Keys.currentItemNumber) as? Int
-            ?? defaults.integer(forKey: Keys.legacyBaseOffset)
-        store.set(number, forKey: Keys.currentItemNumber)
+        // A legacy reset could leave the complication's mirror stale.
+        // Prefer the offset the old app would have restored, including zero.
+        let number = (defaults.object(forKey: Keys.legacyBaseOffset) as? Int)
+            ?? (store.object(forKey: CrownPositionKeys.legacyComplication) as? Int)
+            ?? 0
+        store.set(number, forKey: CrownPositionKeys.saved)
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
         return number
     }
 
     func recordItemNumber(_ number: Int) {
         #if ENERGY_TESTING && HAPTIC_LEGACY_PERSISTENCE
-        itemNumberDefaults.set(number, forKey: Keys.currentItemNumber)
+        itemNumberDefaults.set(number, forKey: CrownPositionKeys.saved)
         #else
         pendingItemNumber = number
         schedulePersistence()
@@ -151,7 +154,7 @@ class HapticStats: ObservableObject {
             peakSpeedNeedsSave = false
         }
         if let number = pendingItemNumber {
-            itemNumberDefaults.set(number, forKey: Keys.currentItemNumber)
+            itemNumberDefaults.set(number, forKey: CrownPositionKeys.saved)
             pendingItemNumber = nil
         }
     }

@@ -10,6 +10,7 @@ final class CrownSpinComplicationTests: XCTestCase {
         sharedDefaults?.removeObject(forKey: "stats.totalHaptics")
         sharedDefaults?.removeObject(forKey: "selectedHapticPattern")
         sharedDefaults?.removeObject(forKey: "currentItemNumber")
+        sharedDefaults?.removeObject(forKey: CrownPositionKeys.saved)
         sharedDefaults?.removeObject(forKey: "numberSystem")
     }
 
@@ -17,6 +18,7 @@ final class CrownSpinComplicationTests: XCTestCase {
         sharedDefaults?.removeObject(forKey: "stats.totalHaptics")
         sharedDefaults?.removeObject(forKey: "selectedHapticPattern")
         sharedDefaults?.removeObject(forKey: "currentItemNumber")
+        sharedDefaults?.removeObject(forKey: CrownPositionKeys.saved)
         sharedDefaults?.removeObject(forKey: "numberSystem")
         super.tearDown()
     }
@@ -167,20 +169,27 @@ final class CrownSpinComplicationTests: XCTestCase {
 
     // MARK: - Current Item Number
 
-    func testCreateEntryReadsCurrentItemNumberFromSharedDefaults() {
+    func testCreateEntryReadsLegacyMirrorBeforeAppMigration() {
         sharedDefaults?.set(99, forKey: "currentItemNumber")
 
         let provider = CrownSpinProvider()
         let entry = provider.createEntry()
         XCTAssertEqual(entry.currentItemNumber, 99)
+        XCTAssertNil(sharedDefaults?.object(forKey: CrownPositionKeys.saved))
     }
 
     func testCreateEntryWithNegativeItemNumber() {
-        sharedDefaults?.set(-42, forKey: "currentItemNumber")
+        sharedDefaults?.set(-42, forKey: CrownPositionKeys.saved)
 
         let provider = CrownSpinProvider()
         let entry = provider.createEntry()
         XCTAssertEqual(entry.currentItemNumber, -42)
+    }
+
+    func testCreateEntryPrefersMigratedZeroOverTheLegacyMirror() {
+        sharedDefaults?.set(900, forKey: "currentItemNumber")
+        sharedDefaults?.set(0, forKey: CrownPositionKeys.saved)
+        XCTAssertEqual(CrownSpinProvider().createEntry().currentItemNumber, 0)
     }
 
     func testCreateEntryItemNumberDefaultsToZeroWhenAbsent() {

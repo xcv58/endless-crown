@@ -122,7 +122,7 @@ let package = Package(name: "EnergyTestModel", platforms: [.macOS(.v14)], target
         (tests / "EnergyTestReportTests.swift").write_text(
             "@testable import EnergyTestModel\n" +
             (ROOT / "CrownSpin/CrownSpinTests/EnergyTestReportTests.swift").read_text())
-        for filename in ("WatchPresentation.swift", "CrownScrollState.swift"):
+        for filename in ("WatchPresentation.swift", "CrownScrollState.swift", "CrownPositionKeys.swift"):
             (sources / filename).write_text((ROOT / "CrownSpin/CrownSpin Watch App" / filename).read_text())
         (tests / "WatchInteractionTests.swift").write_text(
             "@testable import EnergyTestModel\n" +

@@ -42,6 +42,9 @@
 		F15A00010000000000000003 /* WatchPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15A00020000000000000001 /* WatchPresentation.swift */; };
 		F15A00010000000000000004 /* CrownScrollState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15A00020000000000000002 /* CrownScrollState.swift */; };
 		F15A00010000000000000005 /* WatchInteractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15A00020000000000000003 /* WatchInteractionTests.swift */; };
+		F15A00010000000000000006 /* CrownPositionKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15A00020000000000000004 /* CrownPositionKeys.swift */; };
+		F15A00010000000000000007 /* CrownPositionKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15A00020000000000000004 /* CrownPositionKeys.swift */; };
+		F15A00010000000000000008 /* CrownPositionKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15A00020000000000000004 /* CrownPositionKeys.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +123,7 @@
 		F15A00020000000000000001 /* WatchPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPresentation.swift; sourceTree = "<group>"; };
 		F15A00020000000000000002 /* CrownScrollState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrownScrollState.swift; sourceTree = "<group>"; };
 		F15A00020000000000000003 /* WatchInteractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchInteractionTests.swift; sourceTree = "<group>"; };
+		F15A00020000000000000004 /* CrownPositionKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrownPositionKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +192,7 @@
 				C01234550000000000000001 /* CrownSpinApp.swift */,
 				C01234550000000000000002 /* ContentView.swift */,
 				C01234550000000000000004 /* HapticPattern.swift */,
+				F15A00020000000000000004 /* CrownPositionKeys.swift */,
 				C01234550000000000000005 /* Assets.xcassets */,
 				C01234550000000000000006 /* Info.plist */,
 				BEEF00110000000000000001 /* PrivacyInfo.xcprivacy */,
@@ -381,6 +386,7 @@
 				EAE100010000000000000003 /* EnergyTestReport.swift in Test Sources */,
 				EAE100010000000000000004 /* EnergyTestReportTests.swift in Sources */,
 				AABB00010000000000000004 /* HapticPattern.swift in Sources */,
+				F15A00010000000000000006 /* CrownPositionKeys.swift in Sources */,
 				AABB00010000000000000005 /* HapticStats.swift in Sources */,
 				AABB00010000000000000006 /* CrownSpinComplication.swift in Sources */,
 				D15000010000000000000002 /* DisplayMode.swift in Sources */,
@@ -409,6 +415,7 @@
 				DFF9BB422F3588300041DFEE /* HapticStats.swift in Sources */,
 				DFF9BB432F3588300041DFEE /* StatsView.swift in Sources */,
 				C01234560000000000000004 /* HapticPattern.swift in Sources */,
+				F15A00010000000000000007 /* CrownPositionKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,6 +426,7 @@
 				DFF9BB542F3589000041DFEE /* ComplicationBundle.swift in Sources */,
 				DFF9BB552F3589000041DFEE /* CrownSpinComplication.swift in Sources */,
 				DFF9BB562F3589000041DFEE /* HapticPattern.swift in Sources */,
+				F15A00010000000000000008 /* CrownPositionKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

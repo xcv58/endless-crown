@@ -792,10 +792,10 @@ struct ContentView: View {
            let system = NumberSystem(rawValue: savedSystem) {
             numberSystem = system
         }
-        centerScrollWindow(on: stats.restoreItemNumber())
         // Sync current pattern to shared defaults for the complication
         Self.sharedDefaults?.set(currentPattern.rawValue, forKey: Constants.patternKey)
         Self.sharedDefaults?.set(numberSystem.rawValue, forKey: Constants.numberSystemKey)
+        centerScrollWindow(on: stats.restoreItemNumber())
     }
 
     private static let sharedDefaults = UserDefaults(suiteName: appGroupSuiteName)
